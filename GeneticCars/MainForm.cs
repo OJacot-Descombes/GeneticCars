@@ -1,4 +1,3 @@
-using GeneticCars.Cars;
 using SkiaSharp.Views.Desktop;
 
 namespace GeneticCars;
