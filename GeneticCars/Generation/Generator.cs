@@ -72,7 +72,7 @@ public class Generator<T>
 
             var newIndividual = T.Create(Class.Crossed, genes,
                 Math.Max(elite.Generation, other.Generation) + 1,
-                elite.CombineNames(other), world, position);
+                elite.Name.CombineWith(other.Name), world, position);
             destination[i] = newIndividual;
         }
     }

@@ -15,6 +15,7 @@ public class Car : Individual, IIndividualFactory<Car>
     private readonly Vertices _chassisVertices;
     private readonly Body _chassis;
     private readonly Body[] _wheels = new Body[2];
+    private readonly RevoluteJoint[] _joints = new RevoluteJoint[2];
 
     public static readonly FloatRange WheelRadiusRange = new(0.2f, 0.5f);
     public static readonly FloatRange WheelDensityRange = new(40f, 100f);
@@ -22,7 +23,7 @@ public class Car : Individual, IIndividualFactory<Car>
     public static readonly FloatRange ChassisDensityRange = new(30f, 300f);
     public static readonly FloatRange ChassisAxisRange = new(0.1f, 1.1f);
 
-    public Car(Class @class, Gene[] genes, int generation, string name, World world, Vector2 position)
+    public Car(Class @class, Gene[] genes, int generation, Name name, World world, Vector2 position)
         : base(@class, genes, generation, name)
     {
         Health = Game.MaxCarHealth;
@@ -41,11 +42,12 @@ public class Car : Individual, IIndividualFactory<Car>
                 MotorSpeed = -MotorSpeed,
                 MotorEnabled = true
             };
+            _joints[i] = joint;
             world.Add(joint);
         }
     }
 
-    public static Car Create(Class @class, Gene[] genes, int generation, string name, World world, Vector2 position)
+    public static Car Create(Class @class, Gene[] genes, int generation, Name name, World world, Vector2 position)
         => new(@class, genes, generation, name, world, position);
 
     public static Car CreateRandom(World world, Vector2 position)
@@ -78,12 +80,20 @@ public class Car : Individual, IIndividualFactory<Car>
         while (genes[5].IntValue == genes[4].IntValue) {
             genes[5] = new(WheelIndexRange);
         }
-        return new Car(Class.New, genes, 0, GenerateName(6), world, position);
+        return new Car(Class.New, genes, 0, Name.GenerateRandom(6), world, position);
     }
 
     public override float Fitness => _chassis.Position.X;
 
     public Body Body => _chassis;
+
+    protected override void Dying()
+    {
+        foreach (var joint in _joints) {
+            joint.MotorSpeed = 0;
+        }
+        _chassis.AngularDamping = 10f;
+    }
 
     private (Body, Vertices) CreateChassis(World world, Vector2 position)
     {

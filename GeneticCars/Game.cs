@@ -13,7 +13,7 @@ public class Game
     public const int CarCount = 100;
 
     private readonly Car[] _cars = new Car[CarCount];
-    private readonly Floor _floor = new(new Vector2(0, 2f));
+    private readonly Floor _floor = new(new Vector2(-4.9f, 2f));
     private readonly Camera _camera = new();
     private readonly Generator<Car> _generator = new();
 
@@ -34,7 +34,7 @@ public class Game
 
         SKCanvas canvas = e.Surface.Canvas;
         canvas.Clear(SKColors.White);
-        canvas.Translate(Math.Min(-40, -Zoom * focus.X + e.Info.Width - 100), Zoom * focus.Y + e.Info.Height - 80);
+        canvas.Translate(Math.Min(200, -Zoom * focus.X + e.Info.Width - 100), Zoom * focus.Y + e.Info.Height - 80);
         canvas.Scale(Zoom, -Zoom);
 
         _floor.Draw(canvas);
@@ -53,7 +53,7 @@ public class Game
     public async void Run(SKGLControl control)
     {
         var world = CreateWorld();
-        var spawnPosition = new Vector2(5, 15);
+        var spawnPosition = new Vector2(0, 15);
         _generator.GenerateInitial(world, _cars, spawnPosition);
         _floor.AddTo(world);
 
@@ -70,7 +70,7 @@ public class Game
                 world.Step(1f / Fps, ref iterations);
                 foreach (Car car in _cars) {
                     float velocity = car.Body.LinearVelocity.X;
-                    if (velocity < 0.02f && velocity > -0.5f) {
+                    if (velocity < 0.05f && velocity > -0.5f) {
                         car.Health--;
                     }
                 }
