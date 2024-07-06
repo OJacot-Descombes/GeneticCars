@@ -64,16 +64,18 @@ public class Game
             TOIVelocityIterations = 4
         };
         while (true) {
+            int round = 1;
             while (_running) {
                 await Task.Delay(1);
                 control.Refresh();
                 world.Step(1f / Fps, ref iterations);
                 foreach (Car car in _cars) {
                     float velocity = car.Body.LinearVelocity.X;
-                    if (velocity < 0.05f && velocity > -0.5f) {
+                    if (round > 100 && velocity < 0.05f && velocity > -0.5f) {
                         car.Health--;
                     }
                 }
+                round++;
             }
             await Task.Delay(500);
             world = CreateWorld();

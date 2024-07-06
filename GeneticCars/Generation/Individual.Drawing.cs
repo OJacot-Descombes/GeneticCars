@@ -51,6 +51,11 @@ public abstract partial class Individual
         IsStroke = false,
         IsAntialias = true
     };
+    protected static readonly SKPaint _infoStrokePaint = new() {
+        Color = SKColors.Gray,
+        IsStroke = true,
+        IsAntialias = false
+    };
     protected static readonly SKPaint _deadTextPaint = new() {
         Color = _deadBaseColor,
         IsStroke = false,

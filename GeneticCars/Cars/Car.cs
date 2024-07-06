@@ -3,14 +3,11 @@ using nkast.Aether.Physics2D.Dynamics.Joints;
 
 namespace GeneticCars.Cars;
 
-public class Car : Individual, IIndividualFactory<Car>
+public partial class Car : Individual, IIndividualFactory<Car>
 {
     public const int WheelCount = 2;
     public const int ChassisCount = 12;
     public const float MotorSpeed = 20f;
-
-    private static readonly SKFont _carFont = SKTypeface.FromFamilyName("Arial").ToFont(0.5f);
-
 
     private readonly Vertices _chassisVertices;
     private readonly Body _chassis;
@@ -143,52 +140,6 @@ public class Car : Individual, IIndividualFactory<Car>
         world.Remove(_chassis);
         foreach (Body wheel in _wheels) {
             world.Remove(wheel);
-        }
-    }
-
-    public void Draw(SKCanvas canvas)
-    {
-        var matrix = canvas.TotalMatrix;
-        canvas.Scale(1, -1, 0, _chassis.Position.Y);
-        string text = Name + " " + Generation;   // $"{_chassis.LinearVelocity.X:n3}  H = {Health}"
-        SKPaint textPaint = IsAlive ? _textPaint : _deadTextPaint;
-        canvas.DrawText(text, _chassis.Position.X - 1, _chassis.Position.Y - 3, _carFont, textPaint);
-        canvas.SetMatrix(matrix);
-
-        // Wheels
-        for (int i = 0; i < WheelCount; i++) {
-            var wheelCenter = _wheels[i].Position;
-            using var wheelFillPaint = CreateNeutralFillPaint(WheelDensity(i).Fraction);
-            canvas.DrawCircle(wheelCenter.X, wheelCenter.Y, WheelRadius(i).Value, wheelFillPaint);
-            canvas.DrawCircle(wheelCenter.X, wheelCenter.Y, WheelRadius(i).Value, NeutralStrokePaint);
-        }
-
-        // Chassis
-        canvas.RotateRadians(_chassis.Rotation, _chassis.Position.X, _chassis.Position.Y);
-        using var path = new SKPath();
-        Vector2 vector = _chassisVertices[0] + _chassis.Position;
-        path.MoveTo(vector.X, vector.Y);
-        for (int i = 1; i < _chassisVertices.Count; i++) {
-            vector = _chassisVertices[i] + _chassis.Position;
-            path.LineTo(vector.X, vector.Y);
-        }
-        path.Close();
-
-        SKPaint chassisStrokePaint = ColoredStrokePaint;
-        using SKPaint chassisFillPaint = CreateColoredFillPaint(ChassisDensity.Fraction);
-        canvas.DrawPath(path, chassisFillPaint);
-        canvas.DrawPath(path, chassisStrokePaint);
-        foreach (Vector2 v in _chassisVertices) {
-            var v1 = v + _chassis.Position;
-            canvas.DrawLine(_chassis.Position.X, _chassis.Position.Y, v1.X, v1.Y, chassisStrokePaint);
-        }
-        canvas.SetMatrix(matrix);
-
-        // Wheel hubs
-        for (int i = 0; i < WheelCount; i++) {
-            var wheelCenter = _wheels[i].Position;
-            canvas.DrawCircle(wheelCenter.X, wheelCenter.Y, 0.07f, _neutralFillPaint);
-            canvas.DrawCircle(wheelCenter.X, wheelCenter.Y, 0.07f, chassisStrokePaint);
         }
     }
 
