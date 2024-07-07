@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Drawing;
+using System.Xml.Linq;
 
 namespace GeneticCars;
 
@@ -43,6 +44,28 @@ public class Floor
     {
         for (int i = 1; i < MaxFloorTiles; i++) {
             world.CreateEdge(Vertices[i - 1], Vertices[i]);
+        }
+    }
+
+    public float AltitudeAt(float x)
+    {
+        if (x <= Vertices[0].X) {
+            return Vertices[0].Y;
+        } else if (x >= Vertices[^1].X) {
+            return Vertices[^1].Y;
+        } else {
+            int left = 0, right = Vertices.Length - 1;
+            while (left + 1 < right) {
+                int mid = (left + right) / 2;
+                if (x < Vertices[mid].X) {
+                    right = mid;
+                } else {
+                    left = mid;
+                }
+            }
+            Vector2 v0 = Vertices[left];
+            Vector2 v1 = Vertices[right];
+            return v0.Y + (v1.Y - v0.Y) / (v1.X - v0.X) * (x - v0.X);
         }
     }
 

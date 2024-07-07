@@ -11,9 +11,10 @@ public class Game
     public const int Fps = 30;
     public const int MaxCarHealth = Fps * 8;
     public const int CarCount = 100;
+    public const bool RegenerateFloor = false;
 
     private readonly Car[] _cars = new Car[CarCount];
-    private readonly Floor _floor = new(new Vector2(-4.9f, 2f));
+    private Floor _floor = new(new Vector2(-4.9f, 2f));
     private readonly Camera _camera = new();
     private readonly Generator<Car> _generator = new();
 
@@ -34,7 +35,7 @@ public class Game
 
         SKCanvas canvas = e.Surface.Canvas;
         canvas.Clear(SKColors.White);
-        canvas.Translate(Math.Min(200, -Zoom * focus.X + e.Info.Width - 100), Zoom * focus.Y + e.Info.Height - 80);
+        canvas.Translate(Math.Min(200, -Zoom * focus.X + e.Info.Width - 200), Zoom * focus.Y + e.Info.Height - 80);
         canvas.Scale(Zoom, -Zoom);
 
         _floor.Draw(canvas);
@@ -64,21 +65,25 @@ public class Game
             TOIVelocityIterations = 4
         };
         while (true) {
-            int round = 1;
+            int frame = 1;
             while (_running) {
                 await Task.Delay(1);
                 control.Refresh();
                 world.Step(1f / Fps, ref iterations);
                 foreach (Car car in _cars) {
                     float velocity = car.Body.LinearVelocity.X;
-                    if (round > 100 && velocity < 0.05f && velocity > -0.5f) {
+                    if (frame > 100 && velocity < 0.05f && velocity > -0.5f) {
                         car.Health--;
                     }
                 }
-                round++;
+                frame++;
             }
             await Task.Delay(500);
+            _camera.Reset();
             world = CreateWorld();
+            if (RegenerateFloor) {
+                _floor = new(new Vector2(-4.9f, 2f));
+            }
             _floor.AddTo(world);
             _generator.Evolve(world, _cars, spawnPosition);
             _running = true;
