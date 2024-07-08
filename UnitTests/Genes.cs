@@ -7,16 +7,29 @@ namespace UnitTests;
 public class Genes
 {
     [TestMethod]
-    public void IndexRange()
+    public void FirstWheelIndex()
     {
         HashSet<float> values = [];
         for (int i = 0; i < 1000; i++) {
-            Gene sut = new(Car.WheelIndexRange);
+            Gene sut = new(Car.FirstWheelIndexRange);
             values.Add(sut.IntValue);
         }
-        Assert.AreEqual(8, values.Count, "Count");
+        Assert.AreEqual(2, values.Count, "Count");
         Assert.AreEqual(0, values.Min(), "Min");
-        Assert.AreEqual(7, values.Max(), "Max");
+        Assert.AreEqual(1, values.Max(), "Max");
+    }
+
+    [TestMethod]
+    public void SecondWheelIndexDelta()
+    {
+        HashSet<float> values = [];
+        for (int i = 0; i < 1000; i++) {
+            Gene sut = new(Car.SecondWheelIndexDeltaRange);
+            values.Add(sut.IntValue);
+        }
+        Assert.AreEqual(4, values.Count, "Count");
+        Assert.AreEqual(1, values.Min(), "Min");
+        Assert.AreEqual(4, values.Max(), "Max");
     }
 
     [TestMethod]

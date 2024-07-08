@@ -15,6 +15,8 @@ public class Game
 
     private readonly Car[] _cars = new Car[CarCount];
     private Floor _floor = new(new Vector2(-4.9f, 2f));
+    private readonly Vector2 _spawnPosition = new(-4, 5);
+
     private readonly Camera _camera = new();
     private readonly Generator<Car> _generator = new();
 
@@ -54,8 +56,7 @@ public class Game
     public async void Run(SKGLControl control)
     {
         var world = CreateWorld();
-        var spawnPosition = new Vector2(0, 15);
-        _generator.GenerateInitial(world, _cars, spawnPosition);
+        _generator.GenerateInitial(world, _cars, _spawnPosition);
         _floor.AddTo(world);
 
         var iterations = new SolverIterations {
@@ -85,7 +86,7 @@ public class Game
                 _floor = new(new Vector2(-4.9f, 2f));
             }
             _floor.AddTo(world);
-            _generator.Evolve(world, _cars, spawnPosition);
+            _generator.Evolve(world, _cars, _spawnPosition);
             _running = true;
         }
     }

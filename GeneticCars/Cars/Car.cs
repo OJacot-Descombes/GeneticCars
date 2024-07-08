@@ -16,9 +16,10 @@ public partial class Car : Individual, IIndividualFactory<Car>
 
     public static readonly FloatRange WheelRadiusRange = new(0.2f, 0.5f);
     public static readonly FloatRange WheelDensityRange = new(40f, 100f);
-    public static readonly FloatRange WheelIndexRange = new(0, 8);
-    public static readonly FloatRange ChassisDensityRange = new(30f, 300f);
-    public static readonly FloatRange ChassisAxisRange = new(0.1f, 1.1f);
+    public static readonly FloatRange FirstWheelIndexRange = new(0, 2);
+    public static readonly FloatRange SecondWheelIndexDeltaRange = new(1, 4);
+    private static readonly FloatRange ChassisDensityRange = new(30f, 300f);
+    private static readonly FloatRange ChassisAxisRange = new(0.1f, 1.1f);
 
     public Car(Class @class, Gene[] genes, int generation, Name name, World world, Vector2 position)
         : base(@class, genes, generation, name)
@@ -33,7 +34,7 @@ public partial class Car : Individual, IIndividualFactory<Car>
 
         for (int i = 0; i < WheelCount; i++) {
             float torque = carMass * Game.Gravity / WheelRadius(i).Value;
-            Vector2 wheelCenter = _chassisVertices[WheelIndex(i).IntValue];
+            Vector2 wheelCenter = GetWheelCassisPosition(i);
             var joint = new RevoluteJoint(_chassis, _wheels[i], wheelCenter, Vector2.Zero) {
                 MaxMotorTorque = torque,
                 MotorSpeed = -MotorSpeed,
@@ -42,6 +43,8 @@ public partial class Car : Individual, IIndividualFactory<Car>
             _joints[i] = joint;
             world.Add(joint);
         }
+        _chassis.LinearVelocity = new Vector2(10, 0);
+        //TurnWheelsTowardsGround();
     }
 
     public static Car Create(Class @class, Gene[] genes, int generation, Name name, World world, Vector2 position)
@@ -54,8 +57,8 @@ public partial class Car : Individual, IIndividualFactory<Car>
             new(WheelRadiusRange),
             new(WheelDensityRange),
             new(WheelDensityRange),
-            new(WheelIndexRange),
-            new(WheelIndexRange),
+            new(FirstWheelIndexRange),
+            new(SecondWheelIndexDeltaRange),
 
             new(ChassisDensityRange),
 
@@ -74,9 +77,6 @@ public partial class Car : Individual, IIndividualFactory<Car>
             new(ChassisAxisRange),
             new(ChassisAxisRange),
         ];
-        while (genes[5].IntValue == genes[4].IntValue) {
-            genes[5] = new(WheelIndexRange);
-        }
         return new Car(Class.New, genes, 0, Name.GenerateRandom(6), world, position);
     }
 
@@ -129,9 +129,22 @@ public partial class Car : Individual, IIndividualFactory<Car>
 
     public Gene WheelRadius(int index) => Genome[index];
     public Gene WheelDensity(int index) => Genome[WheelCount + index];
-    public Gene WheelIndex(int index) => Genome[2 * WheelCount + index];
+    public Gene FirstWheelIndex => Genome[2 * WheelCount];
+    public Gene SecondWheelIndexDelta => Genome[2 * WheelCount + 1];
     public Gene ChassisDensity => Genome[3 * WheelCount];
 
+    public int GetWheelCassisIndex(int wheelIndex)
+    {
+        int value = FirstWheelIndex.IntValue;
+        (int firstIndex, int reference) = value == 0
+            ? (0, 8)
+            : (7, 7);
+        return wheelIndex == 0
+            ? firstIndex
+            : reference - SecondWheelIndexDelta.IntValue;
+    }
+
+    private Vector2 GetWheelCassisPosition(int wheelIndex) => _chassisVertices[GetWheelCassisIndex(wheelIndex)];
 
     public Gene ChassisAxis(int index) => Genome[3 * WheelCount + 1 + index];
 
@@ -141,6 +154,20 @@ public partial class Car : Individual, IIndividualFactory<Car>
         foreach (Body wheel in _wheels) {
             world.Remove(wheel);
         }
+    }
+
+    private void TurnWheelsTowardsGround()
+    {
+        var (t1, t2) = Geometry.ExternalTangentLines(
+            GetWheelCassisPosition(0), WheelRadius(0).Value,
+            GetWheelCassisPosition(1), WheelRadius(1).Value);
+        Vector2 mid1 = 0.5f * (t1.P1 + t1.P2);
+        Vector2 mid2 = 0.5f * (t2.P1 + t2.P2);
+        float d1 = mid1.Length();
+        float d2 = mid2.Length();
+        LineSegment tangent = d1 > d2 ? t1 : t2;
+        float angle = MathF.Atan2(tangent.P2.Y - tangent.P1.Y, tangent.P2.X - tangent.P1.X);
+        _chassis.Rotation = -angle;
     }
 
     public override string ToString() => $"""Car[{Class} "{Name} {Generation}", X={_chassis.Position.X:n2}, Velocity={_chassis.LinearVelocity.X:n2}]""";

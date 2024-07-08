@@ -12,6 +12,18 @@ public partial class Car
         var chassisStrokePaint = ColoredStrokePaint;
         DrawChassis(canvas, chassisStrokePaint);
         DrawWheelHubs(canvas, chassisStrokePaint);
+
+        // -- Test tangents ---
+        //using var stroke = new SKPaint {
+        //    Color = SKColors.Red,
+        //    IsStroke = true,
+        //    IsAntialias = true
+        //};
+        //var (t1, t2) = Geometry.ExternalTangentLines(
+        //    _wheels[0].Position, WheelRadius(0).Value,
+        //    _wheels[1].Position, WheelRadius(1).Value);
+        //canvas.DrawLine(t1.P1.X, t1.P1.Y, t1.P2.X, t1.P2.Y, stroke);
+        //canvas.DrawLine(t2.P1.X, t2.P1.Y, t2.P2.X, t2.P2.Y, stroke);
     }
 
     private void DrawInfo(SKCanvas canvas)
