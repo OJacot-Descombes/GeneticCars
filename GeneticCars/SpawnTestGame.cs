@@ -14,13 +14,13 @@ public class SpawnTestGame
 
     private readonly Vector2 _spawnPosition = new(-4, 5);
     private Car _car = null!;
-    private Floor _floor = new(new Vector2(-4.9f, 2f));
+    private readonly Floor _floor = new(new Vector2(-4.9f, 2f));
 
     public void Draw(SKPaintGLSurfaceEventArgs e)
     {
         SKCanvas canvas = e.Surface.Canvas;
         canvas.Clear(SKColors.White);
-        Vector2 focus = new Vector2(0, 2.6f);
+        var focus = new Vector2(0, 2.6f);
         canvas.Translate(Math.Min(200, -Zoom * focus.X + e.Info.Width - 200), Zoom * focus.Y + e.Info.Height - 80);
         canvas.Scale(Zoom, -Zoom);
 

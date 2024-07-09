@@ -10,8 +10,10 @@ public class Game
     public const float Zoom = 30;
     public const int Fps = 30;
     public const int MaxCarHealth = Fps * 8;
-    public const int CarCount = 100;
+    public const int CarCount = 40;
     public const bool RegenerateFloor = false;
+
+    public static readonly LabelPlacer LabelPlacer = new();
 
     private readonly Car[] _cars = new Car[CarCount];
     private Floor _floor = new(new Vector2(-4.9f, 2f));
@@ -23,8 +25,14 @@ public class Game
     private bool _running = true;
     private Car? _lastFocusedCar = null;
 
+    private int _nDraw;
+
     public void Draw(SKPaintGLSurfaceEventArgs e)
     {
+        if (_nDraw % 10 == 0) {
+            Array.Sort(_cars, (a, b) => a.Fitness.CompareTo(b.Fitness));
+        }
+        _nDraw++;
         Car focusedCar = GetFocusedCar();
         if (focusedCar is null) {
             _running = false;
@@ -44,6 +52,7 @@ public class Game
         foreach (Car car in _cars.OrderBy(c => c.IsAlive ? 1 : 0)) {
             car.Draw(canvas);
         }
+        LabelPlacer.Reset();
     }
 
     private Car GetFocusedCar()

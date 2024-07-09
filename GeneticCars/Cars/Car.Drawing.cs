@@ -1,60 +1,101 @@
-﻿namespace GeneticCars.Cars;
+﻿using static System.Net.Mime.MediaTypeNames;
+
+namespace GeneticCars.Cars;
 
 public partial class Car
 {
     private static readonly SKFont _carFont = SKTypeface.FromFamilyName("Arial").ToFont(0.5f);
 
+    private float _lastLabelY;
+
     public void Draw(SKCanvas canvas)
     {
-        DrawInfo(canvas);
-        DrawWheels(canvas);
-
+        var chassisFillPaint = CreateColoredFillPaint(ChassisDensity.Fraction);
         var chassisStrokePaint = ColoredStrokePaint;
-        DrawChassis(canvas, chassisStrokePaint);
-        DrawWheelHubs(canvas, chassisStrokePaint);
 
-        // -- Test tangents ---
-        //using var stroke = new SKPaint {
-        //    Color = SKColors.Red,
-        //    IsStroke = true,
-        //    IsAntialias = true
-        //};
-        //var (t1, t2) = Geometry.ExternalTangentLines(
-        //    _wheels[0].Position, WheelRadius(0).Value,
-        //    _wheels[1].Position, WheelRadius(1).Value);
-        //canvas.DrawLine(t1.P1.X, t1.P1.Y, t1.P2.X, t1.P2.Y, stroke);
-        //canvas.DrawLine(t2.P1.X, t2.P1.Y, t2.P2.X, t2.P2.Y, stroke);
+        DrawInfo(canvas);
+        DrawWheels(canvas, chassisFillPaint, chassisStrokePaint);
+        DrawChassis(canvas, chassisFillPaint, chassisStrokePaint);
+        DrawWheelHubs(canvas, chassisStrokePaint);
     }
 
     private void DrawInfo(SKCanvas canvas)
     {
+        string text = GetInfoText();
+        var rect = GetInfoRect(text);
+        float y = Game.LabelPlacer.RoundVertialValue(_chassis.Position.Y);
+        float displacement = Game.LabelPlacer.GetVerticalDisplacement(rect);
+        y += displacement;
+
+        // Make smooth vertical label movements
+        float delta = Single.Clamp(y - _lastLabelY, -0.1f, 0.1f);
+        y = _lastLabelY + delta;
+        _lastLabelY = y;
+
         var matrix = canvas.TotalMatrix;
-        canvas.Scale(1, -1, 0, _chassis.Position.Y);
-        string text = Name + " " + Generation;   // $"{_chassis.LinearVelocity.X:n3}  H = {Health}"
-        SKPaint textPaint = IsAlive ? _textPaint : _deadTextPaint;
-        canvas.DrawText(text, _chassis.Position.X - 1, _chassis.Position.Y - 3, _carFont, textPaint);
+
+        canvas.Scale(1, -1, 0, y);
+        float xText = _chassis.Position.X - 1;
+        float yText = y - 3;
+        canvas.DrawText(text, xText, yText, _carFont, InfoTextPaint);
         canvas.SetMatrix(matrix);
 
+        yText = y + 3.4f;
         if (IsAlive && Health < Game.MaxCarHealth) {
-            ColoredStrokePaint.IsStroke = false;
-            canvas.DrawRect(_chassis.Position.X - 1, _chassis.Position.Y + 2.7f, 2f * Health / Game.MaxCarHealth,
-                0.15f, ColoredStrokePaint);
-            ColoredStrokePaint.IsStroke = true;
-            canvas.DrawRect(_chassis.Position.X - 1, _chassis.Position.Y + 2.7f, 2, 0.15f, _infoStrokePaint);
+            canvas.DrawRect(xText, yText - 0.7f, 2f * Health / Game.MaxCarHealth,
+                0.15f, ColoredFillPaint);
+            canvas.DrawRect(xText, yText - 0.7f, 2, 0.15f, _infoStrokePaint);
         }
+
+        // Test: rectangle around info.
+        //canvas.DrawRect(rect, _infoStrokePaint);
     }
 
-    private void DrawWheels(SKCanvas canvas)
+    public string GetInfoText()
+    {
+        return Name + " " + Generation;
+    }
+
+    public SKRect GetInfoRect(string text)
+    {
+        float xText = _chassis.Position.X - 1;
+        float yText = _chassis.Position.Y + 2.7f;
+        float width = _carFont.MeasureText(text);
+
+        float left = xText - 0.1f;
+        float top, right, bottom;
+        if (IsAlive && Health < Game.MaxCarHealth) {
+            top = yText - 0.05f;
+            right = left + Math.Max(2f, width) + 0.2f;
+            bottom = top + 0.75f;
+        } else {
+            top = yText + 0.15f;
+            right = left + width + 0.2f;
+            bottom = top + 0.55f;
+        }
+        return new SKRect(left, top, right, bottom);
+    }
+
+    private void DrawWheels(SKCanvas canvas, SKPaint chassisFillPaint, SKPaint chassisStrokePaint)
     {
         for (int i = 0; i < WheelCount; i++) {
-            var wheelCenter = _wheels[i].Position;
+            Body body = _wheels[i];
+            var wheelCenter = body.Position;
             using var wheelFillPaint = CreateNeutralFillPaint(WheelDensity(i).Fraction);
-            canvas.DrawCircle(wheelCenter.X, wheelCenter.Y, WheelRadius(i).Value, wheelFillPaint);
-            canvas.DrawCircle(wheelCenter.X, wheelCenter.Y, WheelRadius(i).Value, NeutralStrokePaint);
+            float radius = WheelRadius(i).Value;
+            canvas.DrawCircle(wheelCenter.X, wheelCenter.Y, radius, wheelFillPaint);
+            canvas.DrawCircle(wheelCenter.X, wheelCenter.Y, radius, NeutralStrokePaint);
+
+            // Draw marker on wheel to make rotation observable.
+            float angle = body.Rotation;
+            float x = wheelCenter.X + MathF.Cos(angle) * 0.6f * radius;
+            float y = wheelCenter.Y + MathF.Sin(angle) * 0.6f * radius;
+            canvas.DrawCircle(x, y, 0.25f * radius, chassisFillPaint);
+            canvas.DrawCircle(x, y, 0.25f * radius, chassisStrokePaint);
         }
     }
 
-    private void DrawChassis(SKCanvas canvas, SKPaint chassisStrokePaint)
+    private void DrawChassis(SKCanvas canvas, SKPaint chassisFillPaint, SKPaint chassisStrokePaint)
     {
         var matrix = canvas.TotalMatrix;
         canvas.RotateRadians(_chassis.Rotation, _chassis.Position.X, _chassis.Position.Y);
@@ -67,7 +108,6 @@ public partial class Car
         }
         path.Close();
 
-        var chassisFillPaint = CreateColoredFillPaint(ChassisDensity.Fraction);
         canvas.DrawPath(path, chassisFillPaint);
         canvas.DrawPath(path, chassisStrokePaint);
         foreach (Vector2 v in _chassisVertices) {

@@ -24,6 +24,7 @@ public partial class Car : Individual, IIndividualFactory<Car>
     public Car(Class @class, Gene[] genes, int generation, Name name, World world, Vector2 position)
         : base(@class, genes, generation, name)
     {
+        _lastLabelY = position.Y + 3;
         Health = Game.MaxCarHealth;
         (_chassis, _chassisVertices) = CreateChassis(world, position);
         float carMass = _chassis.Mass;
@@ -44,7 +45,6 @@ public partial class Car : Individual, IIndividualFactory<Car>
             world.Add(joint);
         }
         _chassis.LinearVelocity = new Vector2(10, 0);
-        //TurnWheelsTowardsGround();
     }
 
     public static Car Create(Class @class, Gene[] genes, int generation, Name name, World world, Vector2 position)
@@ -154,20 +154,6 @@ public partial class Car : Individual, IIndividualFactory<Car>
         foreach (Body wheel in _wheels) {
             world.Remove(wheel);
         }
-    }
-
-    private void TurnWheelsTowardsGround()
-    {
-        var (t1, t2) = Geometry.ExternalTangentLines(
-            GetWheelCassisPosition(0), WheelRadius(0).Value,
-            GetWheelCassisPosition(1), WheelRadius(1).Value);
-        Vector2 mid1 = 0.5f * (t1.P1 + t1.P2);
-        Vector2 mid2 = 0.5f * (t2.P1 + t2.P2);
-        float d1 = mid1.Length();
-        float d2 = mid2.Length();
-        LineSegment tangent = d1 > d2 ? t1 : t2;
-        float angle = MathF.Atan2(tangent.P2.Y - tangent.P1.Y, tangent.P2.X - tangent.P1.X);
-        _chassis.Rotation = -angle;
     }
 
     public override string ToString() => $"""Car[{Class} "{Name} {Generation}", X={_chassis.Position.X:n2}, Velocity={_chassis.LinearVelocity.X:n2}]""";
