@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Xml.Linq;
-
-namespace GeneticCars;
+﻿namespace GeneticCars;
 
 public class Floor
 {

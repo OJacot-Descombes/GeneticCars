@@ -13,6 +13,7 @@ public partial class Car : Individual, IIndividualFactory<Car>
     private readonly Body _chassis;
     private readonly Body[] _wheels = new Body[2];
     private readonly RevoluteJoint[] _joints = new RevoluteJoint[2];
+    private readonly string _text;
 
     public static readonly FloatRange WheelRadiusRange = new(0.2f, 0.5f);
     public static readonly FloatRange WheelDensityRange = new(40f, 100f);
@@ -45,6 +46,7 @@ public partial class Car : Individual, IIndividualFactory<Car>
             world.Add(joint);
         }
         _chassis.LinearVelocity = new Vector2(10, 0);
+        _text = Name + " " + Generation;
     }
 
     public static Car Create(Class @class, Gene[] genes, int generation, Name name, World world, Vector2 position)

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GeneticCars.Generation;
+﻿namespace GeneticCars.Generation;
 
 public abstract partial class Individual
 {

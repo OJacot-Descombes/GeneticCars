@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GeneticCars.Cars;
+﻿namespace GeneticCars.Cars;
 
 public class LabelPlacer
 {
@@ -81,6 +74,4 @@ public class LabelPlacer
             _upperBound = newUpperBound;
         }
     }
-
-    internal float RoundVertialValue(float value) => (int)(value * InvGranularity) * Granularity;
 }
