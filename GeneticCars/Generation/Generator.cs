@@ -1,10 +1,14 @@
-﻿namespace GeneticCars.Generation;
+﻿using System.Xml.Linq;
+
+namespace GeneticCars.Generation;
 
 public class Generator<T>
     where T : Individual, IIndividualFactory<T>
 {
     private const float MutationRate = 0.20f;
     private const float MutationSize = 0.30f;
+
+    private static readonly Dictionary<(int, string), int> _namePool = new(2000);
 
     public void GenerateInitial(World world, T[] individuals, Vector2 position)
     {
@@ -52,7 +56,7 @@ public class Generator<T>
     {
         for (int i = 0; i < eliteSpan.Length; i++) {
             T old = eliteSpan[i];
-            var elite = T.Create(Class.Elite, old.Genome, old.Generation, old.Name, world, position);
+            var elite = T.Create(Class.Elite, old.Genome, old.Generation, old.Name, old.NameNumber, world, position);
             eliteSpan[i] = elite;
         }
     }
@@ -70,11 +74,23 @@ public class Generator<T>
                 }
             }
 
-            var newIndividual = T.Create(Class.Crossed, genes,
-                Math.Max(elite.Generation, other.Generation) + 1,
-                elite.Name.CombineWith(other.Name), world, position);
+            int generation = Math.Max(elite.Generation, other.Generation) + 1;
+            Name name = elite.Name.CombineWith(other.Name);
+            int number = GetNameNumber(generation, name.Display);
+            var newIndividual = T.Create(Class.Crossed, genes, generation, name, number, world, position);
             destination[i] = newIndividual;
         }
+    }
+
+    private static int GetNameNumber(int generation, string name)
+    {
+        if (_namePool.TryGetValue((generation, name), out int number)) {
+            number++;
+            _namePool[(generation, name)] = number;
+            return number;
+        }
+        _namePool[(generation, name)] = number;
+        return number;
     }
 
     private static void CreateMutations(Span<T> eliteSpan, Span<T> destination, World world, Vector2 position)
@@ -94,7 +110,9 @@ public class Generator<T>
                 Mutate(genes, Random.Shared.Next(genes.Length));
             }
 
-            var newIndividual = T.Create(Class.Mutated, genes, elite.Generation + 1, elite.Name, world, position);
+            int generation = elite.Generation + 1;
+            int number = GetNameNumber(generation, elite.Name.Display);
+            var newIndividual = T.Create(Class.Mutated, genes, generation, elite.Name, number, world, position);
             destination[i] = newIndividual;
         }
     }

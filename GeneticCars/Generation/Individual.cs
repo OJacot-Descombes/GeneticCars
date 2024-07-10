@@ -1,12 +1,14 @@
 ﻿namespace GeneticCars.Generation;
 
-public abstract partial class Individual(Class @class, Gene[] genome, int generation, Name name)
+public abstract partial class Individual(Class @class, Gene[] genome, int generation, Name name, int nameNumber)
 {
     public Gene[] Genome { get; } = genome;
 
     public int Generation { get; } = generation;
 
     public Name Name { get; } = name;
+
+    public int NameNumber { get; } = nameNumber;
 
     public Class Class { get; } = @class;
 

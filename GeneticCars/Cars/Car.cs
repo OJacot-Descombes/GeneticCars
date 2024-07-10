@@ -22,8 +22,8 @@ public partial class Car : Individual, IIndividualFactory<Car>
     private static readonly FloatRange ChassisDensityRange = new(30f, 300f);
     private static readonly FloatRange ChassisAxisRange = new(0.1f, 1.1f);
 
-    public Car(Class @class, Gene[] genes, int generation, Name name, World world, Vector2 position)
-        : base(@class, genes, generation, name)
+    public Car(Class @class, Gene[] genes, int generation, Name name, int nameNumber, World world, Vector2 position)
+        : base(@class, genes, generation, name, nameNumber)
     {
         _lastLabelY = position.Y + 3;
         Health = Game.MaxCarHealth;
@@ -46,11 +46,14 @@ public partial class Car : Individual, IIndividualFactory<Car>
             world.Add(joint);
         }
         _chassis.LinearVelocity = new Vector2(10, 0);
-        _text = Name + " " + Generation;
+        _text = generation == 0 && nameNumber == 0
+            ? $"{name.Display} 0"
+            : $"{name.Display} {generation}.{nameNumber}";
     }
 
-    public static Car Create(Class @class, Gene[] genes, int generation, Name name, World world, Vector2 position)
-        => new(@class, genes, generation, name, world, position);
+    public static Car Create(Class @class, Gene[] genes, int generation, Name name, int nameNumber,
+        World world, Vector2 position)
+        => new(@class, genes, generation, name, nameNumber, world, position);
 
     public static Car CreateRandom(World world, Vector2 position)
     {
@@ -79,7 +82,7 @@ public partial class Car : Individual, IIndividualFactory<Car>
             new(ChassisAxisRange),
             new(ChassisAxisRange),
         ];
-        return new Car(Class.New, genes, 0, Name.GenerateRandom(6), world, position);
+        return new Car(Class.New, genes, 0, Name.GenerateRandom(6), 0, world, position);
     }
 
     public override float Fitness => _chassis.Position.X;
