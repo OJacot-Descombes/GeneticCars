@@ -1,4 +1,5 @@
-﻿using static GeneticCars.Generation.FamilyTree;
+﻿using SkiaSharp.Views.Desktop;
+using static GeneticCars.Generation.FamilyTree;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace GeneticCars.Generation;
@@ -100,37 +101,43 @@ public partial class FamilyTree
     _ => throw new NotImplementedException()
 };
 
-    public void Draw(SKCanvas canvas)
+    public void Draw(SKCanvas canvas, int leftBound, int rightBound)
     {
         canvas.Clear(SKColors.White);
         float top = canvas.LocalClipBounds.Top + TopBorder;
         float x = canvas.LocalClipBounds.Left + LeftBorder;
+
+        //canvas.DrawLine(leftBound, 0, leftBound, 1000, _eliteStrokePaint);
+        //canvas.DrawLine(rightBound, 0, rightBound, 1000, _eliteStrokePaint);
+
         for (int g = 0; g < Generations.Count; g++) {
-            float y = top;
-            canvas.DrawText(g.ToString(), x, y - 15, _generationFont, Individual.NeutralInfoTextPaint);
-            for (int i = 0; i < Generations[g].Length; i++) {
-                ref Node node = ref Generations[g][i];
+            if (x + TextColumnWidth > leftBound && x < rightBound + ConnectionsColumnWidth) {
+                float y = top;
+                canvas.DrawText(g.ToString(), x, y - 15, _generationFont, Individual.NeutralInfoTextPaint);
+                for (int i = 0; i < Generations[g].Length; i++) {
+                    ref Node node = ref Generations[g][i];
 
-                float textWidth = _nodeFont.MeasureText(node.Text);
-                canvas.DrawText(node.Text, x, y, _nodeFont, GetTextPaint(node.Class));
+                    float textWidth = _nodeFont.MeasureText(node.Text);
+                    canvas.DrawText(node.Text, x, y, _nodeFont, GetTextPaint(node.Class));
 
-                string text = $" ({node.Fitness:n1})";
-                canvas.DrawText(text, x + textWidth, y, _nodeFont, _fitnessTextPaint);
-                textWidth += _nodeFont.MeasureText(text) + 1f;
+                    string text = $" ({node.Fitness:n1})";
+                    canvas.DrawText(text, x + textWidth, y, _nodeFont, _fitnessTextPaint);
+                    textWidth += _nodeFont.MeasureText(text) + 1f;
 
-                bool isNewElite = i < Generations[g].Length / 4;
-                float lineY = y + ConnectionYDelta;
-                if (textWidth < TextColumnWidth) {
-                    canvas.DrawLine(x + textWidth, lineY, x + TextColumnWidth, lineY, 
-                        isNewElite ? GetConnectionPaint(node.Class) : GetFaintConnectionPaint(node.Class));
+                    bool isNewElite = i < Generations[g].Length / 4;
+                    float lineY = y + ConnectionYDelta;
+                    if (textWidth < TextColumnWidth) {
+                        canvas.DrawLine(x + textWidth, lineY, x + TextColumnWidth, lineY,
+                            isNewElite ? GetConnectionPaint(node.Class) : GetFaintConnectionPaint(node.Class));
+                    }
+                    if (node.Ancestor1Index is int ancestorIndex1) {
+                        DrawConnection(canvas, ancestorIndex1, x, top, node.Class, lineY, isNewElite);
+                    }
+                    if (node.Ancestor2Index is int ancestorIndex2) {
+                        DrawConnection(canvas, ancestorIndex2, x, top, node.Class, lineY, isNewElite);
+                    }
+                    y += LineHeight;
                 }
-                if (node.Ancestor1Index is int ancestorIndex1) {
-                    DrawConnection(canvas, ancestorIndex1, x, top, node.Class, lineY, isNewElite);
-                }
-                if (node.Ancestor2Index is int ancestorIndex2) {
-                    DrawConnection(canvas, ancestorIndex2, x, top, node.Class, lineY, isNewElite);
-                }
-                y += LineHeight;
             }
             x += TextColumnWidth + ConnectionsColumnWidth;
         }

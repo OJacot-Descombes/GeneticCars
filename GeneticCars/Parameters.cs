@@ -30,29 +30,17 @@ public class Parameters : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private class RelayCommand : ICommand
+    private class RelayCommand(Action commandAction, Func<bool>? canExecuteCommand = null) : ICommand
     {
         public event EventHandler? CanExecuteChanged;
 
-        private readonly Action _commandAction;
-        private readonly Func<bool>? _canExecuteCommandAction;
+        bool ICommand.CanExecute(object? parameter) => canExecuteCommand is null || canExecuteCommand();
 
-        public RelayCommand(Action commandAction, Func<bool>? canExecuteCommandAction = null)
-        {
-            _commandAction = commandAction;
-            _canExecuteCommandAction = canExecuteCommandAction;
-        }
-
-        bool ICommand.CanExecute(object? parameter)
-            => _canExecuteCommandAction is null || _canExecuteCommandAction.Invoke();
-
-        void ICommand.Execute(object? parameter)
-            => _commandAction.Invoke();
+        void ICommand.Execute(object? parameter) => commandAction();
 
         /// <summary>
         ///  Triggers sending a notification, that the command availability has changed.
         /// </summary>
-        public void NotifyCanExecuteChanged()
-            => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        public void NotifyCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

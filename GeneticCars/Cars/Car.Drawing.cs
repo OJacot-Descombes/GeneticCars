@@ -22,7 +22,7 @@ public partial class Car
         DrawWheelHubs(canvas, chassisStrokePaint);
     }
 
-    public void CalculateNextInfoPosition(SKCanvas canvas)
+    public void CalculateNextInfoPosition()
     {
         // Make smooth horizontal label movements
         float deltaX = 0.1f * (_chassis.Position.X - _lastLabelX);

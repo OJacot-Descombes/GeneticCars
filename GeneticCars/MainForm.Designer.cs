@@ -123,6 +123,7 @@ partial class MainForm
         flowLayoutPanel1.Name = "flowLayoutPanel1";
         flowLayoutPanel1.Size = new Size(1211, 304);
         flowLayoutPanel1.TabIndex = 2;
+        flowLayoutPanel1.Scroll += FlowLayoutPanel1_Scroll;
         flowLayoutPanel1.Resize += FlowLayoutPanel_Resize;
         // 
         // familyTreeSKGLControl

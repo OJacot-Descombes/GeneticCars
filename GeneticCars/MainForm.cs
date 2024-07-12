@@ -6,6 +6,7 @@ public partial class MainForm : Form
 {
     private readonly Game _game = new();
     //private readonly SpawnTestGame _game = new();
+    private int _left;
 
     public MainForm()
     {
@@ -18,7 +19,7 @@ public partial class MainForm : Form
     {
         AdjustFamilyTreeControlSize();
         flowLayoutPanel1.AutoScrollPosition = new Point(familyTreeSKGLControl.Size.Width, -flowLayoutPanel1.AutoScrollPosition.Y);
-        familyTreeSKGLControl.Invalidate();
+        UpdateVisibleBounds();
     }
 
     private void MainForm_Load(object sender, EventArgs e)
@@ -33,17 +34,32 @@ public partial class MainForm : Form
 
     private void FamilyTreeSKGLControl_PaintSurface(object sender, SKPaintGLSurfaceEventArgs e)
     {
-        _game.DrawFamilyTree(e);
+        _game.DrawFamilyTree(e, _left, _left + flowLayoutPanel1.Width);
     }
 
     private void FlowLayoutPanel_Resize(object sender, EventArgs e)
     {
         AdjustFamilyTreeControlSize();
+        UpdateVisibleBounds();
     }
 
     private void AdjustFamilyTreeControlSize()
     {
         Size familyTreeSize = _game.FamilyTreePixelSize;
         familyTreeSKGLControl.Size = new Size(familyTreeSize.Width, familyTreeSize.Height);
+    }
+
+    private void UpdateVisibleBounds()
+    {
+        int newLeft = -familyTreeSKGLControl.Left;
+        if (newLeft != _left) {
+            _left = newLeft;
+            familyTreeSKGLControl.Invalidate();
+        }
+    }
+
+    private void FlowLayoutPanel1_Scroll(object sender, ScrollEventArgs e)
+    {
+        UpdateVisibleBounds();
     }
 }

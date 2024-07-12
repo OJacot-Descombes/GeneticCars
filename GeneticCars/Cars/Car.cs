@@ -86,7 +86,9 @@ public partial class Car : Individual, IIndividualFactory<Car>
     public override float Fitness
     {
         get {
-            _maxFitness = Math.Max(_maxFitness, _chassis.Position.X);
+            if (IsAlive) {
+                _maxFitness = Math.Max(_maxFitness, _chassis.Position.X);
+            }
             return _maxFitness;
         }
     }

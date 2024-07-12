@@ -50,7 +50,7 @@ public class Game
         foreach (Car car in _cars) {
             // We have to this without changing the order, because otherwise the dead car's labels will always
             // display at the bottom, which makes them drop when their car dies.
-            car.CalculateNextInfoPosition(canvas);
+            car.CalculateNextInfoPosition();
         }
         Car focusedCar = GetFocusedCar();
         if (focusedCar is null) {
@@ -98,9 +98,9 @@ public class Game
         }
     }
 
-    public void DrawFamilyTree(SKPaintGLSurfaceEventArgs e)
+    public void DrawFamilyTree(SKPaintGLSurfaceEventArgs e, int leftBound, int rightBound)
     {
-        _familyTree.Draw(e.Surface.Canvas);
+        _familyTree.Draw(e.Surface.Canvas, leftBound, rightBound);
     }
 
     private Car GetFocusedCar()
