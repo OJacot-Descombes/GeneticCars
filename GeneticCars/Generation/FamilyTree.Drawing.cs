@@ -1,8 +1,4 @@
-﻿using SkiaSharp.Views.Desktop;
-using static GeneticCars.Generation.FamilyTree;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace GeneticCars.Generation;
+﻿namespace GeneticCars.Generation;
 
 public partial class FamilyTree
 {
@@ -93,25 +89,21 @@ public partial class FamilyTree
     };
 
     private static SKPaint GetFaintConnectionPaint(Class @class) =>
-@class switch {
-    Class.New => _newFaintStrokePaint,
-    Class.Elite => _eliteFaintStrokePaint,
-    Class.Crossed => _crossedFaintStrokePaint,
-    Class.Mutated => _mutatedFaintStrokePaint,
-    _ => throw new NotImplementedException()
-};
+        @class switch {
+            Class.New => _newFaintStrokePaint,
+            Class.Elite => _eliteFaintStrokePaint,
+            Class.Crossed => _crossedFaintStrokePaint,
+            Class.Mutated => _mutatedFaintStrokePaint,
+            _ => throw new NotImplementedException()
+        };
 
-    public void Draw(SKCanvas canvas, int leftBound, int rightBound)
+    public void Draw(SKCanvas canvas, SKRect viewBox)
     {
         canvas.Clear(SKColors.White);
-        float top = canvas.LocalClipBounds.Top + TopBorder;
-        float x = canvas.LocalClipBounds.Left + LeftBorder;
-
-        //canvas.DrawLine(leftBound, 0, leftBound, 1000, _eliteStrokePaint);
-        //canvas.DrawLine(rightBound, 0, rightBound, 1000, _eliteStrokePaint);
-
+        float top = canvas.LocalClipBounds.Top + TopBorder - viewBox.Top;
+        float x = canvas.LocalClipBounds.Left + LeftBorder - viewBox.Left;
         for (int g = 0; g < Generations.Count; g++) {
-            if (x + TextColumnWidth > leftBound && x < rightBound + ConnectionsColumnWidth) {
+            if (x + TextColumnWidth > 0 && x < viewBox.Width + ConnectionsColumnWidth) {
                 float y = top;
                 canvas.DrawText(g.ToString(), x, y - 15, _generationFont, Individual.NeutralInfoTextPaint);
                 for (int i = 0; i < Generations[g].Length; i++) {
@@ -152,7 +144,7 @@ public partial class FamilyTree
         path.CubicTo(
             x - ConnectionsColumnWidth + ControlPointDelta, ancestorY,
             x - ControlPointDelta, lineY,
-            x, lineY);
+            x - 1, lineY);
         canvas.DrawPath(path, isNewElite ? GetConnectionPaint(@class) : GetFaintConnectionPaint(@class));
     }
 

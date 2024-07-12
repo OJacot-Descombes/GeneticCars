@@ -98,9 +98,9 @@ public class Game
         }
     }
 
-    public void DrawFamilyTree(SKPaintGLSurfaceEventArgs e, int leftBound, int rightBound)
+    public void DrawFamilyTree(SKPaintGLSurfaceEventArgs e, SKRect viewBox)
     {
-        _familyTree.Draw(e.Surface.Canvas, leftBound, rightBound);
+        _familyTree.Draw(e.Surface.Canvas, viewBox);
     }
 
     private Car GetFocusedCar()

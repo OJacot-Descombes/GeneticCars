@@ -7,7 +7,7 @@ public class Parameters : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    bool _playing = true;
+    private bool _playing = true;
     public bool Playing
     {
         get { return _playing; }

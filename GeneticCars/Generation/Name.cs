@@ -8,10 +8,9 @@ public readonly record struct Name(string Raw, string Display, string? Reverse) 
 {
     public const char ChSurrogate = 'ä', ShSurrogate = 'ö', ThSurrogate = 'ü';
     public const char UpperChSurrogate = 'Ä', UpperShSurrogate = 'Ö', UpperThSurrogate = 'Ü';
-
-    static readonly char[] consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't',
+    private static readonly char[] consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't',
         'v', 'w', 'x', 'z', ChSurrogate, ShSurrogate, ThSurrogate ];
-    static readonly char[] vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
+    private static readonly char[] vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
 
     public Name(string raw, string reverse) : this(raw, ToDisplay(raw), reverse)
     {

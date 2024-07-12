@@ -12,7 +12,7 @@ public abstract partial class Individual(Class @class, Gene[] genome, Identity i
 
     public Identity Identity { get; } = identity;
 
-    int _health;
+    private int _health;
     public int Health
     {
         get { return _health; }

@@ -2,8 +2,8 @@
 
 public class LabelPlacer
 {
-    const float Granularity = 0.05f;
-    const float InvGranularity = 1f / Granularity;
+    private const float Granularity = 0.05f;
+    private const float InvGranularity = 1f / Granularity;
 
     private float _lowerBound = -5;
     private float _upperBound = +10;

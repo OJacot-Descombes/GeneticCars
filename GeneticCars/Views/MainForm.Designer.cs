@@ -34,15 +34,13 @@ partial class MainForm
         changingFloorCheckBox = new CheckBox();
         parametersBindingSource = new BindingSource(components);
         button1 = new Button();
-        flowLayoutPanel1 = new FlowLayoutPanel();
-        familyTreeSKGLControl = new SkiaSharp.Views.Desktop.SKGLControl();
+        familyTreeVPanel = new Views.Controls.VPanel();
         ((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
         mainSplitContainer.Panel1.SuspendLayout();
         mainSplitContainer.Panel2.SuspendLayout();
         mainSplitContainer.SuspendLayout();
         topPanel.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)parametersBindingSource).BeginInit();
-        flowLayoutPanel1.SuspendLayout();
         SuspendLayout();
         // 
         // simulationSKGLControl
@@ -71,7 +69,7 @@ partial class MainForm
         // 
         // mainSplitContainer.Panel2
         // 
-        mainSplitContainer.Panel2.Controls.Add(flowLayoutPanel1);
+        mainSplitContainer.Panel2.Controls.Add(familyTreeVPanel);
         mainSplitContainer.Size = new Size(1211, 822);
         mainSplitContainer.SplitterDistance = 514;
         mainSplitContainer.TabIndex = 1;
@@ -112,30 +110,18 @@ partial class MainForm
         button1.Text = "pauseResumeButton";
         button1.UseVisualStyleBackColor = true;
         // 
-        // flowLayoutPanel1
+        // familyTreeVPanel
         // 
-        flowLayoutPanel1.AutoScroll = true;
-        flowLayoutPanel1.AutoSize = true;
-        flowLayoutPanel1.BackColor = Color.White;
-        flowLayoutPanel1.Controls.Add(familyTreeSKGLControl);
-        flowLayoutPanel1.Dock = DockStyle.Fill;
-        flowLayoutPanel1.Location = new Point(0, 0);
-        flowLayoutPanel1.Name = "flowLayoutPanel1";
-        flowLayoutPanel1.Size = new Size(1211, 304);
-        flowLayoutPanel1.TabIndex = 2;
-        flowLayoutPanel1.Scroll += FlowLayoutPanel1_Scroll;
-        flowLayoutPanel1.Resize += FlowLayoutPanel_Resize;
-        // 
-        // familyTreeSKGLControl
-        // 
-        familyTreeSKGLControl.BackColor = Color.Black;
-        familyTreeSKGLControl.Location = new Point(4, 3);
-        familyTreeSKGLControl.Margin = new Padding(4, 3, 4, 3);
-        familyTreeSKGLControl.Name = "familyTreeSKGLControl";
-        familyTreeSKGLControl.Size = new Size(309, 97);
-        familyTreeSKGLControl.TabIndex = 1;
-        familyTreeSKGLControl.VSync = true;
-        familyTreeSKGLControl.PaintSurface += FamilyTreeSKGLControl_PaintSurface;
+        familyTreeVPanel.Dock = DockStyle.Fill;
+        familyTreeVPanel.LargeChange = new Size(100, 100);
+        familyTreeVPanel.Location = new Point(0, 0);
+        familyTreeVPanel.Name = "familyTreeVPanel";
+        familyTreeVPanel.ScrollOffset = new Point(0, 0);
+        familyTreeVPanel.Size = new Size(1211, 304);
+        familyTreeVPanel.SmallChange = new Size(10, 10);
+        familyTreeVPanel.TabIndex = 0;
+        familyTreeVPanel.VirtualAreaSize = new Size(0, 0);
+        familyTreeVPanel.PaintSurface += FamilyTreeVPanel_PaintSurface;
         // 
         // MainForm
         // 
@@ -148,13 +134,11 @@ partial class MainForm
         Load += MainForm_Load;
         mainSplitContainer.Panel1.ResumeLayout(false);
         mainSplitContainer.Panel2.ResumeLayout(false);
-        mainSplitContainer.Panel2.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)mainSplitContainer).EndInit();
         mainSplitContainer.ResumeLayout(false);
         topPanel.ResumeLayout(false);
         topPanel.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)parametersBindingSource).EndInit();
-        flowLayoutPanel1.ResumeLayout(false);
         ResumeLayout(false);
     }
 
@@ -163,9 +147,8 @@ partial class MainForm
     private SkiaSharp.Views.Desktop.SKGLControl simulationSKGLControl;
     private SplitContainer mainSplitContainer;
     private Panel topPanel;
-    private SkiaSharp.Views.Desktop.SKGLControl familyTreeSKGLControl;
-    private FlowLayoutPanel flowLayoutPanel1;
     private Button button1;
     private BindingSource parametersBindingSource;
     private CheckBox changingFloorCheckBox;
+    private Views.Controls.VPanel familyTreeVPanel;
 }
