@@ -9,8 +9,8 @@ public class Names
     public void CombineSimpleNames()
     {
         // Arrange
-        var sut = new Name("Kapiguko");
-        var other = new Name("Binesoty");
+        var sut = new Name("Kapiguko", "Kapiguko", null);
+        var other = new Name("Binesoty", "Binesoty", null);
 
         // Act
         Name result = sut.CombineWith(other);
@@ -18,6 +18,7 @@ public class Names
         // Assert
         Assert.AreEqual("KapiBine", result.Raw, "Raw");
         Assert.AreEqual("KapiBine", result.Display, "Display");
+        Assert.AreEqual("BineKapi", result.Reverse, "Reverse");
     }
 
     [TestMethod]
@@ -25,7 +26,7 @@ public class Names
     {
         // Arrange
         string raw = $"{Name.UpperShSurrogate}api{Name.ChSurrogate}u{Name.ThSurrogate}o";
-        var sut = new Name(raw);
+        var sut = new Name(raw, Name.ToDisplay(raw), null);
 
         // Assert
         Assert.AreEqual(raw, sut.Raw, "Raw");
@@ -36,8 +37,9 @@ public class Names
     public void CombineComplexNames()
     {
         // Arrange
-        var sut = new Name($"{Name.UpperShSurrogate}a{Name.ThSurrogate}iguro");
-        var other = new Name("Binesoty");
+        string raw = $"{Name.UpperShSurrogate}a{Name.ThSurrogate}iguro";
+        var sut = new Name(raw, Name.ToDisplay(raw), null);
+        var other = new Name("Binesoty", "Binesoty", null);
 
         // Act
         Name result = sut.CombineWith(other);
@@ -45,5 +47,6 @@ public class Names
         // Assert
         Assert.AreEqual($"{Name.UpperShSurrogate}a{Name.ThSurrogate}iBine", result.Raw, "Raw");
         Assert.AreEqual("ShathiBine", result.Display, "Display");
+        Assert.AreEqual($"Bine{Name.UpperShSurrogate}a{Name.ThSurrogate}i", result.Reverse, "Reverse");
     }
 }

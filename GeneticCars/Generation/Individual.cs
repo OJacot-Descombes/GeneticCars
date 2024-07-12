@@ -1,16 +1,16 @@
 ﻿namespace GeneticCars.Generation;
 
-public abstract partial class Individual(Class @class, Gene[] genome, int generation, Name name, int nameNumber)
+public abstract partial class Individual(Class @class, Gene[] genome, Identity identity,
+    Individual? ancestor1, Individual? ancestor2)
 {
+    public Class Class { get; } = @class;
+
     public Gene[] Genome { get; } = genome;
 
-    public int Generation { get; } = generation;
+    public Individual? Ancestor1 { get; } = ancestor1;
+    public Individual? Ancestor2 { get; } = ancestor2;
 
-    public Name Name { get; } = name;
-
-    public int NameNumber { get; } = nameNumber;
-
-    public Class Class { get; } = @class;
+    public Identity Identity { get; } = identity;
 
     int _health;
     public int Health
@@ -43,4 +43,6 @@ public abstract partial class Individual(Class @class, Gene[] genome, int genera
         }
         return hash;
     }
+
+    public override string ToString() => $"{Identity} {Class} ({Ancestor1}, {Ancestor2})";
 }

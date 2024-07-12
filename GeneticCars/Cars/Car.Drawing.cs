@@ -7,7 +7,6 @@ public partial class Car
     private SKRect _rect;
     private float _lastLabelX;
     private float _nextInfoX;
-    private float _random = Random.Shared.NextSingle() + 1f;
     private float _integralX;
     private float _lastLabelY;
     private float _nextInfoY;
@@ -40,7 +39,7 @@ public partial class Car
         _lastLabelX = _nextInfoX;
 
         _nextInfoY = _chassis.Position.Y;
-        _rect = GetInfoRect(_text);
+        _rect = GetInfoRect(Identity.InfoText);
         float displacement = Game.LabelPlacer.GetVerticalDisplacement(_rect);
         _nextInfoY += displacement;
 
@@ -60,7 +59,7 @@ public partial class Car
             canvas.Scale(1, -1, 0, _nextInfoY);
             float xText = _nextInfoX - 1;
             float yText = _nextInfoY - 3;
-            canvas.DrawText(_text, xText, yText, _carFont, InfoTextPaint);
+            canvas.DrawText(Identity.InfoText, xText, yText, _carFont, ColoredInfoTextPaint);
             canvas.SetMatrix(matrix);
 
             yText = _nextInfoY + 3.4f;

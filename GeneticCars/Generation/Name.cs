@@ -4,7 +4,7 @@ namespace GeneticCars.Generation;
 
 // Adapted from Waqar Khan https://stackoverflow.com/a/49922533/880990.
 
-public readonly record struct Name(string Raw, string Display)
+public readonly record struct Name(string Raw, string Display, string? Reverse) : IComparable, IComparable<Name>
 {
     public const char ChSurrogate = 'ä', ShSurrogate = 'ö', ThSurrogate = 'ü';
     public const char UpperChSurrogate = 'Ä', UpperShSurrogate = 'Ö', UpperThSurrogate = 'Ü';
@@ -13,32 +13,37 @@ public readonly record struct Name(string Raw, string Display)
         'v', 'w', 'x', 'z', ChSurrogate, ShSurrogate, ThSurrogate ];
     static readonly char[] vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
 
-    public Name(string raw) : this(raw, ToDisplay(raw))
+    public Name(string raw, string reverse) : this(raw, ToDisplay(raw), reverse)
     {
     }
 
-    public Name CombineWith(Name other) => new(Raw[..(Raw.Length / 2)] + other.Raw[..(Raw.Length / 2)]);
+    public Name CombineWith(Name other)
+    {
+        string n1 = Raw[..(Raw.Length / 2)];
+        string n2 = other.Raw[..(Raw.Length / 2)];
+        return new(n1 + n2, n2 + n1);
+    }
 
     public static Name GenerateRandom(int length)
     {
         char c = Char.ToUpper(consonants[Random.Shared.Next(consonants.Length)]);
-        var (raw, display) = (c.ToString(), ToDisplay(c));
+        var (raw, display) = (c.ToString(), ToDisplayChar(c));
         c = vowels[Random.Shared.Next(vowels.Length)];
         raw += c; display += c;
 
         int n = 2;
         while (n < length) {
             c = consonants[Random.Shared.Next(consonants.Length)];
-            raw += c; display += ToDisplay(c);
+            raw += c; display += ToDisplayChar(c);
             n++;
             c = vowels[Random.Shared.Next(vowels.Length)];
             raw += c; display += c;
             n++;
         }
-        return new(raw, display);
+        return new(raw, display, null);
     }
 
-    private static string ToDisplay(char raw) => raw switch {
+    private static string ToDisplayChar(char raw) => raw switch {
         ChSurrogate => "ch",
         UpperChSurrogate => "Ch",
         ShSurrogate => "sh",
@@ -48,14 +53,33 @@ public readonly record struct Name(string Raw, string Display)
         _ => raw.ToString()
     };
 
-    private static string ToDisplay(string raw)
+    public static string ToDisplay(string raw)
     {
         var sb = new StringBuilder(raw.Length + 6);
         for (int i = 0; i < raw.Length; i++) {
-            sb.Append(ToDisplay(raw[i]));
+            sb.Append(ToDisplayChar(raw[i]));
         }
         return sb.ToString();
     }
 
     public override string ToString() => Display;
+
+    int IComparable.CompareTo(object? obj)
+    {
+        if (obj is Name name) {
+            return CompareTo(name);
+        }
+        throw new ArgumentException(nameof(obj) + " is not a " + nameof(Name));
+    }
+
+    public int CompareTo(Name other)
+    {
+        int result = Raw.CompareTo(other.Raw);
+        if (result != 0)
+            return result;
+        result = Display.CompareTo(other.Display);
+        if (result != 0)
+            return result;
+        return (Reverse ?? "").CompareTo(other.Reverse ?? "");
+    }
 }

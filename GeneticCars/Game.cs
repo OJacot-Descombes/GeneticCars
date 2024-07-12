@@ -11,10 +11,11 @@ public class Game
     public const int Fps = 30;
     public const int MaxCarHealth = Fps * 8;
     public const int CarCount = 40;
-    public const bool RegenerateFloor = false;
     public const bool DisplayFps = true;
 
     public static readonly LabelPlacer LabelPlacer = new();
+
+    public event EventHandler? FamilyTreeChanged;
 
     private static readonly SKPaint _fpsPaint = new() {
         Color = SKColors.Red,
@@ -29,17 +30,22 @@ public class Game
 
     private readonly Camera _camera = new();
     private readonly Generator<Car> _generator = new();
+    private readonly FamilyTree _familyTree = new();
 
     private bool _running = true;
     private Car? _lastFocusedCar = null;
     private int _nDraw, _lastFps;
     private DateTime _lastDrawTime = DateTime.UtcNow;
 
-    public void Draw(SKPaintGLSurfaceEventArgs e)
+    public Size FamilyTreePixelSize => _familyTree.FamilyTreePixelSize;
+
+    public Parameters Parameters { get; } = new();
+
+    public void DrawSimulation(SKPaintGLSurfaceEventArgs e)
     {
         SKCanvas canvas = e.Surface.Canvas;
         if (_nDraw++ % 30 == 0) {
-            Array.Sort(_cars, (a, b) => a.Fitness.CompareTo(b.Fitness));
+            Array.Sort(_cars, (a, b) => (a.Fitness, a.Identity).CompareTo((b.Fitness, b.Identity)));
         }
         foreach (Car car in _cars) {
             // We have to this without changing the order, because otherwise the dead car's labels will always
@@ -92,6 +98,11 @@ public class Game
         }
     }
 
+    public void DrawFamilyTree(SKPaintGLSurfaceEventArgs e)
+    {
+        _familyTree.Draw(e.Surface.Canvas);
+    }
+
     private Car GetFocusedCar()
     {
         return _cars
@@ -116,19 +127,23 @@ public class Game
             while (_running) {
                 await Task.Delay(1);
                 control.Refresh();
-                world.Step(1f / Fps, ref iterations);
-                foreach (Car car in _cars) {
-                    float velocity = car.Body.LinearVelocity.X;
-                    if (frame > 100 && velocity < 0.05f && velocity > -0.5f) {
-                        car.Health--;
+                if (Parameters.Playing) {
+                    world.Step(1f / Fps, ref iterations);
+                    foreach (Car car in _cars) {
+                        float velocity = car.Body.LinearVelocity.X;
+                        if (frame > 100 && velocity < 0.05f && velocity > -1.0f) {
+                            car.Health--;
+                        }
                     }
+                    frame++;
                 }
-                frame++;
             }
+            _familyTree.AddGeneration(_cars);
+            FamilyTreeChanged?.Invoke(this, EventArgs.Empty);
             await Task.Delay(500);
             _camera.Reset();
             world = CreateWorld();
-            if (RegenerateFloor) {
+            if (Parameters.ChangingFloor) {
                 _floor = new(new Vector2(-4.9f, 2f));
             }
             _floor.AddTo(world);

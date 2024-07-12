@@ -38,7 +38,9 @@ public class LabelPlacer
 
     public void Reset()
     {
-        Array.Fill(_rightMost, -1000f);
+        if (_rightMost is not null) {
+            Array.Fill(_rightMost, -1000f);
+        }
     }
 
     private int Index(float value) => (int)((value - _lowerBound) * InvGranularity);

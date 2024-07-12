@@ -16,4 +16,6 @@ public readonly struct Gene(FloatRange range, float fraction)
     /// Float in range [0, 1] where 0 corresponds to Value = Min and 1 to Value = Min + Range.
     /// </summary>
     public float Fraction { get; } = fraction;
+
+    public override string ToString() => $"{Range} {Fraction}";
 }

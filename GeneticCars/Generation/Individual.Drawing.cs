@@ -2,13 +2,14 @@
 
 public abstract partial class Individual
 {
+    public static readonly SKColor NewBaseColor = SKColors.ForestGreen;
+    public static readonly SKColor EliteBaseColor = new(0, 115, 153);
+    public static readonly SKColor CrossedBaseColor = SKColors.MediumVioletRed;
+    public static readonly SKColor MutatedBaseColor = SKColors.Chocolate;
+
+    private static readonly SKColor _deadBaseColor = SKColors.LightPink;
     private static readonly SKColor _neutralFillColor = SKColors.White;
     private static readonly SKColor _neutralBaseColor = SKColors.Black;
-    private static readonly SKColor _newBaseColor = SKColors.ForestGreen;
-    private static readonly SKColor _eliteBaseColor = new(0, 115, 153);
-    private static readonly SKColor _crossedBaseColor = SKColors.MediumVioletRed;
-    private static readonly SKColor _mutatedBaseColor = SKColors.Chocolate;
-    private static readonly SKColor _deadBaseColor = SKColors.LightPink;
 
     protected static readonly SKPaint _neutralStrokePaint = new() {
         Color = _neutralBaseColor,
@@ -22,65 +23,65 @@ public abstract partial class Individual
     };
 
     protected static readonly SKPaint _newStrokePaint = new() {
-        Color = _newBaseColor,
+        Color = NewBaseColor,
         IsStroke = true,
         IsAntialias = true
     };
-    protected static readonly SKPaint _newFillPaint = new() {
-        Color = _newBaseColor,
+    public static readonly SKPaint NewFillPaint = new() {
+        Color = NewBaseColor,
         IsStroke = false,
         IsAntialias = false
     };
     protected static readonly SKPaint _newInfoTextPaint = new() {
-        Color = DimInfoTextColor(_newBaseColor),
+        Color = DimInfoTextColor(NewBaseColor),
         IsStroke = false,
         IsAntialias = true
     };
 
     protected static readonly SKPaint _eliteStrokePaint = new() {
-        Color = _eliteBaseColor,
+        Color = EliteBaseColor,
         IsStroke = true,
         IsAntialias = true
     };
-    protected static readonly SKPaint _eliteFillPaint = new() {
-        Color = _eliteBaseColor,
+    public static readonly SKPaint EliteFillPaint = new() {
+        Color = EliteBaseColor,
         IsStroke = false,
         IsAntialias = false
     };
     protected static readonly SKPaint _eliteInfoTextPaint = new() {
-        Color = DimInfoTextColor(_eliteBaseColor),
+        Color = DimInfoTextColor(EliteBaseColor),
         IsStroke = false,
         IsAntialias = true
     };
 
     protected static readonly SKPaint _crossedStrokePaint = new() {
-        Color = _crossedBaseColor,
+        Color = CrossedBaseColor,
         IsStroke = true,
         IsAntialias = true
     };
-    protected static readonly SKPaint _crossedFillPaint = new() {
-        Color = _crossedBaseColor,
+    public static readonly SKPaint CrossedFillPaint = new() {
+        Color = CrossedBaseColor,
         IsStroke = false,
         IsAntialias = false
     };
     protected static readonly SKPaint _crossedInfoTextPaint = new() {
-        Color = DimInfoTextColor(_crossedBaseColor),
+        Color = DimInfoTextColor(CrossedBaseColor),
         IsStroke = false,
         IsAntialias = true
     };
 
     protected static readonly SKPaint _mutatedStrokePaint = new() {
-        Color = _mutatedBaseColor,
+        Color = MutatedBaseColor,
         IsStroke = true,
         IsAntialias = true
     };
-    protected static readonly SKPaint _mutatedFillPaint = new() {
-        Color = _mutatedBaseColor,
+    public static readonly SKPaint MutatedFillPaint = new() {
+        Color = MutatedBaseColor,
         IsStroke = false,
         IsAntialias = false
     };
     protected static readonly SKPaint _mutatedInfoTextPaint = new() {
-        Color = DimInfoTextColor(_mutatedBaseColor),
+        Color = DimInfoTextColor(MutatedBaseColor),
         IsStroke = false,
         IsAntialias = true
     };
@@ -96,8 +97,7 @@ public abstract partial class Individual
         IsAntialias = false
     };
 
-
-    protected static readonly SKPaint _infoTextPaint = new() {
+    public static readonly SKPaint NeutralInfoTextPaint = new() {
         Color = SKColors.Gray,
         IsStroke = false,
         IsAntialias = true
@@ -129,15 +129,15 @@ public abstract partial class Individual
 
     protected SKPaint ColoredFillPaint => IsAlive
         ? Class switch {
-            Class.New => _newFillPaint,
-            Class.Elite => _eliteFillPaint,
-            Class.Crossed => _crossedFillPaint,
-            Class.Mutated => _mutatedFillPaint,
+            Class.New => NewFillPaint,
+            Class.Elite => EliteFillPaint,
+            Class.Crossed => CrossedFillPaint,
+            Class.Mutated => MutatedFillPaint,
             _ => throw new NotImplementedException()
         }
         : _deadFillPaint;
 
-    protected SKPaint InfoTextPaint => IsAlive
+    protected SKPaint ColoredInfoTextPaint => IsAlive
     ? Class switch {
         Class.New => _newInfoTextPaint,
         Class.Elite => _eliteInfoTextPaint,
@@ -158,10 +158,10 @@ public abstract partial class Individual
     {
         SKColor baseColor = IsAlive
             ? Class switch {
-                Class.New => _newBaseColor,
-                Class.Elite => _eliteBaseColor,
-                Class.Crossed => _crossedBaseColor,
-                Class.Mutated => _mutatedBaseColor,
+                Class.New => NewBaseColor,
+                Class.Elite => EliteBaseColor,
+                Class.Crossed => CrossedBaseColor,
+                Class.Mutated => MutatedBaseColor,
                 _ => throw new NotImplementedException()
             }
             : _deadBaseColor;
