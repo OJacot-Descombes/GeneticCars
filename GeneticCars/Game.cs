@@ -8,21 +8,13 @@ public class Game
 {
     public const float Gravity = 9.81f;
     public const float Zoom = 30;
-    public const int Fps = 30;
-    public const int MaxCarHealth = Fps * 8;
+    public const int AssumedFps = 30;
+    public const int MaxCarHealth = AssumedFps * 8;
     public const int CarCount = 40;
-    public const bool DisplayFps = true;
 
     public static readonly LabelPlacer LabelPlacer = new();
 
     public event EventHandler? FamilyTreeChanged;
-
-    private static readonly SKPaint _fpsPaint = new() {
-        Color = SKColors.Red,
-        IsStroke = false,
-        IsAntialias = true
-    };
-    private static readonly SKFont _fpsFont = SKTypeface.FromFamilyName("Arial").ToFont(0.5f);
 
     private readonly Car[] _cars = new Car[CarCount];
     private Floor _floor = new(new Vector2(-4.9f, 2f));
@@ -31,11 +23,11 @@ public class Game
     private readonly Camera _camera = new();
     private readonly Generator<Car> _generator = new();
     private readonly FamilyTree _familyTree = new();
+    private readonly FpsMeter _fpsMeter = new();
 
     private bool _running = true;
     private Car? _lastFocusedCar = null;
-    private int _nDraw, _lastFps;
-    private DateTime _lastDrawTime = DateTime.UtcNow;
+    private int _nDraw;
 
     public Size FamilyTreePixelSize => _familyTree.FamilyTreePixelSize;
 
@@ -82,19 +74,8 @@ public class Game
         }
         LabelPlacer.Reset();
 
-        if (DisplayFps) {
-            var currentDateTime = DateTime.UtcNow;
-            var elapsed = currentDateTime - _lastDrawTime;
-            _lastDrawTime = currentDateTime;
-
-            if (_nDraw % 15 == 0) {
-                int fps = (int)(1_000_000.0 / (elapsed.TotalMicroseconds));
-                _lastFps = fps;
-            }
-
-            float y = canvas.LocalClipBounds.Bottom - 1.5f;
-            canvas.Scale(1, -1, 0, y);
-            canvas.DrawText($"fps: {_lastFps}", canvas.LocalClipBounds.Left + 0.1f, y, _fpsFont, _fpsPaint);
+        if (Parameters.DisplayFps) {
+            _fpsMeter.Update(canvas);
         }
     }
 
@@ -130,10 +111,10 @@ public class Game
                 await Task.Delay(1);
                 control.Refresh();
                 if (Parameters.Playing) {
-                    world.Step(1f / Fps, ref iterations);
+                    world.Step(1f / AssumedFps, ref iterations);
                     foreach (Car car in _cars) {
                         float velocity = car.Body.LinearVelocity.X;
-                        if (frame > 100 && velocity < 0.05f && velocity > -1.0f) {
+                        if (frame > 100 && velocity < 0.08f && velocity > -1.0f) {
                             car.Health--;
                         }
                     }

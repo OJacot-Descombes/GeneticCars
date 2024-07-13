@@ -35,6 +35,7 @@ partial class MainForm
         parametersBindingSource = new BindingSource(components);
         button1 = new Button();
         familyTreeVPanel = new Views.Controls.VPanel();
+        displayFpsCheckBox = new CheckBox();
         ((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
         mainSplitContainer.Panel1.SuspendLayout();
         mainSplitContainer.Panel2.SuspendLayout();
@@ -76,6 +77,7 @@ partial class MainForm
         // 
         // topPanel
         // 
+        topPanel.Controls.Add(displayFpsCheckBox);
         topPanel.Controls.Add(changingFloorCheckBox);
         topPanel.Controls.Add(button1);
         topPanel.Dock = DockStyle.Top;
@@ -123,6 +125,18 @@ partial class MainForm
         familyTreeVPanel.VirtualAreaSize = new Size(0, 0);
         familyTreeVPanel.PaintSurface += FamilyTreeVPanel_PaintSurface;
         // 
+        // displayFpsCheckBox
+        // 
+        displayFpsCheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        displayFpsCheckBox.AutoSize = true;
+        displayFpsCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayFps", true, DataSourceUpdateMode.OnPropertyChanged));
+        displayFpsCheckBox.Location = new Point(1113, 15);
+        displayFpsCheckBox.Name = "displayFpsCheckBox";
+        displayFpsCheckBox.Size = new Size(86, 19);
+        displayFpsCheckBox.TabIndex = 2;
+        displayFpsCheckBox.Text = "Display FPS";
+        displayFpsCheckBox.UseVisualStyleBackColor = true;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -151,4 +165,5 @@ partial class MainForm
     private BindingSource parametersBindingSource;
     private CheckBox changingFloorCheckBox;
     private Views.Controls.VPanel familyTreeVPanel;
+    private CheckBox displayFpsCheckBox;
 }

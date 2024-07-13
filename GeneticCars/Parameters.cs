@@ -22,6 +22,8 @@ public class Parameters : INotifyPropertyChanged
 
     public bool ChangingFloor { get; set; }
 
+    public bool DisplayFps { get; set; }
+
     private ICommand? _playCommand;
     public ICommand PlayCommand => _playCommand ??= new RelayCommand(() => { Playing = !Playing; });
 

@@ -59,6 +59,6 @@ public partial class FamilyTree
         Generations.Add(newGeneration);
     }
 
-    private int? GetIndex(Individual? ancestor, Dictionary<string, int> indices) =>
+    private static int? GetIndex(Individual? ancestor, Dictionary<string, int> indices) =>
         ancestor is null ? null : indices.TryGetValue(ancestor.Identity.InfoText, out int index) ? index : null;
 }
