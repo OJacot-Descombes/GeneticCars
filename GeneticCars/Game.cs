@@ -114,6 +114,8 @@ public class Game
     {
         var world = CreateWorld();
         _generator.GenerateInitial(world, _cars, _spawnPosition);
+        _familyTree.AddUnscoredGeneration(_cars);
+        FamilyTreeChanged?.Invoke(this, EventArgs.Empty);
         _floor.AddTo(world);
 
         var iterations = new SolverIterations {
@@ -138,7 +140,7 @@ public class Game
                     frame++;
                 }
             }
-            _familyTree.AddGeneration(_cars);
+            _familyTree.UpdateScoredGeneration(_cars);
             FamilyTreeChanged?.Invoke(this, EventArgs.Empty);
             await Task.Delay(500);
             _camera.Reset();
@@ -148,6 +150,8 @@ public class Game
             }
             _floor.AddTo(world);
             _generator.Evolve(world, _cars, _spawnPosition);
+            _familyTree.AddUnscoredGeneration(_cars);
+            FamilyTreeChanged?.Invoke(this, EventArgs.Empty);
             _running = true;
         }
     }

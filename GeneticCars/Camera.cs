@@ -11,7 +11,8 @@ public class Camera
         const float fi = 0.002f; // Integral factor.
         const float maxDeltaV = 1f;
 
-        var desiredFocus = new Vector2(focusedCar.Fitness, floor.AltitudeAt(focusedCar.Fitness));
+        float x = focusedCar.Body.Position.X;
+        var desiredFocus = new Vector2(x, floor.AltitudeAt(x));
         Vector2 deltaFocus = desiredFocus - _actualFocus;
 
         var deltaV = new Vector2(

@@ -3,11 +3,11 @@
 public partial class FamilyTree
 {
     private const float ConnectionsStrokeWidth = 1.5f;
-    private const float LineHeight = 15f, TextColumnWidth = 125f;
-    private const float ConnectionsColumnWidth = 110f, ControlPointDelta = 0.4f * ConnectionsColumnWidth;
+    private const float LineHeight = 15f, TextColumnWidth = 135f;
+    private const float ConnectionsColumnWidth = 120f, ControlPointDelta = 0.4f * ConnectionsColumnWidth;
     private const float ConnectionYDelta = -3f;
     private const float TopBorder = 30f;
-    private const float LeftBorder = 3f;
+    private const float HorizontalBorder = 3f;
 
     private static readonly SKFont _nodeFont = SKTypeface.FromFamilyName("Arial").ToFont(11f);
     private static readonly SKFont _generationFont = SKTypeface.FromFamilyName("Arial").ToFont(15f);
@@ -101,7 +101,7 @@ public partial class FamilyTree
     {
         canvas.Clear(SKColors.White);
         float top = canvas.LocalClipBounds.Top + TopBorder - viewBox.Top;
-        float x = canvas.LocalClipBounds.Left + LeftBorder - viewBox.Left;
+        float x = canvas.LocalClipBounds.Left + HorizontalBorder - viewBox.Left;
         for (int g = 0; g < Generations.Count; g++) {
             if (x + TextColumnWidth > 0 && x < viewBox.Width + ConnectionsColumnWidth) {
                 float y = top;
@@ -112,7 +112,7 @@ public partial class FamilyTree
                     float textWidth = _nodeFont.MeasureText(node.Text);
                     canvas.DrawText(node.Text, x, y, _nodeFont, GetTextPaint(node.Class));
 
-                    string text = $" ({node.Fitness:n1})";
+                    string text = $" ({node.Fitness?.ToString("n1") ?? "?"})";
                     canvas.DrawText(text, x + textWidth, y, _nodeFont, _fitnessTextPaint);
                     textWidth += _nodeFont.MeasureText(text) + 1f;
 
@@ -152,7 +152,7 @@ public partial class FamilyTree
     {
         get {
             int generations = Math.Max(Generations.Count, 1);
-            float width = generations * TextColumnWidth + (generations - 1) * ConnectionsColumnWidth + 2 * LeftBorder;
+            float width = generations * TextColumnWidth + (generations - 1) * ConnectionsColumnWidth + 2 * HorizontalBorder;
             float height = Generations.Count == 0
                 ? 100
                 : Generations.Max(g => g.Length) * LineHeight + TopBorder + 3f;

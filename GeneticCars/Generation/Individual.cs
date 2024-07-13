@@ -33,7 +33,7 @@ public abstract partial class Individual(Class @class, Gene[] genome, Identity i
     {
     }
 
-    public override int GetHashCode()
+    public int GetGenomeHashCode()
     {
         int hash = 17;
         foreach (Gene gene in Genome) {
