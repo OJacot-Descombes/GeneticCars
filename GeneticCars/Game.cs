@@ -98,6 +98,8 @@ public class Game
         _familyTree.AddUnscoredGeneration(_cars);
         FamilyTreeChanged?.Invoke(this, EventArgs.Empty);
         _floor.AddTo(world);
+        Parameters.MutationBoostEnabled = false;
+        Parameters.MutationBoost = false;
 
         var iterations = new SolverIterations {
             PositionIterations = 4,
@@ -114,7 +116,7 @@ public class Game
                     world.Step(1f / AssumedFps, ref iterations);
                     foreach (Car car in _cars) {
                         float velocity = car.Body.LinearVelocity.X;
-                        if (frame > 100 && velocity < 0.08f && velocity > -1.0f) {
+                        if (frame > 100 && velocity < 0.18f && velocity > -1.0f) {
                             car.Health--;
                         }
                     }
@@ -122,7 +124,6 @@ public class Game
                 }
             }
             _familyTree.UpdateScoredGeneration(_cars);
-            FamilyTreeChanged?.Invoke(this, EventArgs.Empty);
             await Task.Delay(500);
             _camera.Reset();
             world = CreateWorld();
@@ -130,8 +131,17 @@ public class Game
                 _floor = new(new Vector2(-4.9f, 2f));
             }
             _floor.AddTo(world);
-            _generator.Evolve(world, _cars, _spawnPosition);
+            _generator.Evolve(world, _cars, _spawnPosition, Parameters.MutationBoost);
             _familyTree.AddUnscoredGeneration(_cars);
+            FamilyTree.Node[] lastScoredGeneration = _familyTree.Generations[^2];
+            Parameters.MutationBoostEnabled = _familyTree.Generations.Count > 5 &&
+                Generator<Car>.CountBoostable(
+                    lastScoredGeneration
+                    .Take(lastScoredGeneration.Length / 4)
+                    .Select(n => n.Fitness ?? 0f)) > 2;
+            if (!Parameters.MutationBoostEnabled) {
+                Parameters.MutationBoost = false;
+            }
             FamilyTreeChanged?.Invoke(this, EventArgs.Empty);
             _running = true;
         }

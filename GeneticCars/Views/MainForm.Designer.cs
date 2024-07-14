@@ -31,11 +31,12 @@ partial class MainForm
         simulationSKGLControl = new SkiaSharp.Views.Desktop.SKGLControl();
         mainSplitContainer = new SplitContainer();
         topPanel = new Panel();
-        changingFloorCheckBox = new CheckBox();
+        mutationBoostCheckBox = new CheckBox();
         parametersBindingSource = new BindingSource(components);
+        displayFpsCheckBox = new CheckBox();
+        changingFloorCheckBox = new CheckBox();
         button1 = new Button();
         familyTreeVPanel = new Views.Controls.VPanel();
-        displayFpsCheckBox = new CheckBox();
         ((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
         mainSplitContainer.Panel1.SuspendLayout();
         mainSplitContainer.Panel2.SuspendLayout();
@@ -77,6 +78,7 @@ partial class MainForm
         // 
         // topPanel
         // 
+        topPanel.Controls.Add(mutationBoostCheckBox);
         topPanel.Controls.Add(displayFpsCheckBox);
         topPanel.Controls.Add(changingFloorCheckBox);
         topPanel.Controls.Add(button1);
@@ -85,6 +87,37 @@ partial class MainForm
         topPanel.Name = "topPanel";
         topPanel.Size = new Size(1211, 57);
         topPanel.TabIndex = 1;
+        // 
+        // mutationBoostCheckBox
+        // 
+        mutationBoostCheckBox.Appearance = Appearance.Button;
+        mutationBoostCheckBox.BackColor = Color.Yellow;
+        mutationBoostCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "MutationBoost", true, DataSourceUpdateMode.OnPropertyChanged));
+        mutationBoostCheckBox.DataBindings.Add(new Binding("Enabled", parametersBindingSource, "MutationBoostEnabled", true, DataSourceUpdateMode.OnPropertyChanged));
+        mutationBoostCheckBox.DataBindings.Add(new Binding("Image", parametersBindingSource, "MutationBoostImage", true, DataSourceUpdateMode.OnPropertyChanged));
+        mutationBoostCheckBox.FlatAppearance.BorderSize = 0;
+        mutationBoostCheckBox.FlatStyle = FlatStyle.Flat;
+        mutationBoostCheckBox.Location = new Point(305, 7);
+        mutationBoostCheckBox.Name = "mutationBoostCheckBox";
+        mutationBoostCheckBox.Size = new Size(32, 32);
+        mutationBoostCheckBox.TabIndex = 3;
+        mutationBoostCheckBox.UseVisualStyleBackColor = false;
+        // 
+        // parametersBindingSource
+        // 
+        parametersBindingSource.DataSource = typeof(Parameters);
+        // 
+        // displayFpsCheckBox
+        // 
+        displayFpsCheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        displayFpsCheckBox.AutoSize = true;
+        displayFpsCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayFps", true, DataSourceUpdateMode.OnPropertyChanged));
+        displayFpsCheckBox.Location = new Point(1113, 15);
+        displayFpsCheckBox.Name = "displayFpsCheckBox";
+        displayFpsCheckBox.Size = new Size(86, 19);
+        displayFpsCheckBox.TabIndex = 2;
+        displayFpsCheckBox.Text = "Display FPS";
+        displayFpsCheckBox.UseVisualStyleBackColor = true;
         // 
         // changingFloorCheckBox
         // 
@@ -96,10 +129,6 @@ partial class MainForm
         changingFloorCheckBox.TabIndex = 1;
         changingFloorCheckBox.Text = "Change Floor Every Round";
         changingFloorCheckBox.UseVisualStyleBackColor = true;
-        // 
-        // parametersBindingSource
-        // 
-        parametersBindingSource.DataSource = typeof(Parameters);
         // 
         // button1
         // 
@@ -124,18 +153,6 @@ partial class MainForm
         familyTreeVPanel.TabIndex = 0;
         familyTreeVPanel.VirtualAreaSize = new Size(0, 0);
         familyTreeVPanel.PaintSurface += FamilyTreeVPanel_PaintSurface;
-        // 
-        // displayFpsCheckBox
-        // 
-        displayFpsCheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        displayFpsCheckBox.AutoSize = true;
-        displayFpsCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayFps", true, DataSourceUpdateMode.OnPropertyChanged));
-        displayFpsCheckBox.Location = new Point(1113, 15);
-        displayFpsCheckBox.Name = "displayFpsCheckBox";
-        displayFpsCheckBox.Size = new Size(86, 19);
-        displayFpsCheckBox.TabIndex = 2;
-        displayFpsCheckBox.Text = "Display FPS";
-        displayFpsCheckBox.UseVisualStyleBackColor = true;
         // 
         // MainForm
         // 
@@ -166,4 +183,5 @@ partial class MainForm
     private CheckBox changingFloorCheckBox;
     private Views.Controls.VPanel familyTreeVPanel;
     private CheckBox displayFpsCheckBox;
+    private CheckBox mutationBoostCheckBox;
 }

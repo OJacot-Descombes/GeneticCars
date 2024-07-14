@@ -5,7 +5,7 @@ public partial class FamilyTree
     private const float ConnectionsStrokeWidth = 1.5f;
     private const float LineHeight = 15f, TextColumnWidth = 135f;
     private const float ConnectionsColumnWidth = 120f, ControlPointDelta = 0.4f * ConnectionsColumnWidth;
-    private const float ConnectionYDelta = -3f;
+    private const float ConnectionYDelta = -4.0f;
     private const float TopBorder = 30f;
     private const float HorizontalBorder = 3f;
 
@@ -15,6 +15,18 @@ public partial class FamilyTree
     private static readonly SKPaint _fitnessTextPaint = new() {
         Color = SKColors.Black,
         IsStroke = false,
+        IsAntialias = true,
+    };
+
+    private static readonly SKPaint _boostFillPaint = new() {
+        Color = SKColors.Black,
+        IsStroke = false,
+        IsAntialias = false,
+    };
+    private static readonly SKPaint _boostStrokePaint = new() {
+        Color = new SKColor(241, 225, 42), // From RadioactiveUp32.png
+        StrokeWidth = 1.6f,
+        IsStroke = true,
         IsAntialias = true,
     };
 
@@ -75,7 +87,7 @@ public partial class FamilyTree
             Class.New => Individual.NewFillPaint,
             Class.Elite => Individual.EliteFillPaint,
             Class.Crossed => Individual.CrossedFillPaint,
-            Class.Mutated => Individual.MutatedFillPaint,
+            Class.Mutated or Class.Boosted => Individual.MutatedFillPaint,
             _ => throw new NotImplementedException()
         };
 
@@ -84,7 +96,7 @@ public partial class FamilyTree
         Class.New => _newStrokePaint,
         Class.Elite => _eliteStrokePaint,
         Class.Crossed => _crossedStrokePaint,
-        Class.Mutated => _mutatedStrokePaint,
+        Class.Mutated or Class.Boosted => _mutatedStrokePaint,
         _ => throw new NotImplementedException()
     };
 
@@ -93,7 +105,7 @@ public partial class FamilyTree
             Class.New => _newFaintStrokePaint,
             Class.Elite => _eliteFaintStrokePaint,
             Class.Crossed => _crossedFaintStrokePaint,
-            Class.Mutated => _mutatedFaintStrokePaint,
+            Class.Mutated or Class.Boosted => _mutatedFaintStrokePaint,
             _ => throw new NotImplementedException()
         };
 
@@ -124,6 +136,10 @@ public partial class FamilyTree
                     }
                     if (node.Ancestor1Index is int ancestorIndex1) {
                         DrawConnection(canvas, ancestorIndex1, x, top, node.Class, lineY, isNewElite);
+                        if (node.Class is Class.Boosted) {
+                            canvas.DrawCircle(x - 3, lineY, 2.4f, _boostFillPaint);
+                            canvas.DrawCircle(x - 3, lineY, 2.4f, _boostStrokePaint);
+                        }
                     }
                     if (node.Ancestor2Index is int ancestorIndex2) {
                         DrawConnection(canvas, ancestorIndex2, x, top, node.Class, lineY, isNewElite);

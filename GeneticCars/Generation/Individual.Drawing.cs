@@ -122,7 +122,7 @@ public abstract partial class Individual
             Class.New => _newStrokePaint,
             Class.Elite => _eliteStrokePaint,
             Class.Crossed => _crossedStrokePaint,
-            Class.Mutated => _mutatedStrokePaint,
+            Class.Mutated or Class.Boosted => _mutatedStrokePaint,
             _ => throw new NotImplementedException()
         }
         : _deadStrokePaint;
@@ -132,7 +132,7 @@ public abstract partial class Individual
             Class.New => NewFillPaint,
             Class.Elite => EliteFillPaint,
             Class.Crossed => CrossedFillPaint,
-            Class.Mutated => MutatedFillPaint,
+            Class.Mutated or Class.Boosted => MutatedFillPaint,
             _ => throw new NotImplementedException()
         }
         : _deadFillPaint;
@@ -142,7 +142,7 @@ public abstract partial class Individual
         Class.New => _newInfoTextPaint,
         Class.Elite => _eliteInfoTextPaint,
         Class.Crossed => _crossedInfoTextPaint,
-        Class.Mutated => _mutatedInfoTextPaint,
+        Class.Mutated or Class.Boosted => _mutatedInfoTextPaint,
         _ => throw new NotImplementedException()
     }
     : _deadFillPaint;
@@ -161,7 +161,7 @@ public abstract partial class Individual
                 Class.New => NewBaseColor,
                 Class.Elite => EliteBaseColor,
                 Class.Crossed => CrossedBaseColor,
-                Class.Mutated => MutatedBaseColor,
+                Class.Mutated or Class.Boosted => MutatedBaseColor,
                 _ => throw new NotImplementedException()
             }
             : _deadBaseColor;

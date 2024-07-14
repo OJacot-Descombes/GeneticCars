@@ -24,6 +24,45 @@ public class Parameters : INotifyPropertyChanged
 
     public bool DisplayFps { get; set; }
 
+    private bool _mutationBoost;
+    public bool MutationBoost
+    {
+        get { return _mutationBoost; }
+        set {
+            if (value != _mutationBoost) {
+                _mutationBoost = value;
+                OnPropertyChanged(nameof(MutationBoost));
+                MutationBoostImage = value
+                    ? Properties.Resources.RadioactiveDn32
+                    : Properties.Resources.RadioactiveUp32;
+            }
+        }
+    }
+
+    private bool _mutationBoostEnabled;
+    public bool MutationBoostEnabled
+    {
+        get { return _mutationBoostEnabled; }
+        set {
+            if (value != _mutationBoostEnabled) {
+                _mutationBoostEnabled = value;
+                OnPropertyChanged(nameof(MutationBoostEnabled));
+            }
+        }
+    }
+
+    private Bitmap _mutationBoostImage = Properties.Resources.RadioactiveUp32;
+    public Bitmap MutationBoostImage
+    {
+        get { return _mutationBoostImage; }
+        set {
+            if (value != _mutationBoostImage) {
+                _mutationBoostImage = value;
+                OnPropertyChanged(nameof(MutationBoostImage));
+            }
+        }
+    }
+
     private ICommand? _playCommand;
     public ICommand PlayCommand => _playCommand ??= new RelayCommand(() => { Playing = !Playing; });
 

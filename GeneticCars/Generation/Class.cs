@@ -5,5 +5,6 @@ public enum Class
     New,
     Elite,
     Crossed,
-    Mutated
+    Mutated,
+    Boosted
 }

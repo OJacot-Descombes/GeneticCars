@@ -38,7 +38,7 @@ public abstract partial class Individual(Class @class, Gene[] genome, Identity i
         int hash = 17;
         foreach (Gene gene in Genome) {
             unchecked {
-                hash = hash * 31 + gene.Fraction.GetHashCode();
+                hash = hash * 31 + ((int)(1_000f * gene.Fraction)).GetHashCode();
             }
         }
         return hash;

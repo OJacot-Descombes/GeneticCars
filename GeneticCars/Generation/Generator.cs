@@ -5,6 +5,7 @@ public class Generator<T>
 {
     private const float MutationRate = 0.20f;
     private const float MutationSize = 0.30f;
+    const float MaxBoostFitnessDifference = 0.1f;
 
     private static readonly Dictionary<(int, string), int> _namePool = new(2000);
 
@@ -16,7 +17,7 @@ public class Generator<T>
         }
     }
 
-    public void Evolve(World world, T[] individuals, Vector2 position)
+    public void Evolve(World world, T[] individuals, Vector2 position, bool mutationBoost)
     {
         Array.Sort(individuals, (a, b) => (-a.Fitness, a.Identity).CompareTo((-b.Fitness, b.Identity)));
         var source = (T[])individuals.Clone();
@@ -24,7 +25,11 @@ public class Generator<T>
         var genomeHashes = new HashSet<int>();
 
         var eliteSpan = source.AsSpan(0, eliteCount);
-        CloneElite(eliteSpan, individuals.AsSpan(0, eliteCount), genomeHashes, world, position);
+        if (mutationBoost) {
+            BoostElite(eliteSpan, individuals.AsSpan(0, eliteCount), genomeHashes, world, position);
+        } else {
+            CloneElite(eliteSpan, individuals.AsSpan(0, eliteCount), genomeHashes, world, position);
+        }
 
         var destination = individuals.AsSpan(eliteCount, eliteCount);
         CreateCrossovers(source, destination, genomeHashes, world, position);
@@ -39,7 +44,8 @@ public class Generator<T>
         }
     }
 
-    private static void CloneElite(Span<T> sourceSpan, Span<T> destinationSpan, HashSet<int> genomeHashes, World world, Vector2 position)
+    private static void CloneElite(Span<T> sourceSpan, Span<T> destinationSpan, HashSet<int> genomeHashes,
+        World world, Vector2 position)
     {
         for (int i = 0; i < sourceSpan.Length; i++) {
             T old = sourceSpan[i];
@@ -49,7 +55,40 @@ public class Generator<T>
         }
     }
 
-    private static void CreateCrossovers(T[] individuals, Span<T> destination, HashSet<int> genomeHashes, World world, Vector2 position)
+    public static int CountBoostable(IEnumerable<float> eliteFitness)
+    {
+        float lastFitness = Single.MaxValue;
+        int boostableCount = 0;
+        foreach (float fitness in eliteFitness) {
+            if (fitness < lastFitness - MaxBoostFitnessDifference) {
+                lastFitness = fitness;
+            } else {
+                boostableCount++;
+            }
+        }
+        return boostableCount;
+    }
+
+    private static void BoostElite(Span<T> sourceSpan, Span<T> destinationSpan, HashSet<int> genomeHashes,
+        World world, Vector2 position)
+    {
+        float lastFitness = Single.MaxValue;
+        for (int i = 0; i < sourceSpan.Length; i++) {
+            T old = sourceSpan[i];
+            T elite;
+            if (old.Fitness < lastFitness - MaxBoostFitnessDifference) {
+                elite = T.Create(Class.Elite, old.Genome, old.Identity, old, null, world, position);
+                lastFitness = old.Fitness;
+            } else {
+                elite = CreateMutation(old, genomeHashes, world, position, boosted: true);
+            }
+            destinationSpan[i] = elite;
+            genomeHashes.Add(elite.GetGenomeHashCode());
+        }
+    }
+
+    private static void CreateCrossovers(T[] individuals, Span<T> destination, HashSet<int> genomeHashes,
+        World world, Vector2 position)
     {
         int halfPopulation = individuals.Length / 2;
         for (int i = 0; i < destination.Length; i++) {
@@ -92,37 +131,43 @@ public class Generator<T>
         return 0;
     }
 
-    private static void CreateMutations(Span<T> eliteSpan, Span<T> destination, HashSet<int> genomeHashes, World world, Vector2 position)
+    private static void CreateMutations(Span<T> eliteSpan, Span<T> destination, HashSet<int> genomeHashes,
+        World world, Vector2 position)
     {
         for (int i = 0; i < eliteSpan.Length; i++) {
             T elite = eliteSpan[i];
 
-            Gene[] genes = [.. elite.Genome];
-            T? newIndividual;
-            int tries = 0;
-            do {
-                int mutations = 0;
-                for (int g = 0; g < genes.Length; g++) {
-                    if (Random.Shared.NextSingle() < MutationRate) {
-                        Mutate(genes, g);
-                        mutations++;
-                    }
-                }
-                if (mutations == 0) {
-                    Mutate(genes, Random.Shared.Next(genes.Length));
-                }
-
-                int generation = elite.Identity.Generation + 1;
-                int number = GetNameNumber(generation, elite.Identity.Name.Display);
-                newIndividual = T.Create(Class.Mutated, genes, new Identity(elite.Identity.Name, generation, number),
-                    elite, null, world, position);
-            } while (genomeHashes.Contains(newIndividual.GetGenomeHashCode()) && tries++ < 5);
-            if (tries >= 5) {
-                destination[i] = T.CreateRandom(world, position);
-            } else {
-                destination[i] = newIndividual;
-            }
+            destination[i] = CreateMutation(elite, genomeHashes, world, position);
             genomeHashes.Add(destination[i].GetGenomeHashCode());
+        }
+    }
+
+    private static T CreateMutation(T elite, HashSet<int> genomeHashes, World world, Vector2 position, bool boosted = false)
+    {
+        Gene[] genes = [.. elite.Genome];
+        T? newIndividual;
+        int tries = 0;
+        do {
+            int mutations = 0;
+            for (int g = 0; g < genes.Length; g++) {
+                if (Random.Shared.NextSingle() < MutationRate) {
+                    Mutate(genes, g);
+                    mutations++;
+                }
+            }
+            if (mutations == 0) {
+                Mutate(genes, Random.Shared.Next(genes.Length));
+            }
+
+            int generation = elite.Identity.Generation + 1;
+            int number = GetNameNumber(generation, elite.Identity.Name.Display);
+            newIndividual = T.Create(boosted ? Class.Boosted : Class.Mutated, genes, new Identity(elite.Identity.Name, generation, number),
+                elite, null, world, position);
+        } while (genomeHashes.Contains(newIndividual.GetGenomeHashCode()) && tries++ < 5);
+        if (tries >= 5) {
+            return T.CreateRandom(world, position);
+        } else {
+            return newIndividual;
         }
     }
 
