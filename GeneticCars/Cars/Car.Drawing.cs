@@ -17,9 +17,14 @@ public partial class Car
         var chassisStrokePaint = ColoredStrokePaint;
 
         DrawInfo(canvas);
-        DrawWheels(canvas, chassisFillPaint, chassisStrokePaint);
-        DrawChassis(canvas, chassisFillPaint, chassisStrokePaint);
-        DrawWheelHubs(canvas, chassisStrokePaint);
+        const float OverSize = 60 / Game.Zoom;
+        if (_chassis.Position.X > canvas.LocalClipBounds.Left - OverSize &&
+            _chassis.Position.X < canvas.LocalClipBounds.Right + OverSize) {
+
+            DrawWheels(canvas, chassisFillPaint, chassisStrokePaint);
+            DrawChassis(canvas, chassisFillPaint, chassisStrokePaint);
+            DrawWheelHubs(canvas, chassisStrokePaint);
+        }
     }
 
     public void CalculateNextInfoPosition()
@@ -53,7 +58,7 @@ public partial class Car
         float max = canvas.LocalClipBounds.Bottom - 4.5f;
         if (_nextInfoY > max) {
             _lastLabelY = max;
-        } else {
+        } else if (_rect.Right > canvas.LocalClipBounds.Left && _rect.Left < canvas.LocalClipBounds.Right) {
             var matrix = canvas.TotalMatrix;
 
             canvas.Scale(1, -1, 0, _nextInfoY);

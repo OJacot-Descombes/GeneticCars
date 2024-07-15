@@ -1,11 +1,13 @@
-﻿namespace GeneticCars;
+﻿using SkiaSharp.Views.Desktop;
+
+namespace GeneticCars;
 
 public class Camera
 {
     private Vector2 _actualFocus;
     private Vector2 _integralTerm;
 
-    public Vector2 GetFocus(Cars.Car focusedCar, Floor floor)
+    public Vector2 GetViewBoxFocus(Cars.Car focusedCar, Floor floor, SKPaintGLSurfaceEventArgs e)
     {
         const float fp = 0.05f; // Proportional factor.
         const float fi = 0.002f; // Integral factor.
@@ -32,7 +34,16 @@ public class Camera
         }
 
         _actualFocus += deltaV + _integralTerm;
-        return _actualFocus;
+
+        // Calculate view box translation
+        float rightBorder = e.Info.Width / 7 + 50;
+        const float MinLeftBorder = 200;
+        float dx = Math.Min(MinLeftBorder, -Game.Zoom * _actualFocus.X + e.Info.Width - rightBorder);
+
+        const float MinTop = 100;
+        float dy = Game.Zoom * _actualFocus.Y + e.Info.Height - (e.Info.Height - MinTop) / 3;
+
+        return new Vector2(dx, dy);
     }
 
     public void Reset()

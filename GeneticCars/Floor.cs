@@ -74,32 +74,37 @@ public class Floor
         for (int i = 1; i < MaxFloorTiles; i++) {
             var v0 = Vertices[i - 1];
             var v1 = Vertices[i];
-            path.MoveTo(v0.X, v0.Y);
-            path.LineTo(v1.X, v1.Y);
-            path.LineTo(v1.X, v1.Y - FloorThickness);
-            path.LineTo(v0.X, v0.Y - FloorThickness);
-            path.Close();
-            canvas.DrawPath(path, FloorFillPaint);
-            path.Reset();
+            if (v1.X > canvas.LocalClipBounds.Left && v0.X < canvas.LocalClipBounds.Right) {
+                path.MoveTo(v0.X, v0.Y);
+                path.LineTo(v1.X, v1.Y);
+                path.LineTo(v1.X, v1.Y - FloorThickness);
+                path.LineTo(v0.X, v0.Y - FloorThickness);
+                path.Close();
+                canvas.DrawPath(path, FloorFillPaint);
+                path.Reset();
+            }
         }
     }
 
     private void DrawGrid(SKCanvas canvas)
     {
         const int Spacing = 10;
+        const float TextOversize = 55 / Game.Zoom;
 
         int n = (int)Single.Ceiling(Vertices[^1].X / Spacing);
         for (int i = 0; i <= n; i++) {
             int x = i * Spacing;
-            var bounds = canvas.LocalClipBounds;
-            canvas.DrawLine(x, bounds.Top, x, bounds.Bottom, GridStrokePaint);
+            if (x > canvas.LocalClipBounds.Left - TextOversize && x < canvas.LocalClipBounds.Right) {
+                var bounds = canvas.LocalClipBounds;
+                canvas.DrawLine(x, bounds.Top, x, bounds.Bottom, GridStrokePaint);
 
-            // Bounds Y seems to be inverted, so Botton is actually top.
-            float y = bounds.Bottom - 1;
-            var matrix = canvas.TotalMatrix;
-            canvas.Scale(1, -1, 0, y);
-            canvas.DrawText(x.ToString(), x + 0.1f, y, _gridFont, GridTextPaint);
-            canvas.SetMatrix(matrix);
+                // Bounds Y seems to be inverted, so Bottom is actually top.
+                float y = bounds.Bottom - 1;
+                var matrix = canvas.TotalMatrix;
+                canvas.Scale(1, -1, 0, y);
+                canvas.DrawText(x.ToString(), x + 0.1f, y, _gridFont, GridTextPaint);
+                canvas.SetMatrix(matrix);
+            }
         }
     }
 }

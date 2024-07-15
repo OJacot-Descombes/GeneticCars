@@ -51,11 +51,11 @@ public class Game
                 return;
             }
         }
-        Vector2 focus = _camera.GetFocus(focusedCar ?? _lastFocusedCar!, _floor);
+        Vector2 focus = _camera.GetViewBoxFocus(focusedCar ?? _lastFocusedCar!, _floor, e);
         _lastFocusedCar = focusedCar;
 
         canvas.Clear(SKColors.White);
-        canvas.Translate(Math.Min(200, -Zoom * focus.X + e.Info.Width - 200), Zoom * focus.Y + e.Info.Height - 80);
+        canvas.Translate(focus.X, focus.Y);
         canvas.Scale(Zoom, -Zoom);
 
         _floor.Draw(canvas);
