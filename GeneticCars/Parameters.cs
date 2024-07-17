@@ -7,6 +7,8 @@ public class Parameters : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    public int PopulationSize { get; } = 40;
+
     private bool _playing = true;
     public bool Playing
     {
@@ -32,9 +34,12 @@ public class Parameters : INotifyPropertyChanged
             if (value != _mutationBoost) {
                 _mutationBoost = value;
                 OnPropertyChanged(nameof(MutationBoost));
-                MutationBoostImage = value
-                    ? Properties.Resources.RadioactiveDn32
-                    : Properties.Resources.RadioactiveUp32;
+                if (value) {
+                    MutationBoostImage = Properties.Resources.RadioactiveDn32;
+                    Death = false;
+                } else {
+                    MutationBoostImage = Properties.Resources.RadioactiveUp32;
+                }
             }
         }
     }
@@ -59,6 +64,91 @@ public class Parameters : INotifyPropertyChanged
             if (value != _mutationBoostImage) {
                 _mutationBoostImage = value;
                 OnPropertyChanged(nameof(MutationBoostImage));
+            }
+        }
+    }
+
+    private bool _kryptonite;
+    public bool Kryptonite
+    {
+        get { return _kryptonite; }
+        set {
+            if (value != _kryptonite) {
+                _kryptonite = value;
+                OnPropertyChanged(nameof(Kryptonite));
+                if (value) {
+                    KryptoniteImage = Properties.Resources.Kryptonite32Dn;
+                    Death = false;
+                } else {
+                    KryptoniteImage = Properties.Resources.Kryptonite32Up;
+                }
+            }
+        }
+    }
+
+    private bool _kryptoniteEnabled;
+    public bool KryptoniteEnabled
+    {
+        get { return _kryptoniteEnabled; }
+        set {
+            if (value != _kryptoniteEnabled) {
+                _kryptoniteEnabled = value;
+                OnPropertyChanged(nameof(KryptoniteEnabled));
+            }
+        }
+    }
+
+    private Bitmap _kryptoniteImage = Properties.Resources.Kryptonite32Up;
+    public Bitmap KryptoniteImage
+    {
+        get { return _kryptoniteImage; }
+        set {
+            if (value != _kryptoniteImage) {
+                _kryptoniteImage = value;
+                OnPropertyChanged(nameof(KryptoniteImage));
+            }
+        }
+    }
+
+    private bool _death;
+    public bool Death
+    {
+        get { return _death; }
+        set {
+            if (value != _death) {
+                _death = value;
+                OnPropertyChanged(nameof(Death));
+                if (value) {
+                    DeathImage = Properties.Resources.DeathDn32;
+                    MutationBoost = false;
+                    Kryptonite = false;
+                } else {
+                    DeathImage = Properties.Resources.DeathUp32;
+                }
+            }
+        }
+    }
+
+    private bool _deathEnabled;
+    public bool DeathEnabled
+    {
+        get { return _deathEnabled; }
+        set {
+            if (value != _deathEnabled) {
+                _deathEnabled = value;
+                OnPropertyChanged(nameof(DeathEnabled));
+            }
+        }
+    }
+
+    private Bitmap _deathImage = Properties.Resources.DeathUp32;
+    public Bitmap DeathImage
+    {
+        get { return _deathImage; }
+        set {
+            if (value != _deathImage) {
+                _deathImage = value;
+                OnPropertyChanged(nameof(DeathImage));
             }
         }
     }

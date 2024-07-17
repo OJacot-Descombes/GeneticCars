@@ -52,7 +52,7 @@ public partial class Car : Individual, IIndividualFactory<Car>
         World world, Vector2 position)
         => new(@class, genes, identity, ancestor1, ancestor2, world, position);
 
-    public static Car CreateRandom(World world, Vector2 position)
+    public static Car CreateRandom(World world, Vector2 position, Class @class = Class.New)
     {
         Gene[] genes = [
             new(WheelRadiusRange),
@@ -79,7 +79,7 @@ public partial class Car : Individual, IIndividualFactory<Car>
             new(ChassisAxisRange),
             new(ChassisAxisRange),
         ];
-        return new Car(Class.New, genes, new Identity(Name.GenerateRandom(6), 0, 0), null, null, world, position);
+        return new Car(@class, genes, new Identity(Name.GenerateRandom(6), 0, 0), null, null, world, position);
     }
 
     private float _maxFitness;

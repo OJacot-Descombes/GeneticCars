@@ -2,9 +2,8 @@
 
 public enum Class
 {
-    New,
+    New, Kryptonite,
     Elite,
     Crossed,
-    Mutated,
-    Boosted
+    Mutated, Boosted
 }

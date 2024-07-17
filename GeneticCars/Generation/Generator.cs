@@ -5,9 +5,11 @@ public class Generator<T>
 {
     private const float MutationRate = 0.20f;
     private const float MutationSize = 0.30f;
-    const float MaxBoostFitnessDifference = 0.1f;
+    private const float MaxBoostFitnessDifference = 0.1f;
+    private const float KryptoniteLimitSquare = 0.12f;
 
     private static readonly Dictionary<(int, string), int> _namePool = new(2000);
+    private int _keepAliveCount = 1;
 
     public void GenerateInitial(World world, T[] individuals, Vector2 position)
     {
@@ -17,31 +19,82 @@ public class Generator<T>
         }
     }
 
-    public void Evolve(World world, T[] individuals, Vector2 position, bool mutationBoost)
+    public void Evolve(World world, T[] individuals, Vector2 position, Parameters parameters)
     {
         Array.Sort(individuals, (a, b) => (-a.Fitness, a.Identity).CompareTo((-b.Fitness, b.Identity)));
-        var source = (T[])individuals.Clone();
-        int eliteCount = source.Length / 4;
+        int newCreationsDestination;
         var genomeHashes = new HashSet<int>();
-
-        var eliteSpan = source.AsSpan(0, eliteCount);
-        if (mutationBoost) {
-            BoostElite(eliteSpan, individuals.AsSpan(0, eliteCount), genomeHashes, world, position);
+        if (parameters.Death) {
+            newCreationsDestination = Extinguish(world, individuals, position, parameters, genomeHashes);
         } else {
-            CloneElite(eliteSpan, individuals.AsSpan(0, eliteCount), genomeHashes, world, position);
+            var source = (T[])individuals.Clone();
+            int eliteCount = source.Length / 4;
+
+            var eliteSpan = source.AsSpan(0, eliteCount);
+            if (parameters.MutationBoost) {
+                BoostElite(eliteSpan, individuals.AsSpan(0, eliteCount), genomeHashes, world, position);
+            } else {
+                CloneElite(eliteSpan, individuals.AsSpan(0, eliteCount), genomeHashes, world, position);
+            }
+
+            var destination = individuals.AsSpan(eliteCount, eliteCount);
+            CreateCrossovers(source, destination, genomeHashes, world, position);
+
+            destination = individuals.AsSpan(2 * eliteCount, eliteCount);
+            CreateMutations(eliteSpan, destination, genomeHashes, world, position);
+
+            if (parameters.Kryptonite) {
+                Span<T> kryptoniteSpan = individuals.AsSpan(eliteCount, 2 * eliteCount); // Crossovers and mutations.
+                KillSimilarTwins(kryptoniteSpan, world, position);
+            }
+
+            newCreationsDestination = 3 * eliteCount;
         }
-
-        var destination = individuals.AsSpan(eliteCount, eliteCount);
-        CreateCrossovers(source, destination, genomeHashes, world, position);
-
-        destination = individuals.AsSpan(2 * eliteCount, eliteCount);
-        CreateMutations(eliteSpan, destination, genomeHashes, world, position);
-
-        int dest = 3 * eliteCount;
-        while (dest < individuals.Length) {
+        while (newCreationsDestination < individuals.Length) {
             var individual = T.CreateRandom(world, position);
-            individuals[dest++] = individual;
+            individuals[newCreationsDestination++] = individual;
         }
+    }
+
+    private int Extinguish(World world, T[] individuals, Vector2 position, Parameters parameters, HashSet<int> genomeHashes)
+    {
+        parameters.Death = false;
+        var distinctElite = individuals.DistinctBy(i => i.Identity.Name)
+            .Take(_keepAliveCount)
+            .ToArray();
+        Array.Copy(distinctElite, individuals, distinctElite.Length);
+        var eliteSpan = individuals.AsSpan();
+        Generator<T>.CloneElite(eliteSpan, eliteSpan, genomeHashes, world, position);
+        _keepAliveCount++;
+        return distinctElite.Length;
+    }
+
+    private static bool KillableByKryptonite(Span<T> span, int i) // e.g. 0.05
+    {
+        for (int j = i - 1; j >= 0; j--) {
+            if (span[i].GenomeDistanceSquaredTo(span[j]) < KryptoniteLimitSquare) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static bool KillableByKryptoniteCountIsAtLeast(T[] individuals, int minimalCount)
+    {
+        int eliteCount = individuals.Length / 4;
+        Span<T> span = individuals.AsSpan(eliteCount, 2 * eliteCount);
+        int count = 0;
+        for (int i = 1; i < span.Length; i++) {
+            for (int j = i - 1; j >= 0; j--) {
+                if (span[i].GenomeDistanceSquaredTo(span[j]) < KryptoniteLimitSquare) {
+                    count++;
+                    if (count >= minimalCount) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private static void CloneElite(Span<T> sourceSpan, Span<T> destinationSpan, HashSet<int> genomeHashes,
@@ -87,8 +140,8 @@ public class Generator<T>
         }
     }
 
-    private static void CreateCrossovers(T[] individuals, Span<T> destination, HashSet<int> genomeHashes,
-        World world, Vector2 position)
+    private static void CreateCrossovers(T[] individuals, Span<T> destination,
+        HashSet<int> genomeHashes, World world, Vector2 position)
     {
         int halfPopulation = individuals.Length / 2;
         for (int i = 0; i < destination.Length; i++) {
@@ -131,12 +184,11 @@ public class Generator<T>
         return 0;
     }
 
-    private static void CreateMutations(Span<T> eliteSpan, Span<T> destination, HashSet<int> genomeHashes,
-        World world, Vector2 position)
+    private static void CreateMutations(Span<T> eliteSpan, Span<T> destination,
+        HashSet<int> genomeHashes, World world, Vector2 position)
     {
         for (int i = 0; i < eliteSpan.Length; i++) {
             T elite = eliteSpan[i];
-
             destination[i] = CreateMutation(elite, genomeHashes, world, position);
             genomeHashes.Add(destination[i].GetGenomeHashCode());
         }
@@ -173,8 +225,22 @@ public class Generator<T>
 
     private static void Mutate(Gene[] genes, int i)
     {
-        float delta = 2.0f * MutationSize * (Random.Shared.NextSingle() - 0.5f);
         Gene gene = genes[i];
-        genes[i] = new Gene(gene.Range, Single.Clamp(gene.Fraction + delta, 0f, 0.99999997f));
+        float oldFraction = gene.Fraction;
+        float fraction;
+        do {
+            float delta = 2.0f * MutationSize * (Random.Shared.NextSingle() - 0.5f);
+            fraction = Single.Clamp(gene.Fraction + delta, 0f, 0.99999997f);
+        } while (fraction == oldFraction);
+        genes[i] = new Gene(gene.Range, fraction); ;
+    }
+
+    private static void KillSimilarTwins(Span<T> kryptoniteSpan, World world, Vector2 position)
+    {
+        for (int i = 0; i < kryptoniteSpan.Length; i++) {
+            if (KillableByKryptonite(kryptoniteSpan, i)) {
+                kryptoniteSpan[i] = T.CreateRandom(world, position, Class.Kryptonite);
+            }
+        }
     }
 }

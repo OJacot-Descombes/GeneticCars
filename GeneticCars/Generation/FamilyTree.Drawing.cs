@@ -30,6 +30,18 @@ public partial class FamilyTree
         IsAntialias = true,
     };
 
+    private static readonly SKPaint _kryptoniteFillPaint = new() {
+        Color = SKColors.LightGreen,
+        IsStroke = false,
+        IsAntialias = false,
+    };
+    private static readonly SKPaint _kryptoniteStrokePaint = new() {
+        Color = SKColors.Black,
+        StrokeWidth = 0.8f,
+        IsStroke = true,
+        IsAntialias = true,
+    };
+
     private const byte StrokeAlpha = 150, FaintStrokeAlpha = 60;
 
     private static readonly SKPaint _newStrokePaint = new() {
@@ -84,7 +96,7 @@ public partial class FamilyTree
 
     private static SKPaint GetTextPaint(Class @class) =>
         @class switch {
-            Class.New => Individual.NewFillPaint,
+            Class.New or Class.Kryptonite => Individual.NewFillPaint,
             Class.Elite => Individual.EliteFillPaint,
             Class.Crossed => Individual.CrossedFillPaint,
             Class.Mutated or Class.Boosted => Individual.MutatedFillPaint,
@@ -93,7 +105,7 @@ public partial class FamilyTree
 
     private static SKPaint GetConnectionPaint(Class @class) =>
     @class switch {
-        Class.New => _newStrokePaint,
+        Class.New or Class.Kryptonite => _newStrokePaint,
         Class.Elite => _eliteStrokePaint,
         Class.Crossed => _crossedStrokePaint,
         Class.Mutated or Class.Boosted => _mutatedStrokePaint,
@@ -102,7 +114,7 @@ public partial class FamilyTree
 
     private static SKPaint GetFaintConnectionPaint(Class @class) =>
         @class switch {
-            Class.New => _newFaintStrokePaint,
+            Class.New or Class.Kryptonite => _newFaintStrokePaint,
             Class.Elite => _eliteFaintStrokePaint,
             Class.Crossed => _crossedFaintStrokePaint,
             Class.Mutated or Class.Boosted => _mutatedFaintStrokePaint,
@@ -143,6 +155,10 @@ public partial class FamilyTree
                     }
                     if (node.Ancestor2Index is int ancestorIndex2) {
                         DrawConnection(canvas, ancestorIndex2, x, top, node.Class, lineY, isNewElite);
+                    }
+                    if (node.Class == Class.Kryptonite) {
+                        canvas.DrawCircle(x - 3, lineY, 2.4f, _kryptoniteFillPaint);
+                        canvas.DrawCircle(x - 3, lineY, 2.4f, _kryptoniteStrokePaint);
                     }
                     y += LineHeight;
                 }

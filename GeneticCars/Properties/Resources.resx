@@ -136,4 +136,16 @@
   <data name="RadioactiveUp32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RadioactiveUp32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Kryptonite32Up" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Kryptonite32Up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Kryptonite32Dn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+     <value>..\Resources\Kryptonite32Dn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+    <data name="DeathUp32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>..\Resources\DeathUp32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    </data>
+    <data name="DeathDn32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>..\Resources\DeathDn32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    </data>
 </root>

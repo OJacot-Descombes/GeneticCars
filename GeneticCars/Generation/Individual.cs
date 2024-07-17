@@ -44,5 +44,15 @@ public abstract partial class Individual(Class @class, Gene[] genome, Identity i
         return hash;
     }
 
+    public float GenomeDistanceSquaredTo(Individual other)
+    {
+        float sum = 0;
+        for (int i = 0; i < Genome.Length; i++) {
+            float delta = Genome[i].Fraction - other.Genome[i].Fraction;
+            sum += delta * delta;
+        }
+        return sum;
+    }
+
     public override string ToString() => $"{Identity} {Class} ({Ancestor1}, {Ancestor2})";
 }

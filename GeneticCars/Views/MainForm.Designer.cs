@@ -31,12 +31,15 @@ partial class MainForm
         simulationSKGLControl = new SkiaSharp.Views.Desktop.SKGLControl();
         mainSplitContainer = new SplitContainer();
         topPanel = new Panel();
-        mutationBoostCheckBox = new CheckBox();
+        deathCheckBox = new CheckBox();
         parametersBindingSource = new BindingSource(components);
+        kryptoniteCheckBox = new CheckBox();
+        mutationBoostCheckBox = new CheckBox();
         displayFpsCheckBox = new CheckBox();
         changingFloorCheckBox = new CheckBox();
         button1 = new Button();
         familyTreeVPanel = new Views.Controls.VPanel();
+        toolTip1 = new ToolTip(components);
         ((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
         mainSplitContainer.Panel1.SuspendLayout();
         mainSplitContainer.Panel2.SuspendLayout();
@@ -78,6 +81,8 @@ partial class MainForm
         // 
         // topPanel
         // 
+        topPanel.Controls.Add(deathCheckBox);
+        topPanel.Controls.Add(kryptoniteCheckBox);
         topPanel.Controls.Add(mutationBoostCheckBox);
         topPanel.Controls.Add(displayFpsCheckBox);
         topPanel.Controls.Add(changingFloorCheckBox);
@@ -88,24 +93,60 @@ partial class MainForm
         topPanel.Size = new Size(1211, 57);
         topPanel.TabIndex = 1;
         // 
+        // deathCheckBox
+        // 
+        deathCheckBox.Appearance = Appearance.Button;
+        deathCheckBox.BackColor = SystemColors.Control;
+        deathCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "Death", true, DataSourceUpdateMode.OnPropertyChanged));
+        deathCheckBox.DataBindings.Add(new Binding("Enabled", parametersBindingSource, "DeathEnabled", true, DataSourceUpdateMode.OnPropertyChanged));
+        deathCheckBox.DataBindings.Add(new Binding("Image", parametersBindingSource, "DeathImage", true, DataSourceUpdateMode.OnPropertyChanged));
+        deathCheckBox.FlatAppearance.BorderSize = 0;
+        deathCheckBox.FlatStyle = FlatStyle.Flat;
+        deathCheckBox.Image = Properties.Resources.DeathUp32;
+        deathCheckBox.Location = new Point(381, 7);
+        deathCheckBox.Name = "deathCheckBox";
+        deathCheckBox.Size = new Size(32, 32);
+        deathCheckBox.TabIndex = 5;
+        toolTip1.SetToolTip(deathCheckBox, "Death");
+        deathCheckBox.UseVisualStyleBackColor = false;
+        // 
+        // parametersBindingSource
+        // 
+        parametersBindingSource.DataSource = typeof(Parameters);
+        // 
+        // kryptoniteCheckBox
+        // 
+        kryptoniteCheckBox.Appearance = Appearance.Button;
+        kryptoniteCheckBox.BackColor = SystemColors.Control;
+        kryptoniteCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "Kryptonite", true, DataSourceUpdateMode.OnPropertyChanged));
+        kryptoniteCheckBox.DataBindings.Add(new Binding("Enabled", parametersBindingSource, "KryptoniteEnabled", true, DataSourceUpdateMode.OnPropertyChanged));
+        kryptoniteCheckBox.DataBindings.Add(new Binding("Image", parametersBindingSource, "KryptoniteImage", true, DataSourceUpdateMode.OnPropertyChanged));
+        kryptoniteCheckBox.FlatAppearance.BorderSize = 0;
+        kryptoniteCheckBox.FlatStyle = FlatStyle.Flat;
+        kryptoniteCheckBox.Image = Properties.Resources.Kryptonite32Up;
+        kryptoniteCheckBox.Location = new Point(343, 7);
+        kryptoniteCheckBox.Name = "kryptoniteCheckBox";
+        kryptoniteCheckBox.Size = new Size(32, 32);
+        kryptoniteCheckBox.TabIndex = 4;
+        toolTip1.SetToolTip(kryptoniteCheckBox, "Kryptonite");
+        kryptoniteCheckBox.UseVisualStyleBackColor = false;
+        // 
         // mutationBoostCheckBox
         // 
         mutationBoostCheckBox.Appearance = Appearance.Button;
-        mutationBoostCheckBox.BackColor = Color.Yellow;
+        mutationBoostCheckBox.BackColor = SystemColors.Control;
         mutationBoostCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "MutationBoost", true, DataSourceUpdateMode.OnPropertyChanged));
         mutationBoostCheckBox.DataBindings.Add(new Binding("Enabled", parametersBindingSource, "MutationBoostEnabled", true, DataSourceUpdateMode.OnPropertyChanged));
         mutationBoostCheckBox.DataBindings.Add(new Binding("Image", parametersBindingSource, "MutationBoostImage", true, DataSourceUpdateMode.OnPropertyChanged));
         mutationBoostCheckBox.FlatAppearance.BorderSize = 0;
         mutationBoostCheckBox.FlatStyle = FlatStyle.Flat;
+        mutationBoostCheckBox.Image = Properties.Resources.RadioactiveUp32;
         mutationBoostCheckBox.Location = new Point(305, 7);
         mutationBoostCheckBox.Name = "mutationBoostCheckBox";
         mutationBoostCheckBox.Size = new Size(32, 32);
         mutationBoostCheckBox.TabIndex = 3;
+        toolTip1.SetToolTip(mutationBoostCheckBox, "Radioactivity");
         mutationBoostCheckBox.UseVisualStyleBackColor = false;
-        // 
-        // parametersBindingSource
-        // 
-        parametersBindingSource.DataSource = typeof(Parameters);
         // 
         // displayFpsCheckBox
         // 
@@ -184,4 +225,7 @@ partial class MainForm
     private Views.Controls.VPanel familyTreeVPanel;
     private CheckBox displayFpsCheckBox;
     private CheckBox mutationBoostCheckBox;
+    private CheckBox kryptoniteCheckBox;
+    private CheckBox deathCheckBox;
+    private ToolTip toolTip1;
 }

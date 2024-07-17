@@ -63,9 +63,49 @@ namespace GeneticCars.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DeathDn32 {
+            get {
+                object obj = ResourceManager.GetObject("DeathDn32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DeathUp32 {
+            get {
+                object obj = ResourceManager.GetObject("DeathUp32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DnArrow {
             get {
                 object obj = ResourceManager.GetObject("DnArrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Kryptonite32Dn {
+            get {
+                object obj = ResourceManager.GetObject("Kryptonite32Dn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Kryptonite32Up {
+            get {
+                object obj = ResourceManager.GetObject("Kryptonite32Up", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -119,7 +119,7 @@ public abstract partial class Individual
 
     protected SKPaint ColoredStrokePaint => IsAlive
         ? Class switch {
-            Class.New => _newStrokePaint,
+            Class.New or Class.Kryptonite => _newStrokePaint,
             Class.Elite => _eliteStrokePaint,
             Class.Crossed => _crossedStrokePaint,
             Class.Mutated or Class.Boosted => _mutatedStrokePaint,
@@ -129,7 +129,7 @@ public abstract partial class Individual
 
     protected SKPaint ColoredFillPaint => IsAlive
         ? Class switch {
-            Class.New => NewFillPaint,
+            Class.New or Class.Kryptonite => NewFillPaint,
             Class.Elite => EliteFillPaint,
             Class.Crossed => CrossedFillPaint,
             Class.Mutated or Class.Boosted => MutatedFillPaint,
@@ -139,7 +139,7 @@ public abstract partial class Individual
 
     protected SKPaint ColoredInfoTextPaint => IsAlive
     ? Class switch {
-        Class.New => _newInfoTextPaint,
+        Class.New or Class.Kryptonite => _newInfoTextPaint,
         Class.Elite => _eliteInfoTextPaint,
         Class.Crossed => _crossedInfoTextPaint,
         Class.Mutated or Class.Boosted => _mutatedInfoTextPaint,
@@ -158,7 +158,7 @@ public abstract partial class Individual
     {
         SKColor baseColor = IsAlive
             ? Class switch {
-                Class.New => NewBaseColor,
+                Class.New or Class.Kryptonite => NewBaseColor,
                 Class.Elite => EliteBaseColor,
                 Class.Crossed => CrossedBaseColor,
                 Class.Mutated or Class.Boosted => MutatedBaseColor,

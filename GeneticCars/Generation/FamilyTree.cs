@@ -6,11 +6,11 @@ public partial class FamilyTree
 
     public readonly struct Node(Individual individual, int? ancestor1Index, int? ancestor2Index, bool fitnessKnown)
     {
-        public readonly Class Class = individual.Class;
-        public readonly float? Fitness = fitnessKnown ? individual.Fitness : null;
-        public readonly string Text = individual.Identity.InfoText;
-        public readonly int? Ancestor1Index = ancestor1Index;
-        public readonly int? Ancestor2Index = ancestor2Index;
+        public Class Class { get; init; } = individual.Class;
+        public float? Fitness { get; init; } = fitnessKnown ? individual.Fitness : null;
+        public string Text { get; init; } = individual.Identity.InfoText;
+        public int? Ancestor1Index { get; init; } = ancestor1Index;
+        public int? Ancestor2Index { get; init; } = ancestor2Index;
 
         public override string ToString() => $"{Text} ({Fitness}) {Class}, ancestors [{Ancestor1Index}, {Ancestor2Index}]";
     }
@@ -49,11 +49,11 @@ public partial class FamilyTree
                 indices[ancestors[i].Text] = i;
             }
             newGeneration = individuals
-                .Select(i => new Node(i, GetIndex(i.Ancestor1, indices), GetIndex(i.Ancestor2, indices), false))
+                .Select(ind => new Node(ind, GetIndex(ind.Ancestor1, indices), GetIndex(ind.Ancestor2, indices), false))
                 .ToArray();
         } else {
             newGeneration = individuals
-                .Select(i => new Node(i, null, null, false))
+                .Select(ind => new Node(ind, null, null, false))
                 .ToArray();
         }
         Generations.Add(newGeneration);
