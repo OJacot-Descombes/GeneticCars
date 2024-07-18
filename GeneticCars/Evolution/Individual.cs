@@ -1,4 +1,4 @@
-﻿namespace GeneticCars.Generation;
+﻿namespace GeneticCars.Evolution;
 
 public abstract partial class Individual(Class @class, Gene[] genome, Identity identity,
     Individual? ancestor1, Individual? ancestor2)

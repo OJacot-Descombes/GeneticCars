@@ -1,4 +1,4 @@
-﻿namespace GeneticCars.Generation;
+﻿namespace GeneticCars.Evolution;
 
 public readonly record struct Identity(Name Name, int Generation, int Number) : IComparable, IComparable<Identity>
 {

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace GeneticCars.Generation;
+namespace GeneticCars.Evolution;
 
 // Adapted from Waqar Khan https://stackoverflow.com/a/49922533/880990.
 

@@ -1,4 +1,4 @@
-﻿namespace GeneticCars.Generation;
+﻿namespace GeneticCars.Evolution;
 
 public interface IIndividualFactory<T>
     where T : Individual

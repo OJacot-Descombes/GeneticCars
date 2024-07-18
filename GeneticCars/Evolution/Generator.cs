@@ -1,4 +1,4 @@
-﻿namespace GeneticCars.Generation;
+﻿namespace GeneticCars.Evolution;
 
 public class Generator<T>
     where T : Individual, IIndividualFactory<T>

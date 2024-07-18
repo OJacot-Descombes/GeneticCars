@@ -1,4 +1,4 @@
-﻿namespace GeneticCars.Generation;
+﻿namespace GeneticCars.Evolution;
 
 public partial class FamilyTree
 {
