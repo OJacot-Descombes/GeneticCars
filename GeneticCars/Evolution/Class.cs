@@ -5,5 +5,5 @@ public enum Class
     New, Kryptonite,
     Elite,
     Crossed,
-    Mutated, Boosted
+    Mutated, Radioactive
 }

@@ -122,7 +122,7 @@ public abstract partial class Individual
             Class.New or Class.Kryptonite => _newStrokePaint,
             Class.Elite => _eliteStrokePaint,
             Class.Crossed => _crossedStrokePaint,
-            Class.Mutated or Class.Boosted => _mutatedStrokePaint,
+            Class.Mutated or Class.Radioactive => _mutatedStrokePaint,
             _ => throw new NotImplementedException()
         }
         : _deadStrokePaint;
@@ -132,7 +132,7 @@ public abstract partial class Individual
             Class.New or Class.Kryptonite => NewFillPaint,
             Class.Elite => EliteFillPaint,
             Class.Crossed => CrossedFillPaint,
-            Class.Mutated or Class.Boosted => MutatedFillPaint,
+            Class.Mutated or Class.Radioactive => MutatedFillPaint,
             _ => throw new NotImplementedException()
         }
         : _deadFillPaint;
@@ -142,7 +142,7 @@ public abstract partial class Individual
         Class.New or Class.Kryptonite => _newInfoTextPaint,
         Class.Elite => _eliteInfoTextPaint,
         Class.Crossed => _crossedInfoTextPaint,
-        Class.Mutated or Class.Boosted => _mutatedInfoTextPaint,
+        Class.Mutated or Class.Radioactive => _mutatedInfoTextPaint,
         _ => throw new NotImplementedException()
     }
     : _deadFillPaint;
@@ -161,7 +161,7 @@ public abstract partial class Individual
                 Class.New or Class.Kryptonite => NewBaseColor,
                 Class.Elite => EliteBaseColor,
                 Class.Crossed => CrossedBaseColor,
-                Class.Mutated or Class.Boosted => MutatedBaseColor,
+                Class.Mutated or Class.Radioactive => MutatedBaseColor,
                 _ => throw new NotImplementedException()
             }
             : _deadBaseColor;

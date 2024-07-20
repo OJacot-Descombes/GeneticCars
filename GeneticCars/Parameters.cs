@@ -7,7 +7,20 @@ public class Parameters : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public int PopulationSize { get; } = 40;
+    int _populationSize = 40;
+    public int PopulationSize
+    {
+        get {
+            return _populationSize;
+        }
+        set {
+            value = 4 * (value / 4);
+            if (value != _populationSize) {
+                _populationSize = value;
+                OnPropertyChanged(nameof(PopulationSize));
+            }
+        }
+    }
 
     private bool _playing = true;
     public bool Playing
@@ -22,48 +35,76 @@ public class Parameters : INotifyPropertyChanged
 
     public string PlayButtonText => _playing ? "Pause" : "Resume";
 
-    public bool ChangingFloor { get; set; }
-
-    public bool DisplayFps { get; set; }
-
-    private bool _mutationBoost;
-    public bool MutationBoost
+    bool _regenerateFloor;
+    public bool RegenerateFloor
     {
-        get { return _mutationBoost; }
+        get { return _regenerateFloor; }
         set {
-            if (value != _mutationBoost) {
-                _mutationBoost = value;
-                OnPropertyChanged(nameof(MutationBoost));
+            if (value != _regenerateFloor) {
+                _regenerateFloor = value;
+                OnPropertyChanged(nameof(RegenerateFloor));
                 if (value) {
-                    MutationBoostImage = Properties.Resources.RadioactiveDn32;
-                    Death = false;
+                    RegenerateFloorImage = Properties.Resources.ChangeFloorDn32;
                 } else {
-                    MutationBoostImage = Properties.Resources.RadioactiveUp32;
+                    RegenerateFloorImage = Properties.Resources.ChangeFloorUp32;
                 }
             }
         }
     }
 
-    private bool _mutationBoostEnabled;
-    public bool MutationBoostEnabled
+    private Bitmap _regenerateFloorImage = Properties.Resources.ChangeFloorUp32;
+    public Bitmap RegenerateFloorImage
     {
-        get { return _mutationBoostEnabled; }
+        get { return _regenerateFloorImage; }
         set {
-            if (value != _mutationBoostEnabled) {
-                _mutationBoostEnabled = value;
-                OnPropertyChanged(nameof(MutationBoostEnabled));
+            if (value != _regenerateFloorImage) {
+                _regenerateFloorImage = value;
+                OnPropertyChanged(nameof(RegenerateFloorImage));
             }
         }
     }
 
-    private Bitmap _mutationBoostImage = Properties.Resources.RadioactiveUp32;
-    public Bitmap MutationBoostImage
+
+    public bool DisplayFps { get; set; }
+
+    private bool _radioactivity;
+    public bool Radioactivity
     {
-        get { return _mutationBoostImage; }
+        get { return _radioactivity; }
         set {
-            if (value != _mutationBoostImage) {
-                _mutationBoostImage = value;
-                OnPropertyChanged(nameof(MutationBoostImage));
+            if (value != _radioactivity) {
+                _radioactivity = value;
+                OnPropertyChanged(nameof(Radioactivity));
+                if (value) {
+                    RadioactivityImage = Properties.Resources.RadioactiveDn32;
+                    Death = false;
+                } else {
+                    RadioactivityImage = Properties.Resources.RadioactiveUp32;
+                }
+            }
+        }
+    }
+
+    private bool _radioactivityEnabled;
+    public bool RadioactivityEnabled
+    {
+        get { return _radioactivityEnabled; }
+        set {
+            if (value != _radioactivityEnabled) {
+                _radioactivityEnabled = value;
+                OnPropertyChanged(nameof(RadioactivityEnabled));
+            }
+        }
+    }
+
+    private Bitmap _radioactivityImage = Properties.Resources.RadioactiveUp32;
+    public Bitmap RadioactivityImage
+    {
+        get { return _radioactivityImage; }
+        set {
+            if (value != _radioactivityImage) {
+                _radioactivityImage = value;
+                OnPropertyChanged(nameof(RadioactivityImage));
             }
         }
     }
@@ -120,7 +161,7 @@ public class Parameters : INotifyPropertyChanged
                 OnPropertyChanged(nameof(Death));
                 if (value) {
                     DeathImage = Properties.Resources.DeathDn32;
-                    MutationBoost = false;
+                    Radioactivity = false;
                     Kryptonite = false;
                 } else {
                     DeathImage = Properties.Resources.DeathUp32;
@@ -156,7 +197,7 @@ public class Parameters : INotifyPropertyChanged
     private ICommand? _playCommand;
     public ICommand PlayCommand => _playCommand ??= new RelayCommand(() => { Playing = !Playing; });
 
-    private void OnPropertyChanged(string propertyName)
+    protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

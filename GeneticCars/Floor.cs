@@ -6,7 +6,7 @@ public class Floor
     private const float SegmentLength = 1.5f;
     private const float FloorThickness = 0.25f;
 
-    private static readonly SKPaint FloorFillPaint = new() {
+    public static readonly SKPaint FloorFillPaint = new() {
         Color = SKColors.OliveDrab,
         IsStroke = false,
         IsAntialias = true

@@ -31,20 +31,24 @@ partial class MainForm
         simulationSKGLControl = new SkiaSharp.Views.Desktop.SKGLControl();
         mainSplitContainer = new SplitContainer();
         topPanel = new Panel();
-        deathCheckBox = new CheckBox();
+        populationSizeNameLabel = new Label();
+        trackBar1 = new TrackBar();
         parametersBindingSource = new BindingSource(components);
+        deathCheckBox = new CheckBox();
         kryptoniteCheckBox = new CheckBox();
-        mutationBoostCheckBox = new CheckBox();
+        radioactivityCheckBox = new CheckBox();
         displayFpsCheckBox = new CheckBox();
-        changingFloorCheckBox = new CheckBox();
+        changeFloorCheckBox = new CheckBox();
         button1 = new Button();
-        familyTreeVPanel = new Views.Controls.VPanel();
+        familyTreeVPanel = new Views.Controls.ScrollableSKGLControl();
         toolTip1 = new ToolTip(components);
+        populationSIzeNumberLabel = new Label();
         ((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
         mainSplitContainer.Panel1.SuspendLayout();
         mainSplitContainer.Panel2.SuspendLayout();
         mainSplitContainer.SuspendLayout();
         topPanel.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)trackBar1).BeginInit();
         ((System.ComponentModel.ISupportInitialize)parametersBindingSource).BeginInit();
         SuspendLayout();
         // 
@@ -81,17 +85,48 @@ partial class MainForm
         // 
         // topPanel
         // 
+        topPanel.Controls.Add(populationSIzeNumberLabel);
+        topPanel.Controls.Add(populationSizeNameLabel);
+        topPanel.Controls.Add(trackBar1);
         topPanel.Controls.Add(deathCheckBox);
         topPanel.Controls.Add(kryptoniteCheckBox);
-        topPanel.Controls.Add(mutationBoostCheckBox);
+        topPanel.Controls.Add(radioactivityCheckBox);
         topPanel.Controls.Add(displayFpsCheckBox);
-        topPanel.Controls.Add(changingFloorCheckBox);
+        topPanel.Controls.Add(changeFloorCheckBox);
         topPanel.Controls.Add(button1);
         topPanel.Dock = DockStyle.Top;
         topPanel.Location = new Point(0, 0);
         topPanel.Name = "topPanel";
         topPanel.Size = new Size(1211, 57);
         topPanel.TabIndex = 1;
+        // 
+        // populationSizeNameLabel
+        // 
+        populationSizeNameLabel.AutoSize = true;
+        populationSizeNameLabel.Location = new Point(313, 16);
+        populationSizeNameLabel.Name = "populationSizeNameLabel";
+        populationSizeNameLabel.Size = new Size(68, 15);
+        populationSizeNameLabel.TabIndex = 7;
+        populationSizeNameLabel.Text = "Population:";
+        // 
+        // trackBar1
+        // 
+        trackBar1.AutoSize = false;
+        trackBar1.DataBindings.Add(new Binding("Value", parametersBindingSource, "PopulationSize", true, DataSourceUpdateMode.OnPropertyChanged));
+        trackBar1.LargeChange = 20;
+        trackBar1.Location = new Point(387, 12);
+        trackBar1.Maximum = 200;
+        trackBar1.Minimum = 8;
+        trackBar1.Name = "trackBar1";
+        trackBar1.Size = new Size(214, 33);
+        trackBar1.SmallChange = 4;
+        trackBar1.TabIndex = 6;
+        trackBar1.TickFrequency = 4;
+        trackBar1.Value = 8;
+        // 
+        // parametersBindingSource
+        // 
+        parametersBindingSource.DataSource = typeof(Parameters);
         // 
         // deathCheckBox
         // 
@@ -103,16 +138,12 @@ partial class MainForm
         deathCheckBox.FlatAppearance.BorderSize = 0;
         deathCheckBox.FlatStyle = FlatStyle.Flat;
         deathCheckBox.Image = Properties.Resources.DeathUp32;
-        deathCheckBox.Location = new Point(381, 7);
+        deathCheckBox.Location = new Point(244, 6);
         deathCheckBox.Name = "deathCheckBox";
         deathCheckBox.Size = new Size(32, 32);
         deathCheckBox.TabIndex = 5;
         toolTip1.SetToolTip(deathCheckBox, "Death");
         deathCheckBox.UseVisualStyleBackColor = false;
-        // 
-        // parametersBindingSource
-        // 
-        parametersBindingSource.DataSource = typeof(Parameters);
         // 
         // kryptoniteCheckBox
         // 
@@ -124,29 +155,29 @@ partial class MainForm
         kryptoniteCheckBox.FlatAppearance.BorderSize = 0;
         kryptoniteCheckBox.FlatStyle = FlatStyle.Flat;
         kryptoniteCheckBox.Image = Properties.Resources.Kryptonite32Up;
-        kryptoniteCheckBox.Location = new Point(343, 7);
+        kryptoniteCheckBox.Location = new Point(206, 6);
         kryptoniteCheckBox.Name = "kryptoniteCheckBox";
         kryptoniteCheckBox.Size = new Size(32, 32);
         kryptoniteCheckBox.TabIndex = 4;
         toolTip1.SetToolTip(kryptoniteCheckBox, "Kryptonite");
         kryptoniteCheckBox.UseVisualStyleBackColor = false;
         // 
-        // mutationBoostCheckBox
+        // radioactivityCheckBox
         // 
-        mutationBoostCheckBox.Appearance = Appearance.Button;
-        mutationBoostCheckBox.BackColor = SystemColors.Control;
-        mutationBoostCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "MutationBoost", true, DataSourceUpdateMode.OnPropertyChanged));
-        mutationBoostCheckBox.DataBindings.Add(new Binding("Enabled", parametersBindingSource, "MutationBoostEnabled", true, DataSourceUpdateMode.OnPropertyChanged));
-        mutationBoostCheckBox.DataBindings.Add(new Binding("Image", parametersBindingSource, "MutationBoostImage", true, DataSourceUpdateMode.OnPropertyChanged));
-        mutationBoostCheckBox.FlatAppearance.BorderSize = 0;
-        mutationBoostCheckBox.FlatStyle = FlatStyle.Flat;
-        mutationBoostCheckBox.Image = Properties.Resources.RadioactiveUp32;
-        mutationBoostCheckBox.Location = new Point(305, 7);
-        mutationBoostCheckBox.Name = "mutationBoostCheckBox";
-        mutationBoostCheckBox.Size = new Size(32, 32);
-        mutationBoostCheckBox.TabIndex = 3;
-        toolTip1.SetToolTip(mutationBoostCheckBox, "Radioactivity");
-        mutationBoostCheckBox.UseVisualStyleBackColor = false;
+        radioactivityCheckBox.Appearance = Appearance.Button;
+        radioactivityCheckBox.BackColor = SystemColors.Control;
+        radioactivityCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "Radioactivity", true, DataSourceUpdateMode.OnPropertyChanged));
+        radioactivityCheckBox.DataBindings.Add(new Binding("Enabled", parametersBindingSource, "RadioactivityEnabled", true, DataSourceUpdateMode.OnPropertyChanged));
+        radioactivityCheckBox.DataBindings.Add(new Binding("Image", parametersBindingSource, "RadioactivityImage", true, DataSourceUpdateMode.OnPropertyChanged));
+        radioactivityCheckBox.FlatAppearance.BorderSize = 0;
+        radioactivityCheckBox.FlatStyle = FlatStyle.Flat;
+        radioactivityCheckBox.Image = Properties.Resources.RadioactiveUp32;
+        radioactivityCheckBox.Location = new Point(168, 6);
+        radioactivityCheckBox.Name = "radioactivityCheckBox";
+        radioactivityCheckBox.Size = new Size(32, 32);
+        radioactivityCheckBox.TabIndex = 3;
+        toolTip1.SetToolTip(radioactivityCheckBox, "Radioactivity");
+        radioactivityCheckBox.UseVisualStyleBackColor = false;
         // 
         // displayFpsCheckBox
         // 
@@ -160,16 +191,20 @@ partial class MainForm
         displayFpsCheckBox.Text = "Display FPS";
         displayFpsCheckBox.UseVisualStyleBackColor = true;
         // 
-        // changingFloorCheckBox
+        // changeFloorCheckBox
         // 
-        changingFloorCheckBox.AutoSize = true;
-        changingFloorCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "ChangingFloor", true, DataSourceUpdateMode.OnPropertyChanged));
-        changingFloorCheckBox.Location = new Point(114, 15);
-        changingFloorCheckBox.Name = "changingFloorCheckBox";
-        changingFloorCheckBox.Size = new Size(166, 19);
-        changingFloorCheckBox.TabIndex = 1;
-        changingFloorCheckBox.Text = "Change Floor Every Round";
-        changingFloorCheckBox.UseVisualStyleBackColor = true;
+        changeFloorCheckBox.Appearance = Appearance.Button;
+        changeFloorCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "RegenerateFloor", true, DataSourceUpdateMode.OnPropertyChanged));
+        changeFloorCheckBox.DataBindings.Add(new Binding("Image", parametersBindingSource, "RegenerateFloorImage", true, DataSourceUpdateMode.OnPropertyChanged));
+        changeFloorCheckBox.FlatAppearance.BorderSize = 0;
+        changeFloorCheckBox.FlatStyle = FlatStyle.Flat;
+        changeFloorCheckBox.Image = Properties.Resources.ChangeFloorUp32;
+        changeFloorCheckBox.Location = new Point(106, 7);
+        changeFloorCheckBox.Name = "changeFloorCheckBox";
+        changeFloorCheckBox.Size = new Size(32, 32);
+        changeFloorCheckBox.TabIndex = 1;
+        toolTip1.SetToolTip(changeFloorCheckBox, "Regenerate Floor");
+        changeFloorCheckBox.UseVisualStyleBackColor = true;
         // 
         // button1
         // 
@@ -195,6 +230,17 @@ partial class MainForm
         familyTreeVPanel.VirtualAreaSize = new Size(0, 0);
         familyTreeVPanel.PaintSurface += FamilyTreeVPanel_PaintSurface;
         // 
+        // populationSIzeNumberLabel
+        // 
+        populationSIzeNumberLabel.AutoSize = true;
+        populationSIzeNumberLabel.BorderStyle = BorderStyle.Fixed3D;
+        populationSIzeNumberLabel.DataBindings.Add(new Binding("Text", parametersBindingSource, "PopulationSize", true, DataSourceUpdateMode.OnPropertyChanged));
+        populationSIzeNumberLabel.Location = new Point(607, 15);
+        populationSIzeNumberLabel.Name = "populationSIzeNumberLabel";
+        populationSIzeNumberLabel.Size = new Size(40, 17);
+        populationSIzeNumberLabel.TabIndex = 8;
+        populationSIzeNumberLabel.Text = "label1";
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -210,6 +256,7 @@ partial class MainForm
         mainSplitContainer.ResumeLayout(false);
         topPanel.ResumeLayout(false);
         topPanel.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)trackBar1).EndInit();
         ((System.ComponentModel.ISupportInitialize)parametersBindingSource).EndInit();
         ResumeLayout(false);
     }
@@ -221,11 +268,14 @@ partial class MainForm
     private Panel topPanel;
     private Button button1;
     private BindingSource parametersBindingSource;
-    private CheckBox changingFloorCheckBox;
-    private Views.Controls.VPanel familyTreeVPanel;
+    private CheckBox changeFloorCheckBox;
+    private Views.Controls.ScrollableSKGLControl familyTreeVPanel;
     private CheckBox displayFpsCheckBox;
-    private CheckBox mutationBoostCheckBox;
+    private CheckBox radioactivityCheckBox;
     private CheckBox kryptoniteCheckBox;
     private CheckBox deathCheckBox;
     private ToolTip toolTip1;
+    private TrackBar trackBar1;
+    private Label populationSizeNameLabel;
+    private Label populationSIzeNumberLabel;
 }

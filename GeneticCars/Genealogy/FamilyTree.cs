@@ -1,62 +1,54 @@
-﻿namespace GeneticCars.Evolution;
+﻿using GeneticCars.Cars;
+using GeneticCars.Evolution;
+
+namespace GeneticCars.Genealogy;
 
 public partial class FamilyTree
 {
-    public List<Node[]> Generations { get; } = new(100);
+    public List<NodesGeneration> Generations { get; } = new(100);
 
-    public readonly struct Node(Individual individual, int? ancestor1Index, int? ancestor2Index, bool fitnessKnown)
+    public void UpdateScoredGeneration(Generation<Car> carGeneration)
     {
-        public Class Class { get; init; } = individual.Class;
-        public float? Fitness { get; init; } = fitnessKnown ? individual.Fitness : null;
-        public string Text { get; init; } = individual.Identity.InfoText;
-        public int? Ancestor1Index { get; init; } = ancestor1Index;
-        public int? Ancestor2Index { get; init; } = ancestor2Index;
-
-        public override string ToString() => $"{Text} ({Fitness}) {Class}, ancestors [{Ancestor1Index}, {Ancestor2Index}]";
-    }
-
-    public void UpdateScoredGeneration(IEnumerable<Individual> individuals)
-    {
-        Node[] newGeneration;
+        Node[] updatedPopulation;
         if (Generations.Count > 1) { // Unscored generation is already there
-            Node[] ancestors = Generations[^2];
+            Node[] ancestors = Generations[^2].Population;
             var indices = new Dictionary<string, int>(ancestors.Length * 3 / 2, StringComparer.Ordinal);
             for (int i = 0; i < ancestors.Length; i++) {
                 indices[ancestors[i].Text] = i;
             }
-            newGeneration = individuals
+            updatedPopulation = carGeneration.Population
                 .OrderByDescending(i => i.Fitness)
                 .ThenBy(i => i.Identity)
                 .Select(i => new Node(i, GetIndex(i.Ancestor1, indices), GetIndex(i.Ancestor2, indices), true))
                 .ToArray();
         } else {
-            newGeneration = individuals
+            updatedPopulation = carGeneration.Population
                 .OrderByDescending(i => i.Fitness)
                 .ThenBy(i => i.Identity)
                 .Select(i => new Node(i, null, null, true))
                 .ToArray();
         }
-        Generations[^1] = newGeneration;
+        Generations[^1].Population = updatedPopulation;
     }
 
-    public void AddUnscoredGeneration(IEnumerable<Individual> individuals)
+    public void AddUnscoredGeneration(Generation<Car> carGeneration)
     {
-        Node[] newGeneration;
+        Node[] newPopulation;
         if (Generations.Count > 0) {
-            Node[] ancestors = Generations[^1];
+            Node[] ancestors = Generations[^1].Population;
             var indices = new Dictionary<string, int>(ancestors.Length * 3 / 2, StringComparer.Ordinal);
             for (int i = 0; i < ancestors.Length; i++) {
                 indices[ancestors[i].Text] = i;
             }
-            newGeneration = individuals
+            newPopulation = carGeneration.Population
                 .Select(ind => new Node(ind, GetIndex(ind.Ancestor1, indices), GetIndex(ind.Ancestor2, indices), false))
                 .ToArray();
         } else {
-            newGeneration = individuals
+            newPopulation = carGeneration.Population
                 .Select(ind => new Node(ind, null, null, false))
                 .ToArray();
         }
-        Generations.Add(newGeneration);
+        Generations.Add(new NodesGeneration(newPopulation, carGeneration));
     }
 
     private static int? GetIndex(Individual? ancestor, Dictionary<string, int> indices) =>

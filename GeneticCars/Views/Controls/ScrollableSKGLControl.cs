@@ -5,7 +5,7 @@ using WinForms = System.Windows.Forms;
 namespace GeneticCars.Views.Controls;
 
 [DefaultEvent(nameof(PaintSurface))]
-public partial class VPanel : UserControl
+public partial class ScrollableSKGLControl : UserControl
 {
     private const int SBWIDTH = 16; // Width of vertical and height of horizontal scrollbar. Hight and width of buttons.
     private const int MINSLIDERSIZE = 10; // Minimum height of vertical and minimum width of horizontal slider.
@@ -13,7 +13,7 @@ public partial class VPanel : UserControl
 
     private int _oversizeX = 0, _oversizeY = 0;  // Oversize of slider, when minimum slider size under-run
 
-    public VPanel()
+    public ScrollableSKGLControl()
     {
         InitializeComponent();
         timer.Tick += Timer_Tick;
@@ -21,7 +21,7 @@ public partial class VPanel : UserControl
 
     private EventHandler? _timerAction;
 
-    public event EventHandler<VPanelScrollEventArgs>? ClientAreaScroll;
+    public event EventHandler<SKScrollEventArgs>? ClientAreaScroll;
 
     public delegate void PaintSurfaceHandler(SKPaintGLSurfaceEventArgs e, SKRect viewBox);
 
@@ -85,7 +85,7 @@ public partial class VPanel : UserControl
             skGLControl.Invalidate();
             skGLControl.Update();
             if (callOnClientAreaScroll) {
-                ClientAreaScroll?.Invoke(this, new VPanelScrollEventArgs(dx, dy));
+                ClientAreaScroll?.Invoke(this, new SKScrollEventArgs(dx, dy));
             }
         }
     }

@@ -1,6 +1,6 @@
 namespace GeneticCars.Views.Controls
 {
-    partial class VPanel {
+    partial class ScrollableSKGLControl {
         /// <summary>
         /// Required designer variable.
         /// </summary>

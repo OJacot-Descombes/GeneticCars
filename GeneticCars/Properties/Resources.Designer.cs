@@ -63,6 +63,26 @@ namespace GeneticCars.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ChangeFloorDn32 {
+            get {
+                object obj = ResourceManager.GetObject("ChangeFloorDn32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ChangeFloorUp32 {
+            get {
+                object obj = ResourceManager.GetObject("ChangeFloorUp32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DeathDn32 {
             get {
                 object obj = ResourceManager.GetObject("DeathDn32", resourceCulture);
