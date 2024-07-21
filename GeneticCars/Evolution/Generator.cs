@@ -32,13 +32,13 @@ public class Generator<T>
         int newCreationsDestination;
         var genomeHashes = new HashSet<int>();
 
-        if (parameters.Death) {
+        if (parameters.Death.Value) {
             newCreationsDestination =
                 Generator<T>.Extinguish(world, oldPopulation, newPopulation, position, parameters, genomeHashes);
         } else {
             int eliteCount = Math.Min(newPopulation.Length / 4, oldPopulation.Length);
             var eliteSpan = oldPopulation.AsSpan(0, eliteCount);
-            if (parameters.Radioactivity) {
+            if (parameters.Radioactivity.Value) {
                 IrradiateElite(eliteSpan, newPopulation.AsSpan(0, eliteCount), genomeHashes, world, position);
             } else {
                 CloneElite(eliteSpan, newPopulation.AsSpan(0, eliteCount), genomeHashes, world, position);
@@ -50,7 +50,7 @@ public class Generator<T>
             destination = newPopulation.AsSpan(2 * eliteCount, eliteCount);
             CreateMutations(eliteSpan, destination, genomeHashes, world, position);
 
-            if (parameters.Kryptonite) {
+            if (parameters.Kryptonite.Value) {
                 Span<T> kryptoniteSpan = newPopulation.AsSpan(eliteCount, 2 * eliteCount); // Crossovers and mutations.
                 KillSimilarTwins(kryptoniteSpan, world, position);
             }
@@ -66,7 +66,7 @@ public class Generator<T>
     private static int Extinguish(World world, T[] oldPopulation, T[] newPopulation, Vector2 position,
         Parameters parameters, HashSet<int> genomeHashes)
     {
-        parameters.Death = false;
+        parameters.Death.Value = false;
         int keepAliveCount = newPopulation.Length / 8;
         var distinctElite = oldPopulation.DistinctBy(i => i.Identity.Name)
             .Take(keepAliveCount)

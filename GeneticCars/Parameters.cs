@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using GeneticCars.Properties;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace GeneticCars;
@@ -6,6 +7,13 @@ namespace GeneticCars;
 public class Parameters : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    public Parameters()
+    {
+        Radioactivity = new(this);
+        Kryptonite = new(this);
+        Death = new(this);
+    }
 
     int _populationSize = 40;
     public int PopulationSize
@@ -35,164 +43,14 @@ public class Parameters : INotifyPropertyChanged
 
     public string PlayButtonText => _playing ? "Pause" : "Resume";
 
-    bool _regenerateFloor;
-    public bool RegenerateFloor
-    {
-        get { return _regenerateFloor; }
-        set {
-            if (value != _regenerateFloor) {
-                _regenerateFloor = value;
-                OnPropertyChanged(nameof(RegenerateFloor));
-                if (value) {
-                    RegenerateFloorImage = Properties.Resources.ChangeFloorDn32;
-                } else {
-                    RegenerateFloorImage = Properties.Resources.ChangeFloorUp32;
-                }
-            }
-        }
-    }
-
-    private Bitmap _regenerateFloorImage = Properties.Resources.ChangeFloorUp32;
-    public Bitmap RegenerateFloorImage
-    {
-        get { return _regenerateFloorImage; }
-        set {
-            if (value != _regenerateFloorImage) {
-                _regenerateFloorImage = value;
-                OnPropertyChanged(nameof(RegenerateFloorImage));
-            }
-        }
-    }
-
-
     public bool DisplayFps { get; set; }
 
-    private bool _radioactivity;
-    public bool Radioactivity
-    {
-        get { return _radioactivity; }
-        set {
-            if (value != _radioactivity) {
-                _radioactivity = value;
-                OnPropertyChanged(nameof(Radioactivity));
-                if (value) {
-                    RadioactivityImage = Properties.Resources.RadioactiveDn32;
-                    Death = false;
-                } else {
-                    RadioactivityImage = Properties.Resources.RadioactiveUp32;
-                }
-            }
-        }
-    }
+    public OptionButtonParameter RegenerateFloor { get; } = new(
+        Resources.ChangeFloorUp32, Resources.ChangeFloorDn32) { Enabled = true };
 
-    private bool _radioactivityEnabled;
-    public bool RadioactivityEnabled
-    {
-        get { return _radioactivityEnabled; }
-        set {
-            if (value != _radioactivityEnabled) {
-                _radioactivityEnabled = value;
-                OnPropertyChanged(nameof(RadioactivityEnabled));
-            }
-        }
-    }
-
-    private Bitmap _radioactivityImage = Properties.Resources.RadioactiveUp32;
-    public Bitmap RadioactivityImage
-    {
-        get { return _radioactivityImage; }
-        set {
-            if (value != _radioactivityImage) {
-                _radioactivityImage = value;
-                OnPropertyChanged(nameof(RadioactivityImage));
-            }
-        }
-    }
-
-    private bool _kryptonite;
-    public bool Kryptonite
-    {
-        get { return _kryptonite; }
-        set {
-            if (value != _kryptonite) {
-                _kryptonite = value;
-                OnPropertyChanged(nameof(Kryptonite));
-                if (value) {
-                    KryptoniteImage = Properties.Resources.Kryptonite32Dn;
-                    Death = false;
-                } else {
-                    KryptoniteImage = Properties.Resources.Kryptonite32Up;
-                }
-            }
-        }
-    }
-
-    private bool _kryptoniteEnabled;
-    public bool KryptoniteEnabled
-    {
-        get { return _kryptoniteEnabled; }
-        set {
-            if (value != _kryptoniteEnabled) {
-                _kryptoniteEnabled = value;
-                OnPropertyChanged(nameof(KryptoniteEnabled));
-            }
-        }
-    }
-
-    private Bitmap _kryptoniteImage = Properties.Resources.Kryptonite32Up;
-    public Bitmap KryptoniteImage
-    {
-        get { return _kryptoniteImage; }
-        set {
-            if (value != _kryptoniteImage) {
-                _kryptoniteImage = value;
-                OnPropertyChanged(nameof(KryptoniteImage));
-            }
-        }
-    }
-
-    private bool _death;
-    public bool Death
-    {
-        get { return _death; }
-        set {
-            if (value != _death) {
-                _death = value;
-                OnPropertyChanged(nameof(Death));
-                if (value) {
-                    DeathImage = Properties.Resources.DeathDn32;
-                    Radioactivity = false;
-                    Kryptonite = false;
-                } else {
-                    DeathImage = Properties.Resources.DeathUp32;
-                }
-            }
-        }
-    }
-
-    private bool _deathEnabled;
-    public bool DeathEnabled
-    {
-        get { return _deathEnabled; }
-        set {
-            if (value != _deathEnabled) {
-                _deathEnabled = value;
-                OnPropertyChanged(nameof(DeathEnabled));
-            }
-        }
-    }
-
-    private Bitmap _deathImage = Properties.Resources.DeathUp32;
-    public Bitmap DeathImage
-    {
-        get { return _deathImage; }
-        set {
-            if (value != _deathImage) {
-                _deathImage = value;
-                OnPropertyChanged(nameof(DeathImage));
-            }
-        }
-    }
+    public RadioactivityParameter Radioactivity { get; }
+    public KryptoniteParameter Kryptonite { get; }
+    public DeathParameter Death { get; }
 
     private ICommand? _playCommand;
     public ICommand PlayCommand => _playCommand ??= new RelayCommand(() => { Playing = !Playing; });
@@ -214,5 +72,33 @@ public class Parameters : INotifyPropertyChanged
         ///  Triggers sending a notification, that the command availability has changed.
         /// </summary>
         public void NotifyCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public class RadioactivityParameter(Parameters parameters)
+        : OptionButtonParameter(Resources.RadioactiveUp32, Resources.RadioactiveDn32)
+    {
+        protected override void SwitchedOn()
+        {
+            parameters.Death.Value = false;
+        }
+    }
+
+    public class KryptoniteParameter(Parameters parameters)
+        : OptionButtonParameter(Resources.Kryptonite32Up, Resources.Kryptonite32Dn)
+    {
+        protected override void SwitchedOn()
+        {
+            parameters.Death.Value = false;
+        }
+    }
+
+    public class DeathParameter(Parameters parameters)
+        : OptionButtonParameter(Resources.DeathUp32, Resources.DeathDn32)
+    {
+        protected override void SwitchedOn()
+        {
+            parameters.Radioactivity.Value = false;
+            parameters.Kryptonite.Value = false;
+        }
     }
 }

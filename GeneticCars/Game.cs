@@ -22,7 +22,7 @@ public class Game
 
     private readonly Camera _camera = new();
     private readonly Generator<Car> _generator = new();
-    private readonly Genealogy.FamilyTree _familyTree = new();
+    private readonly FamilyTree _familyTree = new();
     private readonly FpsMeter _fpsMeter = new();
 
     private bool _running;
@@ -98,8 +98,6 @@ public class Game
 
     public async void Run(SKGLControl skGLControl)
     {
-        Parameters.RadioactivityEnabled = false;
-        Parameters.Radioactivity = false;
         var world = CreateWorld();
         _generator.GenerateInitial(world, _carGeneration.Population, _spawnPosition);
 
@@ -133,41 +131,41 @@ public class Game
             await Task.Delay(500);
             _camera.Reset();
             world = CreateWorld();
-            if (Parameters.RegenerateFloor) {
+            if (Parameters.RegenerateFloor.Value) {
                 _floor = new(new Vector2(-4.9f, 2f));
             }
-            if (Parameters.Death) {
+            if (Parameters.Death.Value) {
                 _lastDeathGeneration = _familyTree.Generations.Count;
             }
             _generator.Evolve(world, _carGeneration, _spawnPosition, Parameters);
-            Genealogy.FamilyTree.Node[] lastScoredGeneration = _familyTree.Generations[^1].Population;
+            FamilyTree.Node[] lastScoredGeneration = _familyTree.Generations[^1].Population;
 
             EnableDisableRadioactivity(lastScoredGeneration);
             EnableDisableKryptonite();
-            Parameters.DeathEnabled = _familyTree.Generations.Count >= 10 && 
+            Parameters.Death.Enabled = _familyTree.Generations.Count >= 10 && 
                 _familyTree.Generations.Count > _lastDeathGeneration + 2;
         }
     }
 
-    private void EnableDisableRadioactivity(Genealogy.FamilyTree.Node[] lastScoredGeneration)
+    private void EnableDisableRadioactivity(FamilyTree.Node[] lastScoredGeneration)
     {
-        Parameters.RadioactivityEnabled = !Parameters.Death && _familyTree.Generations.Count >= 5 &&
+        Parameters.Radioactivity.Enabled = !Parameters.Death.Value && _familyTree.Generations.Count >= 5 &&
             Generator<Car>.CountIrradiatable(
                 lastScoredGeneration
                 .Take(lastScoredGeneration.Length / 4)
                 .Select(n => n.Fitness ?? 0f)) > Parameters.PopulationSize / 20;
-        if (!Parameters.RadioactivityEnabled) {
-            Parameters.Radioactivity = false;
+        if (!Parameters.Radioactivity.Enabled) {
+            Parameters.Radioactivity.Value = false;
         }
     }
 
     private void EnableDisableKryptonite()
     {
-        Parameters.KryptoniteEnabled = !Parameters.Death && _familyTree.Generations.Count >= 8 &&
+        Parameters.Kryptonite.Enabled = !Parameters.Death.Value && _familyTree.Generations.Count >= 8 &&
             Generator<Car>.KillableByKryptoniteCountIsAtLeast(
                 _carGeneration.Population, Math.Max(1, Parameters.PopulationSize / 10));
-        if (!Parameters.KryptoniteEnabled) {
-            Parameters.Kryptonite = false;
+        if (!Parameters.Kryptonite.Enabled) {
+            Parameters.Kryptonite.Value = false;
         }
     }
 

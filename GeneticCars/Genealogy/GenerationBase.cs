@@ -10,9 +10,9 @@ public abstract class GenerationBase
 
     public void SaveParameters(Parameters parameters)
     {
-        RadioactivityApplied = parameters.Radioactivity;
-        KryptoniteApplied = parameters.Kryptonite;
-        DeathApplied = parameters.Death;
-        NewFloorGenerated = parameters.RegenerateFloor;
+        RadioactivityApplied = parameters.Radioactivity.Value;
+        KryptoniteApplied = parameters.Kryptonite.Value;
+        DeathApplied = parameters.Death.Value;
+        NewFloorGenerated = parameters.RegenerateFloor.Value;
     }
 }
