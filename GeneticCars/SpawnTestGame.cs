@@ -24,7 +24,7 @@ public class SpawnTestGame
         canvas.Scale(Zoom, -Zoom);
 
         _floor.Draw(canvas);
-        _car.Draw(canvas);
+        _car.Draw(canvas, new Parameters());
     }
 
     public async void Run(SKGLControl control)

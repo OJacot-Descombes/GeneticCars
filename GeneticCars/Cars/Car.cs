@@ -1,5 +1,8 @@
 ﻿using GeneticCars.Evolution;
+using nkast.Aether.Physics2D.Common.Decomposition;
+using nkast.Aether.Physics2D.Common;
 using nkast.Aether.Physics2D.Dynamics.Joints;
+using nkast.Aether.Physics2D.Dynamics;
 
 namespace GeneticCars.Cars;
 
@@ -118,10 +121,17 @@ public partial class Car : Individual, IIndividualFactory<Car>
             new(0f, -ChassisAxis(9).Value),
             new(ChassisAxis(10).Value, -ChassisAxis(11).Value)
         ];
-        var fixture = chassis.CreatePolygon(chassisVertices, ChassisDensity.Value);
-        fixture.Friction = 10;
-        fixture.Restitution = 0.2f;
-        fixture.CollisionGroup = -1;
+
+        // Collisions are not accurately calculated for concave polygons, so we divide them into convex polygons.
+        List<Vertices> convexPieces =
+            Triangulate.ConvexPartition(chassisVertices, TriangulationAlgorithm.Bayazit);
+        var fixtures = chassis.CreateCompoundPolygon(convexPieces, ChassisDensity.Value);
+        foreach (var fixture in fixtures) {
+            fixture.Friction = 10;
+            fixture.Restitution = 0.2f;
+            fixture.CollisionGroup = -1;
+        }
+
         return (chassis, chassisVertices);
     }
 

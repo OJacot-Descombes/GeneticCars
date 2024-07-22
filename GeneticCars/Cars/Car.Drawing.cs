@@ -2,6 +2,7 @@
 
 public partial class Car
 {
+    private const float InfoDeltaY = 2.8f;
     private static readonly SKFont _carFont = SKTypeface.FromFamilyName("Arial").ToFont(0.5f);
 
     private SKRect _rect;
@@ -11,12 +12,12 @@ public partial class Car
     private float _lastLabelY;
     private float _nextInfoY;
 
-    public void Draw(SKCanvas canvas)
+    public void Draw(SKCanvas canvas, Parameters parameters)
     {
         var chassisFillPaint = CreateColoredFillPaint(ChassisDensity.Fraction);
         var chassisStrokePaint = ColoredStrokePaint;
 
-        DrawInfo(canvas);
+        DrawInfo(canvas, parameters);
         const float OverSize = 60 / Game.Zoom;
         if (_chassis.Position.X > canvas.LocalClipBounds.Left - OverSize &&
             _chassis.Position.X < canvas.LocalClipBounds.Right + OverSize) {
@@ -27,8 +28,16 @@ public partial class Car
         }
     }
 
-    public void CalculateNextInfoPosition()
+    public void CalculateNextInfoPosition(Parameters parameters)
     {
+        _rect = GetInfoRect(Identity.InfoText, parameters);
+        if (_rect.IsEmpty) {
+            _lastLabelX = _chassis.Position.X;
+            _integralX = 0;
+            _lastLabelY = _chassis.Position.Y + InfoDeltaY;
+            return;
+        }
+
         // Make smooth horizontal label movements
         float deltaX = 0.1f * (_chassis.Position.X - _lastLabelX);
 
@@ -43,8 +52,7 @@ public partial class Car
         _nextInfoX = _lastLabelX + deltaX + _integralX;
         _lastLabelX = _nextInfoX;
 
-        _nextInfoY = _chassis.Position.Y;
-        _rect = GetInfoRect(Identity.InfoText);
+        _nextInfoY = _chassis.Position.Y + InfoDeltaY;
         float displacement = Game.LabelPlacer.GetVerticalDisplacement(_rect);
         _nextInfoY += displacement;
 
@@ -53,47 +61,57 @@ public partial class Car
         _lastLabelY = _nextInfoY;
     }
 
-    private void DrawInfo(SKCanvas canvas)
+    private void DrawInfo(SKCanvas canvas, Parameters parameters)
     {
+        if (_rect.IsEmpty) {
+            return;
+        }
+
+        ////TEST 
+        //using var paint = new SKPaint { Color = SKColors.Red, IsStroke = true };
+        //canvas.DrawRect(_rect, paint);
+
+
         float max = canvas.LocalClipBounds.Bottom - 4.5f;
         if (_nextInfoY > max) {
             _lastLabelY = max;
         } else if (_rect.Right > canvas.LocalClipBounds.Left && _rect.Left < canvas.LocalClipBounds.Right) {
-            var matrix = canvas.TotalMatrix;
-
-            canvas.Scale(1, -1, 0, _nextInfoY);
-            float xText = _nextInfoX - 1;
-            float yText = _nextInfoY - 3;
-            canvas.DrawText(Identity.InfoText, xText, yText, _carFont, ColoredInfoTextPaint);
-            canvas.SetMatrix(matrix);
-
-            yText = _nextInfoY + 3.4f;
-            if (IsAlive && Health < Game.MaxCarHealth) {
-                canvas.DrawRect(xText, yText - 0.7f, 2f * Health / Game.MaxCarHealth,
-                    0.15f, ColoredFillPaint);
-                canvas.DrawRect(xText, yText - 0.7f, 2, 0.15f, _infoStrokePaint);
+            float y = _nextInfoY;
+            float x = _nextInfoX - 1;
+            if (parameters.DisplayHealthBar && IsAlive && Health < Game.MaxCarHealth) {
+                canvas.DrawRect(x, y, 2f * Health / Game.MaxCarHealth, 0.15f, ColoredFillPaint);
+                canvas.DrawRect(x, y, 2, 0.15f, _infoStrokePaint);
+                y -= 0.25f;
+            }
+            if (parameters.DisplayNames) {
+                var matrix = canvas.TotalMatrix;
+                canvas.Scale(1, -1, 0, _nextInfoY);
+                canvas.DrawText(Identity.InfoText, x, y - 0.1f, _carFont, ColoredInfoTextPaint);
+                canvas.SetMatrix(matrix);
             }
         }
     }
 
-    public SKRect GetInfoRect(string text)
+    public SKRect GetInfoRect(string text, Parameters parameters)
     {
-        float xText = _nextInfoX - 1;
-        float yText = _chassis.Position.Y + 2.7f;
-        float width = _carFont.MeasureText(text);
+        bool drawHealthBar = parameters.DisplayHealthBar && IsAlive && Health < Game.MaxCarHealth;
+        if (parameters.DisplayNames || drawHealthBar) {
+            float xText = _nextInfoX - 1;
+            float yText = _chassis.Position.Y + InfoDeltaY;
 
-        float left = xText - 0.1f;
-        float top, right, bottom;
-        if (IsAlive && Health < Game.MaxCarHealth) {
-            top = yText - 0.05f;
-            right = left + Math.Max(2f, width) + 0.2f;
-            bottom = top + 0.75f;
-        } else {
-            top = yText + 0.15f;
-            right = left + width + 0.2f;
-            bottom = top + 0.55f;
+            float left = xText - 0.1f;
+
+            (float barWidth, float barHeight) = drawHealthBar ? (2f, 0.25f) : (0f, 0f);
+            (float textWidth, float textHeight) = parameters.DisplayNames
+                ? (_carFont.MeasureText(text), 0.55f)
+                : (0f, 0f);
+
+            float top = yText;
+            float right = left + Math.Max(barWidth, textWidth) + 0.2f;
+            float bottom = top + barHeight + textHeight;
+            return new SKRect(left, top, right, bottom);
         }
-        return new SKRect(left, top, right, bottom);
+        return SKRect.Empty;
     }
 
     private void DrawWheels(SKCanvas canvas, SKPaint chassisFillPaint, SKPaint chassisStrokePaint)

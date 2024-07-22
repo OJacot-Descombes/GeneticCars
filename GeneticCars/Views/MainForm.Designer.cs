@@ -43,6 +43,8 @@ partial class MainForm
         button1 = new Button();
         familyTreeVPanel = new Views.Controls.ScrollableSKGLControl();
         toolTip1 = new ToolTip(components);
+        displayNamesCheckBox = new CheckBox();
+        displayHealthBarCheckBox = new CheckBox();
         ((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
         mainSplitContainer.Panel1.SuspendLayout();
         mainSplitContainer.Panel2.SuspendLayout();
@@ -56,10 +58,10 @@ partial class MainForm
         // 
         simulationSKGLControl.BackColor = Color.Black;
         simulationSKGLControl.Dock = DockStyle.Fill;
-        simulationSKGLControl.Location = new Point(0, 57);
+        simulationSKGLControl.Location = new Point(0, 62);
         simulationSKGLControl.Margin = new Padding(4, 3, 4, 3);
         simulationSKGLControl.Name = "simulationSKGLControl";
-        simulationSKGLControl.Size = new Size(1211, 457);
+        simulationSKGLControl.Size = new Size(1211, 452);
         simulationSKGLControl.TabIndex = 0;
         simulationSKGLControl.VSync = true;
         simulationSKGLControl.PaintSurface += SimulationSKGLControl_PaintSurface;
@@ -85,6 +87,8 @@ partial class MainForm
         // 
         // topPanel
         // 
+        topPanel.Controls.Add(displayHealthBarCheckBox);
+        topPanel.Controls.Add(displayNamesCheckBox);
         topPanel.Controls.Add(populationSIzeNumberLabel);
         topPanel.Controls.Add(populationSizeNameLabel);
         topPanel.Controls.Add(trackBar1);
@@ -97,7 +101,7 @@ partial class MainForm
         topPanel.Dock = DockStyle.Top;
         topPanel.Location = new Point(0, 0);
         topPanel.Name = "topPanel";
-        topPanel.Size = new Size(1211, 57);
+        topPanel.Size = new Size(1211, 62);
         topPanel.TabIndex = 1;
         // 
         // populationSIzeNumberLabel
@@ -195,7 +199,7 @@ partial class MainForm
         displayFpsCheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         displayFpsCheckBox.AutoSize = true;
         displayFpsCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayFps", true, DataSourceUpdateMode.OnPropertyChanged));
-        displayFpsCheckBox.Location = new Point(1113, 15);
+        displayFpsCheckBox.Location = new Point(1113, 12);
         displayFpsCheckBox.Name = "displayFpsCheckBox";
         displayFpsCheckBox.Size = new Size(86, 19);
         displayFpsCheckBox.TabIndex = 2;
@@ -241,6 +245,28 @@ partial class MainForm
         familyTreeVPanel.VirtualAreaSize = new Size(0, 0);
         familyTreeVPanel.PaintSurface += FamilyTreeVPanel_PaintSurface;
         // 
+        // displayNamesCheckBox
+        // 
+        displayNamesCheckBox.AutoSize = true;
+        displayNamesCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayNames", true, DataSourceUpdateMode.OnPropertyChanged));
+        displayNamesCheckBox.Location = new Point(685, 12);
+        displayNamesCheckBox.Name = "displayNamesCheckBox";
+        displayNamesCheckBox.Size = new Size(102, 19);
+        displayNamesCheckBox.TabIndex = 9;
+        displayNamesCheckBox.Text = "Display names";
+        displayNamesCheckBox.UseVisualStyleBackColor = true;
+        // 
+        // displayHealthBarCheckBox
+        // 
+        displayHealthBarCheckBox.AutoSize = true;
+        displayHealthBarCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayHealthBar", true, DataSourceUpdateMode.OnPropertyChanged));
+        displayHealthBarCheckBox.Location = new Point(685, 37);
+        displayHealthBarCheckBox.Name = "displayHealthBarCheckBox";
+        displayHealthBarCheckBox.Size = new Size(122, 19);
+        displayHealthBarCheckBox.TabIndex = 10;
+        displayHealthBarCheckBox.Text = "Display health-bar";
+        displayHealthBarCheckBox.UseVisualStyleBackColor = true;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -278,4 +304,6 @@ partial class MainForm
     private TrackBar trackBar1;
     private Label populationSizeNameLabel;
     private Label populationSIzeNumberLabel;
+    private CheckBox displayNamesCheckBox;
+    private CheckBox displayHealthBarCheckBox;
 }

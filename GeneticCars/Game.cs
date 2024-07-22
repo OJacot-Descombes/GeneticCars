@@ -47,7 +47,7 @@ public class Game
         foreach (Car car in _carGeneration.Population) {
             // We have to this without changing the order, because otherwise the dead car's labels will always
             // display at the bottom, which makes them drop when their car dies.
-            car.CalculateNextInfoPosition();
+            car.CalculateNextInfoPosition(Parameters);
         }
         Car focusedCar = GetFocusedCar();
         if (focusedCar is null) {
@@ -68,13 +68,13 @@ public class Game
         for (int i = _carGeneration.Population.Length - 1; i >= 0; i--) {
             var car = _carGeneration.Population[i];
             if (!car.IsAlive) {
-                car.Draw(canvas);
+                car.Draw(canvas, Parameters);
             }
         }
         for (int i = _carGeneration.Population.Length - 1; i >= 0; i--) {
             var car = _carGeneration.Population[i];
             if (car.IsAlive) {
-                car.Draw(canvas);
+                car.Draw(canvas, Parameters);
             }
         }
         LabelPlacer.Reset();
@@ -142,7 +142,7 @@ public class Game
 
             EnableDisableRadioactivity(lastScoredGeneration);
             EnableDisableKryptonite();
-            Parameters.Death.Enabled = _familyTree.Generations.Count >= 10 && 
+            Parameters.Death.Enabled = _familyTree.Generations.Count >= 10 &&
                 _familyTree.Generations.Count > _lastDeathGeneration + 2;
         }
     }
