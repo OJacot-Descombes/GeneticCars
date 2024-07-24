@@ -72,7 +72,7 @@ public partial class Car
         //canvas.DrawRect(_rect, paint);
 
 
-        float max = canvas.LocalClipBounds.Bottom - 4.5f;
+        float max = canvas.LocalClipBounds.Bottom - 1.8f;
         if (_nextInfoY > max) {
             _lastLabelY = max;
         } else if (_rect.Right > canvas.LocalClipBounds.Left && _rect.Left < canvas.LocalClipBounds.Right) {

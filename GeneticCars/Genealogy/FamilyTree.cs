@@ -19,13 +19,14 @@ public partial class FamilyTree
             updatedPopulation = carGeneration.Population
                 .OrderByDescending(i => i.Fitness)
                 .ThenBy(i => i.Identity)
-                .Select(i => new Node(i, GetIndex(i.Ancestor1, indices), GetIndex(i.Ancestor2, indices), true))
+                .Select(i =>
+                    new Node(i, GetIndex(i.Ancestor1, indices), GetIndex(i.Ancestor2, indices), FitnessHandling.Known))
                 .ToArray();
         } else {
             updatedPopulation = carGeneration.Population
                 .OrderByDescending(i => i.Fitness)
                 .ThenBy(i => i.Identity)
-                .Select(i => new Node(i, null, null, true))
+                .Select(i => new Node(i, null, null, FitnessHandling.Known))
                 .ToArray();
         }
         Generations[^1].Population = updatedPopulation;
@@ -41,11 +42,14 @@ public partial class FamilyTree
                 indices[ancestors[i].Text] = i;
             }
             newPopulation = carGeneration.Population
-                .Select(ind => new Node(ind, GetIndex(ind.Ancestor1, indices), GetIndex(ind.Ancestor2, indices), false))
+                .Select(ind => new Node(ind, GetIndex(ind.Ancestor1, indices), GetIndex(ind.Ancestor2, indices),
+                    ind.Class == Class.Elite && !carGeneration.NewFloorGenerated 
+                        ? FitnessHandling.Inherit
+                        : FitnessHandling.Unknown))
                 .ToArray();
         } else {
             newPopulation = carGeneration.Population
-                .Select(ind => new Node(ind, null, null, false))
+                .Select(ind => new Node(ind, null, null, FitnessHandling.Unknown))
                 .ToArray();
         }
         Generations.Add(new NodesGeneration(newPopulation, carGeneration));

@@ -7,7 +7,7 @@ public class SpawnTestGame
 {
     public const float Gravity = 9.81f;
     public const float Zoom = 50;
-    public const int Fps = 80;
+    public const int Fps = 120;
     public const int MaxCarHealth = Fps * 8;
     public const int CarCount = 1;
 
@@ -15,7 +15,13 @@ public class SpawnTestGame
     private Car _car = null!;
     private readonly Floor _floor = new(new Vector2(-4.9f, 2f));
 
-    public void Draw(SKPaintGLSurfaceEventArgs e)
+    public event EventHandler? FamilyTreeChanged;
+
+    public Parameters Parameters { get; } = new();
+
+    public Size FamilyTreePixelSize { get; } = new();
+
+    public void DrawSimulation(SKPaintGLSurfaceEventArgs e)
     {
         SKCanvas canvas = e.Surface.Canvas;
         canvas.Clear(SKColors.White);
@@ -25,6 +31,10 @@ public class SpawnTestGame
 
         _floor.Draw(canvas);
         _car.Draw(canvas, new Parameters());
+    }
+
+    public void DrawFamilyTree(SKPaintGLSurfaceEventArgs e, SKRect viewBox)
+    {
     }
 
     public async void Run(SKGLControl control)

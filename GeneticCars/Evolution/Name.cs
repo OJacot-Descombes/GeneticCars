@@ -8,9 +8,12 @@ public readonly record struct Name(string Raw, string Display) : IComparable, IC
 {
     public const char ChSurrogate = 'ä', ShSurrogate = 'ö', ThSurrogate = 'ü';
     public const char UpperChSurrogate = 'Ä', UpperShSurrogate = 'Ö', UpperThSurrogate = 'Ü';
-    private static readonly char[] consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't',
-        'v', 'w', 'x', 'z', ChSurrogate, ShSurrogate, ThSurrogate ];
-    private static readonly char[] vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
+    private static readonly char[] consonants = ['b', 'b', 'b', 'c', 'c', 'c', ChSurrogate, ChSurrogate, 
+        'd', 'd', 'd', 'd', 'f', 'f', 'g', 'g', 'g', 'g', 'h', 'h', 'h', 'j', 'k', 'k', 'l', 'l', 'l', 'l', 'l',
+        'm', 'm', 'm', 'm', 'n', 'n', 'n', 'n', 'n', 'n', 'p', 'p', 'p', 'p', 'q', 'r', 'r', 'r', 'r', 'r', 'r',
+        's', 's', 's', 's', ShSurrogate, ShSurrogate, ShSurrogate, 't', 't', 't', 't', ThSurrogate, ThSurrogate,
+        'v', 'v', 'w', 'w', 'x', 'z'];
+    private static readonly char[] vowels = ['a', 'a', 'e', 'e', 'e', 'i', 'i', 'i', 'o', 'o', 'u', 'y'];
 
     public Name(string raw) : this(raw, ToDisplay(raw))
     {

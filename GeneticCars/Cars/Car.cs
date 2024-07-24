@@ -121,10 +121,11 @@ public partial class Car : Individual, IIndividualFactory<Car>
             new(0f, -ChassisAxis(9).Value),
             new(ChassisAxis(10).Value, -ChassisAxis(11).Value)
         ];
+        AlignWheelsHorizontally(chassisVertices);
 
         // Collisions are not accurately calculated for concave polygons, so we divide them into convex polygons.
         List<Vertices> convexPieces =
-            Triangulate.ConvexPartition(chassisVertices, TriangulationAlgorithm.Bayazit);
+            Triangulate.ConvexPartition(chassisVertices, TriangulationAlgorithm.Flipcode);
         var fixtures = chassis.CreateCompoundPolygon(convexPieces, ChassisDensity.Value);
         foreach (var fixture in fixtures) {
             fixture.Friction = 10;
@@ -133,6 +134,35 @@ public partial class Car : Individual, IIndividualFactory<Car>
         }
 
         return (chassis, chassisVertices);
+    }
+
+    private void AlignWheelsHorizontally(Vertices chassisVertices)
+    {
+        int w0 = GetWheelCassisIndex(1);
+        int w1 = GetWheelCassisIndex(0);
+
+        // Align wheel axis
+        Vector2 delta = chassisVertices[w1] - chassisVertices[w0];
+        delta.Y = -delta.Y;
+        delta.Normalize();
+        for (int i = 0; i < chassisVertices.Count; i++) {
+            chassisVertices[i] = new Vector2(
+                delta.X * chassisVertices[i].X - delta.Y * chassisVertices[i].Y,  // cos * x - sin * y
+                delta.Y * chassisVertices[i].X + delta.X * chassisVertices[i].Y); // sin * x + cos * y
+        }
+
+        // Correction for unequal wheel radii
+        float dr = WheelRadius(0).Value - WheelRadius(1).Value;
+        float dx = chassisVertices[w1].X - chassisVertices[w0].X;
+        if (dx > MathF.Abs(dr) + 0.01f) {
+            float sin = dr / dx;
+            float cos = MathF.Sqrt(1f - sin * sin);
+            for (int i = 0; i < chassisVertices.Count; i++) {
+                chassisVertices[i] = new Vector2(
+                    cos * chassisVertices[i].X - sin * chassisVertices[i].Y,
+                    sin * chassisVertices[i].X + cos * chassisVertices[i].Y);
+            }
+        }
     }
 
     private Body CreateWheel(World world, Vector2 position, int i)
