@@ -18,7 +18,7 @@ public partial class Car
         var chassisStrokePaint = ColoredStrokePaint;
 
         DrawInfo(canvas, parameters);
-        const float OverSize = 60 / Game.Zoom;
+        float OverSize = 60 / parameters.Zoom;
         if (_chassis.Position.X > canvas.LocalClipBounds.Left - OverSize &&
             _chassis.Position.X < canvas.LocalClipBounds.Right + OverSize) {
 
@@ -70,7 +70,6 @@ public partial class Car
         ////TEST 
         //using var paint = new SKPaint { Color = SKColors.Red, IsStroke = true };
         //canvas.DrawRect(_rect, paint);
-
 
         float max = canvas.LocalClipBounds.Bottom - 1.8f;
         if (_nextInfoY > max) {

@@ -4,8 +4,11 @@ namespace GeneticCars;
 
 public partial class MainForm : Form
 {
+#if false    
+    private readonly SpawnTestGame _game = new();
+#else
     private readonly Game _game = new();
-    //private readonly SpawnTestGame _game = new();
+#endif
 
     public MainForm()
     {

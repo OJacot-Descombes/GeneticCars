@@ -1,8 +1,6 @@
 ﻿using GeneticCars.Evolution;
 using nkast.Aether.Physics2D.Common.Decomposition;
-using nkast.Aether.Physics2D.Common;
 using nkast.Aether.Physics2D.Dynamics.Joints;
-using nkast.Aether.Physics2D.Dynamics;
 
 namespace GeneticCars.Cars;
 
@@ -32,7 +30,7 @@ public partial class Car : Individual, IIndividualFactory<Car>
         (_chassis, _chassisVertices) = CreateChassis(world, position);
         float carMass = _chassis.Mass;
         for (int i = 0; i < WheelCount; i++) {
-            _wheels[i] = CreateWheel(world, position, i);
+            _wheels[i] = CreateWheel(world, position + GetWheelCassisPosition(i), i);
             carMass += _wheels[i].Mass;
         }
 
@@ -95,6 +93,8 @@ public partial class Car : Individual, IIndividualFactory<Car>
             return _maxFitness;
         }
     }
+
+    public float LastPositionX { get; set; }
 
     public Body Body => _chassis;
 

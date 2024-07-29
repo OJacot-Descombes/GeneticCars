@@ -30,6 +30,22 @@ public class Parameters : INotifyPropertyChanged
         }
     }
 
+    int _iterations = 4;
+    public int Iterations
+    {
+        get { return _iterations; }
+        set {
+            if (value != _iterations) {
+                _iterations = value;
+                OnPropertyChanged(nameof(Iterations));
+                OnPropertyChanged(nameof(SpeedDisplay));
+            }
+        }
+    }
+    public string SpeedDisplay => (Iterations / 4f).ToString("n2");
+
+    public int Zoom { get; set; } = 30;
+
     private bool _playing = true;
     public bool Playing
     {

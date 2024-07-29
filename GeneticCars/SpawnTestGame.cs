@@ -15,7 +15,9 @@ public class SpawnTestGame
     private Car _car = null!;
     private readonly Floor _floor = new(new Vector2(-4.9f, 2f));
 
+#pragma warning disable CS0067 // The event is never used
     public event EventHandler? FamilyTreeChanged;
+#pragma warning restore CS0067
 
     public Parameters Parameters { get; } = new();
 
@@ -29,13 +31,15 @@ public class SpawnTestGame
         canvas.Translate(Math.Min(200, -Zoom * focus.X + e.Info.Width - 200), Zoom * focus.Y + e.Info.Height - 80);
         canvas.Scale(Zoom, -Zoom);
 
-        _floor.Draw(canvas);
+        _floor.Draw(canvas, Parameters);
         _car.Draw(canvas, new Parameters());
     }
 
+#pragma warning disable CA1822, IDE0060 // Mark members as static, remove unused parameter
     public void DrawFamilyTree(SKPaintGLSurfaceEventArgs e, SKRect viewBox)
     {
     }
+#pragma warning restore CA1822, IDE0060 // Mark members as static
 
     public async void Run(SKGLControl control)
     {

@@ -8,10 +8,8 @@ namespace GeneticCars;
 public class Game
 {
     public const float Gravity = 9.81f;
-    public const float Zoom = 30;
-    public const int AssumedFps = 30;
-    public const int MaxCarHealth = AssumedFps * 8;
-
+    public const int MaxCarHealth = 30/*base fps*/ * 8 * 4/*base physics iterations*/;
+    private const int GracePeriodInIterations = 400;
     public static readonly LabelPlacer LabelPlacer = new();
 
     public event EventHandler? FamilyTreeChanged;
@@ -56,14 +54,14 @@ public class Game
                 return;
             }
         }
-        Vector2 focus = _camera.GetViewBoxFocus(focusedCar ?? _lastFocusedCar!, _floor, e);
+        Vector2 focus = _camera.GetViewBoxFocus(focusedCar ?? _lastFocusedCar!, _floor, Parameters, e);
         _lastFocusedCar = focusedCar;
 
         canvas.Clear(SKColors.White);
         canvas.Translate(focus.X, focus.Y);
-        canvas.Scale(Zoom, -Zoom);
+        canvas.Scale(Parameters.Zoom, -Parameters.Zoom);
 
-        _floor.Draw(canvas);
+        _floor.Draw(canvas, Parameters);
         // Draw dead cars fist, so that they remain in the background.
         for (int i = _carGeneration.Population.Length - 1; i >= 0; i--) {
             var car = _carGeneration.Population[i];
@@ -100,31 +98,37 @@ public class Game
     {
         var world = CreateWorld();
         _generator.GenerateInitial(world, _carGeneration.Population, _spawnPosition);
-
         var solverIterations = new SolverIterations {
             PositionIterations = 4,
             VelocityIterations = 4,
             TOIPositionIterations = 4,
             TOIVelocityIterations = 4
         };
+
         while (true) {
             _floor.AddTo(world);
             _familyTree.AddUnscoredGeneration(_carGeneration);
             FamilyTreeChanged?.Invoke(this, EventArgs.Empty);
-            int frame = 1;
+            int iterationCount = 0;
             _running = true;
             while (_running) {
                 await Task.Delay(1); // Process the message loop.
                 skGLControl.Refresh();
                 if (Parameters.Playing) {
-                    world.Step(1f / AssumedFps, ref solverIterations);
-                    foreach (Car car in _carGeneration.Population) {
-                        float velocity = car.Body.LinearVelocity.X;
-                        if (frame > 100 && velocity < 0.18f && velocity > -1.0f) {
-                            car.Health--;
-                        }
+                    for (int i = 0; i < Parameters.Iterations; i++) {
+                        world.Step(1f / 120f, ref solverIterations);
                     }
-                    frame++;
+                    foreach (Car car in _carGeneration.Population) {
+                        float x = car.Body.Position.X;
+                        float speed = (x - car.LastPositionX) * 30f / Parameters.Iterations;
+                        if (iterationCount > GracePeriodInIterations && speed < 0.2f && speed > -1.1f) {
+                            car.Health -= Parameters.Iterations;
+                        }
+                        // Because of bug in physics engine LinearVelocity.X can be >0 when position does not or only
+                        // barely change. In rare cases, apparently non-moving car's health did not decrease.
+                        car.LastPositionX = x;
+                    }
+                    iterationCount += Parameters.Iterations;
                 }
             }
             _familyTree.UpdateScoredGeneration(_carGeneration);

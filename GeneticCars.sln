@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35017.193
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneticCars", "GeneticCars\GeneticCars.csproj", "{1BEDC164-79AC-4342-BAF8-F538EEADC88D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{3A6ED290-F9BB-4490-9328-0C8AEA83E899}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{3A6ED290-F9BB-4490-9328-0C8AEA83E899}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -66,9 +66,9 @@ public class Floor
         }
     }
 
-    public void Draw(SKCanvas canvas)
+    public void Draw(SKCanvas canvas, Parameters parameters)
     {
-        DrawGrid(canvas);
+        DrawGrid(canvas, parameters);
 
         var path = new SKPath();
         for (int i = 1; i < MaxFloorTiles; i++) {
@@ -86,10 +86,10 @@ public class Floor
         }
     }
 
-    private void DrawGrid(SKCanvas canvas)
+    private void DrawGrid(SKCanvas canvas, Parameters parameters)
     {
         const int Spacing = 10;
-        const float TextOversize = 55 / Game.Zoom;
+        float TextOversize = 55 / parameters.Zoom;
 
         int n = (int)Single.Ceiling(Vertices[^1].X / Spacing);
         for (int i = 0; i <= n; i++) {
