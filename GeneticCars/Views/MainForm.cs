@@ -4,7 +4,7 @@ namespace GeneticCars;
 
 public partial class MainForm : Form
 {
-#if false    
+#if false
     private readonly SpawnTestGame _game = new();
 #else
     private readonly Game _game = new();
@@ -15,6 +15,19 @@ public partial class MainForm : Form
         InitializeComponent();
         _game.FamilyTreeChanged += Game_FamilyTreeChanged;
         parametersBindingSource.DataSource = _game.Parameters;
+        MouseWheel += MainForm_MouseWheel;
+    }
+
+    private void MainForm_MouseWheel(object? sender, MouseEventArgs e)
+    {
+        if (ModifierKeys == Keys.Control) {
+            Point screenPos = PointToScreen(e.Location);
+            Rectangle screenRect = familyTreeVPanel.RectangleToScreen(familyTreeVPanel.Bounds);
+            if (screenRect.Contains(screenPos) && _game.FamilyTree.ZoomBy(e.Delta)) {
+                familyTreeVPanel.VirtualAreaSize = _game.FamilyTreePixelSize;
+                familyTreeVPanel.skGLControl.Invalidate();
+            }
+        }
     }
 
     private void Game_FamilyTreeChanged(object? sender, EventArgs e)

@@ -57,7 +57,7 @@ public class Parameters : INotifyPropertyChanged
         }
     }
 
-    public string PlayButtonText => _playing ? "Pause" : "Resume";
+    public string PlayButtonText => _playing ? "\u23f8 Pause" : "\u23f5 Resume";
 
     public bool DisplayNames { get; set; }
     public bool DisplayHealthBar { get; set; } = true;

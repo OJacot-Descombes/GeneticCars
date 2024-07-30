@@ -1,4 +1,5 @@
 ﻿using GeneticCars.Evolution;
+using System.ComponentModel;
 
 namespace GeneticCars.Genealogy;
 
@@ -151,13 +152,26 @@ public partial class FamilyTree
             _ => throw new NotImplementedException()
         };
 
+    private float _zoom = 1.0f;
+
+    public bool ZoomBy(int delta)
+    {
+        float zoom = Single.Clamp(_zoom * Single.Pow(1.08f, delta / 120f), 0.5f, 2.0f);
+        if (zoom != _zoom) {
+            _zoom = zoom;
+            return true;
+        }
+        return false;
+    }
+
     public void Draw(SKCanvas canvas, SKRect viewBox)
     {
         canvas.Clear(SKColors.White);
-        float top = canvas.LocalClipBounds.Top + TopBorder - viewBox.Top;
-        float x = canvas.LocalClipBounds.Left + HorizontalBorder - viewBox.Left;
+        canvas.Scale(_zoom, _zoom);
+        float top = canvas.LocalClipBounds.Top + TopBorder - viewBox.Top / _zoom;
+        float x = canvas.LocalClipBounds.Left + HorizontalBorder - viewBox.Left / _zoom;
         for (int g = 0; g < Generations.Count; g++) {
-            if (x + TextColumnWidth > 0 && x < viewBox.Width + ConnectionsColumnWidth) {
+            if (x + TextColumnWidth > 0 && x < viewBox.Width / _zoom + ConnectionsColumnWidth) {
                 float y = top;
                 DrawColumnHeader(canvas, x, g, y);
                 Node[] population = Generations[g].Population;
@@ -252,7 +266,7 @@ public partial class FamilyTree
             float height = Generations.Count == 0
                 ? 100
                 : Generations.Max(g => g.Population.Length) * LineHeight + TopBorder + 3f;
-            return new((int)width, (int)height);
+            return new((int)(_zoom * width), (int)(_zoom * height));
         }
     }
 }

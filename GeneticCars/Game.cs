@@ -20,7 +20,6 @@ public class Game
 
     private readonly Camera _camera = new();
     private readonly Generator<Car> _generator = new();
-    private readonly FamilyTree _familyTree = new();
     private readonly FpsMeter _fpsMeter = new();
 
     private bool _running;
@@ -35,6 +34,9 @@ public class Game
     public Size FamilyTreePixelSize => _familyTree.FamilyTreePixelSize;
 
     public Parameters Parameters { get; } = new();
+
+    private readonly FamilyTree _familyTree = new();
+    public FamilyTree FamilyTree => _familyTree;
 
     public void DrawSimulation(SKPaintGLSurfaceEventArgs e)
     {

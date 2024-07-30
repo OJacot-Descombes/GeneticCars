@@ -46,7 +46,7 @@ partial class MainForm
         radioactivityCheckBox = new CheckBox();
         displayFpsCheckBox = new CheckBox();
         changeFloorCheckBox = new CheckBox();
-        button1 = new Button();
+        pauseResumeButton = new Button();
         familyTreeVPanel = new Views.Controls.ScrollableSKGLControl();
         toolTip1 = new ToolTip(components);
         ((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
@@ -107,7 +107,7 @@ partial class MainForm
         topPanel.Controls.Add(radioactivityCheckBox);
         topPanel.Controls.Add(displayFpsCheckBox);
         topPanel.Controls.Add(changeFloorCheckBox);
-        topPanel.Controls.Add(button1);
+        topPanel.Controls.Add(pauseResumeButton);
         topPanel.Dock = DockStyle.Top;
         topPanel.Location = new Point(0, 0);
         topPanel.Name = "topPanel";
@@ -310,16 +310,16 @@ partial class MainForm
         toolTip1.SetToolTip(changeFloorCheckBox, "Regenerate Floor");
         changeFloorCheckBox.UseVisualStyleBackColor = true;
         // 
-        // button1
+        // pauseResumeButton
         // 
-        button1.DataBindings.Add(new Binding("Text", parametersBindingSource, "PlayButtonText", true, DataSourceUpdateMode.OnPropertyChanged));
-        button1.DataBindings.Add(new Binding("Command", parametersBindingSource, "PlayCommand", true));
-        button1.Location = new Point(19, 34);
-        button1.Name = "button1";
-        button1.Size = new Size(129, 23);
-        button1.TabIndex = 0;
-        button1.Text = "pauseResumeButton";
-        button1.UseVisualStyleBackColor = true;
+        pauseResumeButton.DataBindings.Add(new Binding("Text", parametersBindingSource, "PlayButtonText", true, DataSourceUpdateMode.OnPropertyChanged));
+        pauseResumeButton.DataBindings.Add(new Binding("Command", parametersBindingSource, "PlayCommand", true));
+        pauseResumeButton.Location = new Point(19, 34);
+        pauseResumeButton.Name = "pauseResumeButton";
+        pauseResumeButton.Size = new Size(129, 23);
+        pauseResumeButton.TabIndex = 0;
+        pauseResumeButton.Text = "pauseResumeButton";
+        pauseResumeButton.UseVisualStyleBackColor = true;
         // 
         // familyTreeVPanel
         // 
@@ -361,7 +361,7 @@ partial class MainForm
     private SkiaSharp.Views.Desktop.SKGLControl simulationSKGLControl;
     private SplitContainer mainSplitContainer;
     private Panel topPanel;
-    private Button button1;
+    private Button pauseResumeButton;
     private BindingSource parametersBindingSource;
     private CheckBox changeFloorCheckBox;
     private Views.Controls.ScrollableSKGLControl familyTreeVPanel;
