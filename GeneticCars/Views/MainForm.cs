@@ -16,6 +16,24 @@ public partial class MainForm : Form
         _game.FamilyTreeChanged += Game_FamilyTreeChanged;
         parametersBindingSource.DataSource = _game.Parameters;
         MouseWheel += MainForm_MouseWheel;
+        familyTreeVPanel.skGLControl.MouseMove += SkGLControl_MouseMove;
+        familyTreeVPanel.skGLControl.MouseClick += SkGLControl_MouseClick;
+    }
+
+    private void SkGLControl_MouseClick(object? sender, MouseEventArgs e)
+    {
+        if (_game.FamilyTree.SelectNode(
+            e.X + familyTreeVPanel.ScrollOffset.X, e.Y + familyTreeVPanel.ScrollOffset.Y, sticky: true)) {
+            familyTreeVPanel.skGLControl.Invalidate();
+        }
+    }
+
+    private void SkGLControl_MouseMove(object? sender, MouseEventArgs e)
+    {
+        if (_game.FamilyTree.SelectNode(
+            e.X + familyTreeVPanel.ScrollOffset.X, e.Y + familyTreeVPanel.ScrollOffset.Y, sticky: false)) {
+            familyTreeVPanel.skGLControl.Invalidate();
+        }
     }
 
     private void MainForm_MouseWheel(object? sender, MouseEventArgs e)

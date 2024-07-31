@@ -144,7 +144,7 @@ public class Game
                 _lastDeathGeneration = _familyTree.Generations.Count;
             }
             _generator.Evolve(world, _carGeneration, _spawnPosition, Parameters);
-            FamilyTree.Node[] lastScoredGeneration = _familyTree.Generations[^1].Population;
+            Node[] lastScoredGeneration = _familyTree.Generations[^1].Population;
 
             EnableDisableRadioactivity(lastScoredGeneration);
             EnableDisableKryptonite();
@@ -153,7 +153,7 @@ public class Game
         }
     }
 
-    private void EnableDisableRadioactivity(FamilyTree.Node[] lastScoredGeneration)
+    private void EnableDisableRadioactivity(Node[] lastScoredGeneration)
     {
         Parameters.Radioactivity.Enabled = !Parameters.Death.Value && _familyTree.Generations.Count >= 5 &&
             Generator<Car>.CountIrradiatable(

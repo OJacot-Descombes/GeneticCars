@@ -21,6 +21,13 @@ public partial class FamilyTree
         IsAntialias = true,
     };
 
+    private static readonly SKPaint _selectionMarkerPaint = new() {
+        Color = SKColors.Blue,
+        IsStroke = true,
+        IsAntialias = true,
+        PathEffect = SKPathEffect.CreateDash([2f, 2f], 0)
+    };
+
     private static readonly SKPaint _newChampionBackgroundPaint = new() {
         Color = SKColors.Yellow,
         IsStroke = false,
@@ -80,30 +87,30 @@ public partial class FamilyTree
         StrokeWidth = ConnectionsStrokeWidth,
         IsAntialias = true,
     };
+    private static readonly SKPaint _newStrongStrokePaint = new() {
+        Color = Individual.NewBaseColor.WithAlpha(StrokeAlpha),
+        IsStroke = true,
+        StrokeWidth = 2 * ConnectionsStrokeWidth,
+        IsAntialias = true,
+    };
+    private static readonly SKPaint _newFaintStrokePaint = new() {
+        Color = Individual.NewBaseColor.WithAlpha(FaintStrokeAlpha),
+        IsStroke = true,
+        StrokeWidth = ConnectionsStrokeWidth,
+        IsAntialias = true,
+    };
+
     private static readonly SKPaint _eliteStrokePaint = new() {
         Color = Individual.EliteBaseColor.WithAlpha(StrokeAlpha),
         IsStroke = true,
         StrokeWidth = ConnectionsStrokeWidth,
         IsAntialias = true
     };
-    private static readonly SKPaint _crossedStrokePaint = new() {
-        Color = Individual.CrossedBaseColor.WithAlpha(StrokeAlpha),
+    private static readonly SKPaint _eliteStrongStrokePaint = new() {
+        Color = Individual.EliteBaseColor.WithAlpha(StrokeAlpha),
         IsStroke = true,
-        StrokeWidth = ConnectionsStrokeWidth,
+        StrokeWidth = 2 * ConnectionsStrokeWidth,
         IsAntialias = true
-    };
-    private static readonly SKPaint _mutatedStrokePaint = new() {
-        Color = Individual.MutatedBaseColor.WithAlpha(StrokeAlpha),
-        IsStroke = true,
-        StrokeWidth = ConnectionsStrokeWidth,
-        IsAntialias = true
-    };
-
-    private static readonly SKPaint _newFaintStrokePaint = new() {
-        Color = Individual.NewBaseColor.WithAlpha(FaintStrokeAlpha),
-        IsStroke = true,
-        StrokeWidth = ConnectionsStrokeWidth,
-        IsAntialias = true,
     };
     private static readonly SKPaint _eliteFaintStrokePaint = new() {
         Color = Individual.EliteBaseColor.WithAlpha(FaintStrokeAlpha),
@@ -111,10 +118,36 @@ public partial class FamilyTree
         StrokeWidth = ConnectionsStrokeWidth,
         IsAntialias = true
     };
+
+    private static readonly SKPaint _crossedStrokePaint = new() {
+        Color = Individual.CrossedBaseColor.WithAlpha(StrokeAlpha),
+        IsStroke = true,
+        StrokeWidth = ConnectionsStrokeWidth,
+        IsAntialias = true
+    };
+    private static readonly SKPaint _crossedStrongStrokePaint = new() {
+        Color = Individual.CrossedBaseColor.WithAlpha(StrokeAlpha),
+        IsStroke = true,
+        StrokeWidth = 2 * ConnectionsStrokeWidth,
+        IsAntialias = true
+    };
     private static readonly SKPaint _crossedFaintStrokePaint = new() {
         Color = Individual.CrossedBaseColor.WithAlpha(FaintStrokeAlpha),
         IsStroke = true,
         StrokeWidth = ConnectionsStrokeWidth,
+        IsAntialias = true
+    };
+
+    private static readonly SKPaint _mutatedStrokePaint = new() {
+        Color = Individual.MutatedBaseColor.WithAlpha(StrokeAlpha),
+        IsStroke = true,
+        StrokeWidth = ConnectionsStrokeWidth,
+        IsAntialias = true
+    };
+    private static readonly SKPaint _mutatedStrongStrokePaint = new() {
+        Color = Individual.MutatedBaseColor.WithAlpha(StrokeAlpha),
+        IsStroke = true,
+        StrokeWidth = 2 * ConnectionsStrokeWidth,
         IsAntialias = true
     };
     private static readonly SKPaint _mutatedFaintStrokePaint = new() {
@@ -134,23 +167,26 @@ public partial class FamilyTree
             _ => throw new NotImplementedException()
         };
 
-    private static SKPaint GetConnectionPaint(Class @class) =>
-    @class switch {
-        Class.New or Class.Kryptonite => _newStrokePaint,
-        Class.Elite => _eliteStrokePaint,
-        Class.Crossed => _crossedStrokePaint,
-        Class.Mutated or Class.Radioactive => _mutatedStrokePaint,
+    private static SKPaint GetConnectionPaint(Class @class, bool isRelated, bool isElite) =>
+    (@class, isRelated, isElite) switch {
+        (Class.New or Class.Kryptonite, true, _) => _newStrongStrokePaint,
+        (Class.New or Class.Kryptonite, false, false) => _newFaintStrokePaint,
+        (Class.New or Class.Kryptonite, false, true) => _newStrokePaint,
+
+        (Class.Elite, true, _) => _eliteStrongStrokePaint,
+        (Class.Elite, false, false) => _eliteFaintStrokePaint,
+        (Class.Elite, false, true) => _eliteStrokePaint,
+
+        (Class.Crossed, true, _) => _crossedStrongStrokePaint,
+        (Class.Crossed, false, false) => _crossedFaintStrokePaint,
+        (Class.Crossed, false, true) => _crossedStrokePaint,
+
+        (Class.Mutated or Class.Radioactive, true, _) => _mutatedStrongStrokePaint,
+        (Class.Mutated or Class.Radioactive, false, false) => _mutatedFaintStrokePaint,
+        (Class.Mutated or Class.Radioactive, false, true) => _mutatedStrokePaint,
+
         _ => throw new NotImplementedException()
     };
-
-    private static SKPaint GetFaintConnectionPaint(Class @class) =>
-        @class switch {
-            Class.New or Class.Kryptonite => _newFaintStrokePaint,
-            Class.Elite => _eliteFaintStrokePaint,
-            Class.Crossed => _crossedFaintStrokePaint,
-            Class.Mutated or Class.Radioactive => _mutatedFaintStrokePaint,
-            _ => throw new NotImplementedException()
-        };
 
     private float _zoom = 1.0f;
 
@@ -173,9 +209,15 @@ public partial class FamilyTree
         for (int g = 0; g < Generations.Count; g++) {
             if (x + TextColumnWidth > 0 && x < viewBox.Width / _zoom + ConnectionsColumnWidth) {
                 float y = top;
+
                 DrawColumnHeader(canvas, x, g, y);
                 Node[] population = Generations[g].Population;
                 for (int i = 0; i < population.Length; i++) {
+                    if (_selected == (g, i, true)) {
+                        canvas.DrawRect(x - 1, y - LineHeight + 4.5f, TextColumnWidth, LineHeight, _selectionMarkerPaint);
+                    }
+
+
                     ref Node node = ref population[i];
 
                     string text = node.Text + " ";
@@ -196,17 +238,17 @@ public partial class FamilyTree
                     float lineY = y + ConnectionYDelta;
                     if (textWidth < TextColumnWidth) {
                         canvas.DrawLine(x + textWidth, lineY, x + TextColumnWidth, lineY,
-                            isNewElite ? GetConnectionPaint(node.Class) : GetFaintConnectionPaint(node.Class));
+                            GetConnectionPaint(node.Class, IsRelatedToSelection(g, i, null), isNewElite));
                     }
                     if (node.Ancestor1Index is int ancestorIndex1) {
-                        DrawConnection(canvas, ancestorIndex1, x, top, node.Class, lineY, isNewElite);
+                        DrawConnection(canvas, ancestorIndex1, x, top, node.Class, lineY, IsRelatedToSelection(g, i, 1), isNewElite);
                         if (node.Class is Class.Radioactive) {
                             canvas.DrawCircle(x - 3, lineY, 2.4f, _radioactiveMarkerFillPaint);
                             canvas.DrawCircle(x - 3, lineY, 2.4f, _radioactiveMarkerStrokePaint);
                         }
                     }
                     if (node.Ancestor2Index is int ancestorIndex2) {
-                        DrawConnection(canvas, ancestorIndex2, x, top, node.Class, lineY, isNewElite);
+                        DrawConnection(canvas, ancestorIndex2, x, top, node.Class, lineY, IsRelatedToSelection(g, i, 2), isNewElite);
                     }
                     if (node.Class == Class.Kryptonite) {
                         canvas.DrawCircle(x - 3, lineY, 2.4f, _kryptoniteMarkerFillPaint);
@@ -246,7 +288,7 @@ public partial class FamilyTree
     }
 
     private static void DrawConnection(SKCanvas canvas, int ancestorIndex, float x, float top, Class @class,
-        float lineY, bool isNewElite)
+        float lineY, bool isRelated, bool isNewElite)
     {
         float ancestorY = top + ancestorIndex * LineHeight + ConnectionYDelta;
         SKPath path = new();
@@ -255,7 +297,7 @@ public partial class FamilyTree
             x - ConnectionsColumnWidth + ControlPointDelta, ancestorY,
             x - ControlPointDelta, lineY,
             x - 1, lineY);
-        canvas.DrawPath(path, isNewElite ? GetConnectionPaint(@class) : GetFaintConnectionPaint(@class));
+        canvas.DrawPath(path, GetConnectionPaint(@class, isRelated, isNewElite));
     }
 
     public Size FamilyTreePixelSize
