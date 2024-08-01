@@ -13,6 +13,8 @@ public partial class FamilyTree
     private const float HorizontalBorder = 3f;
 
     private static readonly SKFont _nodeFont = SKTypeface.FromFamilyName("Arial").ToFont(11f);
+    private static readonly SKFont _nodeSemiBoldFont = SKTypeface.FromFamilyName("Arial", SKFontStyleWeight.SemiBold,
+        SKFontStyleWidth.Normal, SKFontStyleSlant.Upright).ToFont(11f);
     private static readonly SKFont _generationFont = SKTypeface.FromFamilyName("Arial").ToFont(15f);
 
     private static readonly SKPaint _fitnessTextPaint = new() {
@@ -79,7 +81,7 @@ public partial class FamilyTree
         IsAntialias = false,
     };
 
-    private const byte StrokeAlpha = 150, FaintStrokeAlpha = 60;
+    private const byte StrokeAlpha = 150, StrongStrokeAlpha = 255, FaintStrokeAlpha = 60;
 
     private static readonly SKPaint _newStrokePaint = new() {
         Color = Individual.NewBaseColor.WithAlpha(StrokeAlpha),
@@ -88,7 +90,7 @@ public partial class FamilyTree
         IsAntialias = true,
     };
     private static readonly SKPaint _newStrongStrokePaint = new() {
-        Color = Individual.NewBaseColor.WithAlpha(StrokeAlpha),
+        Color = Individual.NewBaseColor.WithAlpha(StrongStrokeAlpha),
         IsStroke = true,
         StrokeWidth = 2 * ConnectionsStrokeWidth,
         IsAntialias = true,
@@ -107,7 +109,7 @@ public partial class FamilyTree
         IsAntialias = true
     };
     private static readonly SKPaint _eliteStrongStrokePaint = new() {
-        Color = Individual.EliteBaseColor.WithAlpha(StrokeAlpha),
+        Color = Individual.EliteBaseColor.WithAlpha(StrongStrokeAlpha),
         IsStroke = true,
         StrokeWidth = 2 * ConnectionsStrokeWidth,
         IsAntialias = true
@@ -126,7 +128,7 @@ public partial class FamilyTree
         IsAntialias = true
     };
     private static readonly SKPaint _crossedStrongStrokePaint = new() {
-        Color = Individual.CrossedBaseColor.WithAlpha(StrokeAlpha),
+        Color = Individual.CrossedBaseColor.WithAlpha(StrongStrokeAlpha),
         IsStroke = true,
         StrokeWidth = 2 * ConnectionsStrokeWidth,
         IsAntialias = true
@@ -145,7 +147,7 @@ public partial class FamilyTree
         IsAntialias = true
     };
     private static readonly SKPaint _mutatedStrongStrokePaint = new() {
-        Color = Individual.MutatedBaseColor.WithAlpha(StrokeAlpha),
+        Color = Individual.MutatedBaseColor.WithAlpha(StrongStrokeAlpha),
         IsStroke = true,
         StrokeWidth = 2 * ConnectionsStrokeWidth,
         IsAntialias = true
@@ -221,8 +223,10 @@ public partial class FamilyTree
                     ref Node node = ref population[i];
 
                     string text = node.Text + " ";
-                    float textWidth = _nodeFont.MeasureText(text);
-                    canvas.DrawText(text, x, y, _nodeFont, GetTextPaint(node.Class));
+                    bool isRelated = IsRelatedToSelection(g, i, null);
+                    SKFont font = isRelated ? _nodeSemiBoldFont : _nodeFont;
+                    float textWidth = font.MeasureText(text);
+                    canvas.DrawText(text, x, y, font, GetTextPaint(node.Class));
 
                     text = $"({node.Fitness?.ToString("n1") ?? "?"})";
                     float w = _nodeFont.MeasureText(text, out SKRect bounds);
@@ -238,7 +242,7 @@ public partial class FamilyTree
                     float lineY = y + ConnectionYDelta;
                     if (textWidth < TextColumnWidth) {
                         canvas.DrawLine(x + textWidth, lineY, x + TextColumnWidth, lineY,
-                            GetConnectionPaint(node.Class, IsRelatedToSelection(g, i, null), isNewElite));
+                            GetConnectionPaint(node.Class, isRelated, isNewElite));
                     }
                     if (node.Ancestor1Index is int ancestorIndex1) {
                         DrawConnection(canvas, ancestorIndex1, x, top, node.Class, lineY, IsRelatedToSelection(g, i, 1), isNewElite);
@@ -284,6 +288,9 @@ public partial class FamilyTree
         }
         if (generation.DeathApplied) {
             canvas.DrawText("D", letterX, y - 15, _generationFont, _deathLetterPaint);
+        }
+        if (generation.MutationText is { } text) {
+            canvas.DrawText(text ?? "", x - ConnectionsColumnWidth, y - 15, _nodeFont, Individual.NeutralInfoTextPaint);
         }
     }
 

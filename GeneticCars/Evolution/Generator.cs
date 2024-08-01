@@ -2,11 +2,9 @@
 
 namespace GeneticCars.Evolution;
 
-public class Generator<T>
+public class Generator<T>(Parameters parameters)
     where T : Individual, IIndividualFactory<T>
 {
-    private const float MutationRate = 0.20f;
-    private const float MutationSize = 0.30f;
     private const float MaxRadioactivityFitnessDifference = 0.1f;
     private const float KryptoniteLimitSquare = 0.12f;
 
@@ -20,7 +18,7 @@ public class Generator<T>
         }
     }
 
-    public void Evolve(World world, Generation<T> generation, Vector2 position, Parameters parameters)
+    public void Evolve(World world, Generation<T> generation, Vector2 position)
     {
         generation.SaveParameters(parameters);
 
@@ -34,7 +32,7 @@ public class Generator<T>
 
         if (parameters.Death.Value) {
             newCreationsDestination =
-                Generator<T>.Extinguish(world, oldPopulation, newPopulation, position, parameters, genomeHashes);
+                Extinguish(world, oldPopulation, newPopulation, position, genomeHashes);
         } else {
             int eliteCount = Math.Min(newPopulation.Length / 4, oldPopulation.Length);
             var eliteSpan = oldPopulation.AsSpan(0, eliteCount);
@@ -63,15 +61,15 @@ public class Generator<T>
         }
     }
 
-    private static int Extinguish(World world, T[] oldPopulation, T[] newPopulation, Vector2 position,
-        Parameters parameters, HashSet<int> genomeHashes)
+    private int Extinguish(World world, T[] oldPopulation, T[] newPopulation, Vector2 position, 
+        HashSet<int> genomeHashes)
     {
         parameters.Death.Value = false;
         int keepAliveCount = newPopulation.Length / 8;
         var distinctElite = oldPopulation.DistinctBy(i => i.Identity.Name)
             .Take(keepAliveCount)
             .ToArray();
-        Generator<T>.CloneElite(distinctElite.AsSpan(), newPopulation.AsSpan(0, distinctElite.Length),
+        CloneElite(distinctElite.AsSpan(), newPopulation.AsSpan(0, distinctElite.Length),
             genomeHashes, world, position);
         return distinctElite.Length;
     }
@@ -119,7 +117,7 @@ public class Generator<T>
         return irradiatableCount;
     }
 
-    private static void IrradiateElite(Span<T> sourceSpan, Span<T> destinationSpan, HashSet<int> genomeHashes,
+    private void IrradiateElite(Span<T> sourceSpan, Span<T> destinationSpan, HashSet<int> genomeHashes,
         World world, Vector2 position)
     {
         float lastFitness = Single.MaxValue;
@@ -181,7 +179,7 @@ public class Generator<T>
         return 0;
     }
 
-    private static void CreateMutations(Span<T> eliteSpan, Span<T> destination,
+    private void CreateMutations(Span<T> eliteSpan, Span<T> destination,
         HashSet<int> genomeHashes, World world, Vector2 position)
     {
         for (int i = 0; i < eliteSpan.Length; i++) {
@@ -191,7 +189,7 @@ public class Generator<T>
         }
     }
 
-    private static T CreateMutation(T elite, HashSet<int> genomeHashes, World world, Vector2 position, bool irradiated = false)
+    private T CreateMutation(T elite, HashSet<int> genomeHashes, World world, Vector2 position, bool irradiated = false)
     {
         Gene[] genes = [.. elite.Genome];
         T? newIndividual;
@@ -199,7 +197,7 @@ public class Generator<T>
         do {
             int mutations = 0;
             for (int g = 0; g < genes.Length; g++) {
-                if (Random.Shared.NextSingle() < MutationRate) {
+                if (Random.Shared.NextSingle() < parameters.MutationRate) {
                     Mutate(genes, g);
                     mutations++;
                 }
@@ -220,13 +218,13 @@ public class Generator<T>
         }
     }
 
-    private static void Mutate(Gene[] genes, int i)
+    private void Mutate(Gene[] genes, int i)
     {
         Gene gene = genes[i];
         float oldFraction = gene.Fraction;
         float fraction;
         do {
-            float delta = 2.0f * MutationSize * (Random.Shared.NextSingle() - 0.5f);
+            float delta = 2.0f * parameters.MutationSize * (Random.Shared.NextSingle() - 0.5f);
             fraction = Single.Clamp(gene.Fraction + delta, 0f, 0.99999997f);
         } while (fraction == oldFraction);
         genes[i] = new Gene(gene.Range, fraction); ;

@@ -19,7 +19,7 @@ public class Game
     private readonly Vector2 _spawnPosition = new(-4, 5);
 
     private readonly Camera _camera = new();
-    private readonly Generator<Car> _generator = new();
+    private readonly Generator<Car> _generator;
     private readonly FpsMeter _fpsMeter = new();
 
     private bool _running;
@@ -29,6 +29,7 @@ public class Game
     public Game()
     {
         _carGeneration = new Generation<Car>(new Car[Parameters.PopulationSize]);
+        _generator = new Generator<Car>(Parameters);
     }
 
     public Size FamilyTreePixelSize => _familyTree.FamilyTreePixelSize;
@@ -143,7 +144,7 @@ public class Game
             if (Parameters.Death.Value) {
                 _lastDeathGeneration = _familyTree.Generations.Count;
             }
-            _generator.Evolve(world, _carGeneration, _spawnPosition, Parameters);
+            _generator.Evolve(world, _carGeneration, _spawnPosition);
             Node[] lastScoredGeneration = _familyTree.Generations[^1].Population;
 
             EnableDisableRadioactivity(lastScoredGeneration);

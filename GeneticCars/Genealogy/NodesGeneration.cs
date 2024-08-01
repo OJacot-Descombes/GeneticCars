@@ -14,5 +14,6 @@ public class NodesGeneration : Generation<Node>
         KryptoniteApplied = template.KryptoniteApplied;
         DeathApplied = template.DeathApplied;
         NewFloorGenerated = template.NewFloorGenerated;
+        MutationText = template.MutationText;
     }
 }

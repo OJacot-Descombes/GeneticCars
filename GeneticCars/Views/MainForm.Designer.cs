@@ -31,8 +31,17 @@ partial class MainForm
         simulationSKGLControl = new SkiaSharp.Views.Desktop.SKGLControl();
         mainSplitContainer = new SplitContainer();
         topPanel = new Panel();
-        speedDisplayLabel = new Label();
+        mutationSizeComboBox = new ComboBox();
         parametersBindingSource = new BindingSource(components);
+        percentValuesBindingSource1 = new BindingSource(components);
+        mutationRateComboBox = new ComboBox();
+        percentValuesBindingSource = new BindingSource(components);
+        label5 = new Label();
+        label4 = new Label();
+        label3 = new Label();
+        label2 = new Label();
+        label1 = new Label();
+        speedDisplayLabel = new Label();
         speedTrackBar = new TrackBar();
         zoomNameLabel = new Label();
         zoomTrackBar = new TrackBar();
@@ -55,6 +64,8 @@ partial class MainForm
         mainSplitContainer.SuspendLayout();
         topPanel.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)parametersBindingSource).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)percentValuesBindingSource1).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)percentValuesBindingSource).BeginInit();
         ((System.ComponentModel.ISupportInitialize)speedTrackBar).BeginInit();
         ((System.ComponentModel.ISupportInitialize)zoomTrackBar).BeginInit();
         ((System.ComponentModel.ISupportInitialize)trackBar1).BeginInit();
@@ -64,10 +75,10 @@ partial class MainForm
         // 
         simulationSKGLControl.BackColor = Color.Black;
         simulationSKGLControl.Dock = DockStyle.Fill;
-        simulationSKGLControl.Location = new Point(0, 62);
+        simulationSKGLControl.Location = new Point(0, 101);
         simulationSKGLControl.Margin = new Padding(4, 3, 4, 3);
         simulationSKGLControl.Name = "simulationSKGLControl";
-        simulationSKGLControl.Size = new Size(1211, 452);
+        simulationSKGLControl.Size = new Size(1211, 413);
         simulationSKGLControl.TabIndex = 0;
         simulationSKGLControl.VSync = true;
         simulationSKGLControl.PaintSurface += SimulationSKGLControl_PaintSurface;
@@ -93,6 +104,13 @@ partial class MainForm
         // 
         // topPanel
         // 
+        topPanel.Controls.Add(mutationSizeComboBox);
+        topPanel.Controls.Add(mutationRateComboBox);
+        topPanel.Controls.Add(label5);
+        topPanel.Controls.Add(label4);
+        topPanel.Controls.Add(label3);
+        topPanel.Controls.Add(label2);
+        topPanel.Controls.Add(label1);
         topPanel.Controls.Add(speedDisplayLabel);
         topPanel.Controls.Add(speedTrackBar);
         topPanel.Controls.Add(zoomNameLabel);
@@ -111,31 +129,116 @@ partial class MainForm
         topPanel.Dock = DockStyle.Top;
         topPanel.Location = new Point(0, 0);
         topPanel.Name = "topPanel";
-        topPanel.Size = new Size(1211, 62);
+        topPanel.Size = new Size(1211, 101);
         topPanel.TabIndex = 1;
+        // 
+        // mutationSizeComboBox
+        // 
+        mutationSizeComboBox.DataBindings.Add(new Binding("SelectedValue", parametersBindingSource, "MutationSize", true, DataSourceUpdateMode.OnPropertyChanged));
+        mutationSizeComboBox.DataSource = percentValuesBindingSource1;
+        mutationSizeComboBox.DisplayMember = "Text";
+        mutationSizeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+        mutationSizeComboBox.FormattingEnabled = true;
+        mutationSizeComboBox.Location = new Point(529, 70);
+        mutationSizeComboBox.MaxDropDownItems = 20;
+        mutationSizeComboBox.Name = "mutationSizeComboBox";
+        mutationSizeComboBox.Size = new Size(62, 23);
+        mutationSizeComboBox.TabIndex = 21;
+        mutationSizeComboBox.ValueMember = "Value";
+        // 
+        // parametersBindingSource
+        // 
+        parametersBindingSource.DataSource = typeof(Parameters);
+        // 
+        // percentValuesBindingSource1
+        // 
+        percentValuesBindingSource1.DataMember = "PercentValues";
+        percentValuesBindingSource1.DataSource = parametersBindingSource;
+        // 
+        // mutationRateComboBox
+        // 
+        mutationRateComboBox.DataBindings.Add(new Binding("SelectedValue", parametersBindingSource, "MutationRate", true, DataSourceUpdateMode.OnPropertyChanged));
+        mutationRateComboBox.DataSource = percentValuesBindingSource;
+        mutationRateComboBox.DisplayMember = "Text";
+        mutationRateComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+        mutationRateComboBox.FormattingEnabled = true;
+        mutationRateComboBox.Location = new Point(417, 70);
+        mutationRateComboBox.MaxDropDownItems = 20;
+        mutationRateComboBox.Name = "mutationRateComboBox";
+        mutationRateComboBox.Size = new Size(62, 23);
+        mutationRateComboBox.TabIndex = 20;
+        mutationRateComboBox.ValueMember = "Value";
+        // 
+        // percentValuesBindingSource
+        // 
+        percentValuesBindingSource.DataMember = "PercentValues";
+        percentValuesBindingSource.DataSource = parametersBindingSource;
+        // 
+        // label5
+        // 
+        label5.AutoSize = true;
+        label5.Location = new Point(496, 73);
+        label5.Margin = new Padding(0);
+        label5.Name = "label5";
+        label5.Size = new Size(30, 15);
+        label5.TabIndex = 19;
+        label5.Text = "Size:";
+        // 
+        // label4
+        // 
+        label4.AutoSize = true;
+        label4.Location = new Point(381, 73);
+        label4.Margin = new Padding(0);
+        label4.Name = "label4";
+        label4.Size = new Size(33, 15);
+        label4.TabIndex = 18;
+        label4.Text = "Rate:";
+        // 
+        // label3
+        // 
+        label3.AutoSize = true;
+        label3.Location = new Point(316, 73);
+        label3.Name = "label3";
+        label3.Size = new Size(56, 15);
+        label3.TabIndex = 17;
+        label3.Text = "Mutation";
+        // 
+        // label2
+        // 
+        label2.AutoSize = true;
+        label2.Location = new Point(19, 9);
+        label2.Name = "label2";
+        label2.Size = new Size(42, 15);
+        label2.TabIndex = 16;
+        label2.Text = "Speed:";
+        // 
+        // label1
+        // 
+        label1.AutoSize = true;
+        label1.Location = new Point(656, 9);
+        label1.Name = "label1";
+        label1.Size = new Size(48, 15);
+        label1.TabIndex = 15;
+        label1.Text = "Display:";
         // 
         // speedDisplayLabel
         // 
         speedDisplayLabel.AutoSize = true;
         speedDisplayLabel.BorderStyle = BorderStyle.Fixed3D;
         speedDisplayLabel.DataBindings.Add(new Binding("Text", parametersBindingSource, "SpeedDisplay", true, DataSourceUpdateMode.OnPropertyChanged));
-        speedDisplayLabel.Location = new Point(153, 8);
+        speedDisplayLabel.Location = new Point(151, 28);
         speedDisplayLabel.Margin = new Padding(3, 0, 15, 0);
         speedDisplayLabel.Name = "speedDisplayLabel";
         speedDisplayLabel.Size = new Size(40, 17);
         speedDisplayLabel.TabIndex = 14;
         speedDisplayLabel.Text = "label1";
         // 
-        // parametersBindingSource
-        // 
-        parametersBindingSource.DataSource = typeof(Parameters);
-        // 
         // speedTrackBar
         // 
         speedTrackBar.AutoSize = false;
         speedTrackBar.DataBindings.Add(new Binding("Value", parametersBindingSource, "Iterations", true, DataSourceUpdateMode.OnPropertyChanged));
         speedTrackBar.LargeChange = 4;
-        speedTrackBar.Location = new Point(12, 8);
+        speedTrackBar.Location = new Point(12, 27);
         speedTrackBar.Margin = new Padding(3, 3, 15, 3);
         speedTrackBar.Maximum = 16;
         speedTrackBar.Minimum = 1;
@@ -149,7 +252,7 @@ partial class MainForm
         // zoomNameLabel
         // 
         zoomNameLabel.AutoSize = true;
-        zoomNameLabel.Location = new Point(405, 37);
+        zoomNameLabel.Location = new Point(330, 41);
         zoomNameLabel.Name = "zoomNameLabel";
         zoomNameLabel.Size = new Size(42, 15);
         zoomNameLabel.TabIndex = 12;
@@ -160,7 +263,7 @@ partial class MainForm
         zoomTrackBar.AutoSize = false;
         zoomTrackBar.DataBindings.Add(new Binding("Value", parametersBindingSource, "Zoom", true, DataSourceUpdateMode.OnPropertyChanged));
         zoomTrackBar.LargeChange = 15;
-        zoomTrackBar.Location = new Point(453, 37);
+        zoomTrackBar.Location = new Point(378, 41);
         zoomTrackBar.Maximum = 60;
         zoomTrackBar.Minimum = 15;
         zoomTrackBar.Name = "zoomTrackBar";
@@ -175,22 +278,24 @@ partial class MainForm
         // 
         displayHealthBarCheckBox.AutoSize = true;
         displayHealthBarCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayHealthBar", true, DataSourceUpdateMode.OnPropertyChanged));
-        displayHealthBarCheckBox.Location = new Point(722, 37);
+        displayHealthBarCheckBox.Location = new Point(656, 52);
         displayHealthBarCheckBox.Name = "displayHealthBarCheckBox";
-        displayHealthBarCheckBox.Size = new Size(122, 19);
+        displayHealthBarCheckBox.Padding = new Padding(4, 0, 0, 0);
+        displayHealthBarCheckBox.Size = new Size(87, 19);
         displayHealthBarCheckBox.TabIndex = 10;
-        displayHealthBarCheckBox.Text = "Display health-bar";
+        displayHealthBarCheckBox.Text = "Health-bar";
         displayHealthBarCheckBox.UseVisualStyleBackColor = true;
         // 
         // displayNamesCheckBox
         // 
         displayNamesCheckBox.AutoSize = true;
         displayNamesCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayNames", true, DataSourceUpdateMode.OnPropertyChanged));
-        displayNamesCheckBox.Location = new Point(722, 12);
+        displayNamesCheckBox.Location = new Point(656, 27);
         displayNamesCheckBox.Name = "displayNamesCheckBox";
-        displayNamesCheckBox.Size = new Size(102, 19);
+        displayNamesCheckBox.Padding = new Padding(4, 0, 0, 0);
+        displayNamesCheckBox.Size = new Size(67, 19);
         displayNamesCheckBox.TabIndex = 9;
-        displayNamesCheckBox.Text = "Display names";
+        displayNamesCheckBox.Text = "Names";
         displayNamesCheckBox.UseVisualStyleBackColor = true;
         // 
         // populationSIzeNumberLabel
@@ -198,7 +303,7 @@ partial class MainForm
         populationSIzeNumberLabel.AutoSize = true;
         populationSIzeNumberLabel.BorderStyle = BorderStyle.Fixed3D;
         populationSIzeNumberLabel.DataBindings.Add(new Binding("Text", parametersBindingSource, "PopulationSize", true, DataSourceUpdateMode.OnPropertyChanged));
-        populationSIzeNumberLabel.Location = new Point(664, 8);
+        populationSIzeNumberLabel.Location = new Point(589, 12);
         populationSIzeNumberLabel.Margin = new Padding(3, 0, 15, 0);
         populationSIzeNumberLabel.Name = "populationSIzeNumberLabel";
         populationSIzeNumberLabel.Size = new Size(40, 17);
@@ -208,7 +313,7 @@ partial class MainForm
         // populationSizeNameLabel
         // 
         populationSizeNameLabel.AutoSize = true;
-        populationSizeNameLabel.Location = new Point(379, 8);
+        populationSizeNameLabel.Location = new Point(304, 12);
         populationSizeNameLabel.Name = "populationSizeNameLabel";
         populationSizeNameLabel.Size = new Size(68, 15);
         populationSizeNameLabel.TabIndex = 7;
@@ -219,7 +324,7 @@ partial class MainForm
         trackBar1.AutoSize = false;
         trackBar1.DataBindings.Add(new Binding("Value", parametersBindingSource, "PopulationSize", true, DataSourceUpdateMode.OnPropertyChanged));
         trackBar1.LargeChange = 20;
-        trackBar1.Location = new Point(453, 8);
+        trackBar1.Location = new Point(378, 12);
         trackBar1.Maximum = 200;
         trackBar1.Minimum = 8;
         trackBar1.Name = "trackBar1";
@@ -240,7 +345,7 @@ partial class MainForm
         deathCheckBox.FlatAppearance.BorderSize = 0;
         deathCheckBox.FlatStyle = FlatStyle.Flat;
         deathCheckBox.Image = Properties.Resources.DeathUp32;
-        deathCheckBox.Location = new Point(329, 12);
+        deathCheckBox.Location = new Point(247, 50);
         deathCheckBox.Margin = new Padding(3, 3, 15, 3);
         deathCheckBox.Name = "deathCheckBox";
         deathCheckBox.Size = new Size(32, 32);
@@ -258,7 +363,7 @@ partial class MainForm
         kryptoniteCheckBox.FlatAppearance.BorderSize = 0;
         kryptoniteCheckBox.FlatStyle = FlatStyle.Flat;
         kryptoniteCheckBox.Image = Properties.Resources.Kryptonite32Up;
-        kryptoniteCheckBox.Location = new Point(291, 12);
+        kryptoniteCheckBox.Location = new Point(209, 50);
         kryptoniteCheckBox.Name = "kryptoniteCheckBox";
         kryptoniteCheckBox.Size = new Size(32, 32);
         kryptoniteCheckBox.TabIndex = 4;
@@ -275,7 +380,7 @@ partial class MainForm
         radioactivityCheckBox.FlatAppearance.BorderSize = 0;
         radioactivityCheckBox.FlatStyle = FlatStyle.Flat;
         radioactivityCheckBox.Image = Properties.Resources.RadioactiveUp32;
-        radioactivityCheckBox.Location = new Point(253, 12);
+        radioactivityCheckBox.Location = new Point(247, 12);
         radioactivityCheckBox.Name = "radioactivityCheckBox";
         radioactivityCheckBox.Size = new Size(32, 32);
         radioactivityCheckBox.TabIndex = 3;
@@ -284,14 +389,14 @@ partial class MainForm
         // 
         // displayFpsCheckBox
         // 
-        displayFpsCheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         displayFpsCheckBox.AutoSize = true;
         displayFpsCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayFps", true, DataSourceUpdateMode.OnPropertyChanged));
-        displayFpsCheckBox.Location = new Point(1113, 12);
+        displayFpsCheckBox.Location = new Point(656, 77);
         displayFpsCheckBox.Name = "displayFpsCheckBox";
-        displayFpsCheckBox.Size = new Size(86, 19);
+        displayFpsCheckBox.Padding = new Padding(4, 0, 0, 0);
+        displayFpsCheckBox.Size = new Size(49, 19);
         displayFpsCheckBox.TabIndex = 2;
-        displayFpsCheckBox.Text = "Display FPS";
+        displayFpsCheckBox.Text = "FPS";
         displayFpsCheckBox.UseVisualStyleBackColor = true;
         // 
         // changeFloorCheckBox
@@ -302,8 +407,7 @@ partial class MainForm
         changeFloorCheckBox.FlatAppearance.BorderSize = 0;
         changeFloorCheckBox.FlatStyle = FlatStyle.Flat;
         changeFloorCheckBox.Image = Properties.Resources.ChangeFloorUp32;
-        changeFloorCheckBox.Location = new Point(203, 13);
-        changeFloorCheckBox.Margin = new Padding(3, 3, 15, 3);
+        changeFloorCheckBox.Location = new Point(209, 12);
         changeFloorCheckBox.Name = "changeFloorCheckBox";
         changeFloorCheckBox.Size = new Size(32, 32);
         changeFloorCheckBox.TabIndex = 1;
@@ -314,9 +418,9 @@ partial class MainForm
         // 
         pauseResumeButton.DataBindings.Add(new Binding("Text", parametersBindingSource, "PlayButtonText", true, DataSourceUpdateMode.OnPropertyChanged));
         pauseResumeButton.DataBindings.Add(new Binding("Command", parametersBindingSource, "PlayCommand", true));
-        pauseResumeButton.Location = new Point(19, 34);
+        pauseResumeButton.Location = new Point(19, 56);
         pauseResumeButton.Name = "pauseResumeButton";
-        pauseResumeButton.Size = new Size(129, 23);
+        pauseResumeButton.Size = new Size(129, 26);
         pauseResumeButton.TabIndex = 0;
         pauseResumeButton.Text = "pauseResumeButton";
         pauseResumeButton.UseVisualStyleBackColor = true;
@@ -350,6 +454,8 @@ partial class MainForm
         topPanel.ResumeLayout(false);
         topPanel.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)parametersBindingSource).EndInit();
+        ((System.ComponentModel.ISupportInitialize)percentValuesBindingSource1).EndInit();
+        ((System.ComponentModel.ISupportInitialize)percentValuesBindingSource).EndInit();
         ((System.ComponentModel.ISupportInitialize)speedTrackBar).EndInit();
         ((System.ComponentModel.ISupportInitialize)zoomTrackBar).EndInit();
         ((System.ComponentModel.ISupportInitialize)trackBar1).EndInit();
@@ -379,4 +485,13 @@ partial class MainForm
     private TrackBar zoomTrackBar;
     private TrackBar speedTrackBar;
     private Label speedDisplayLabel;
+    private Label label1;
+    private Label label2;
+    private ComboBox mutationRateComboBox;
+    private Label label5;
+    private Label label4;
+    private Label label3;
+    private ComboBox mutationSizeComboBox;
+    private BindingSource percentValuesBindingSource;
+    private BindingSource percentValuesBindingSource1;
 }

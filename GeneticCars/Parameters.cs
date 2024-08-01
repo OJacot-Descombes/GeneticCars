@@ -13,6 +13,9 @@ public class Parameters : INotifyPropertyChanged
         Radioactivity = new(this);
         Kryptonite = new(this);
         Death = new(this);
+
+        MutationRate = PercentValues[8].Value;
+        MutationSize = PercentValues[8].Value;
     }
 
     int _populationSize = 40;
@@ -62,6 +65,20 @@ public class Parameters : INotifyPropertyChanged
     public bool DisplayNames { get; set; }
     public bool DisplayHealthBar { get; set; } = true;
     public bool DisplayFps { get; set; }
+
+    public float MutationRate { get; set; }
+    public float MutationSize { get; set; }
+
+    public class FloatDisplay(float value, string text)
+    {
+        public float Value { get; } = value;
+        public string Text { get; } = text;
+    }
+
+    public FloatDisplay[] PercentValues { get; } = [
+        new(0.010f, "    1%"), new(0.015f, "    1.5%"), new(0.022f, "    2.2%"), new(0.032f, "    3.2%"), new(0.046f, "    4.6%"), new(0.068f, "    6.8%"),
+        new(0.100f, "  10%"), new(0.15f, "  15%"), new(0.22f, "  22%"), new(0.32f, "  32%"), new(0.46f, "  46%"), new(0.68f, "  68%"),
+        new(1.0f, "100%")];
 
     public OptionButtonParameter RegenerateFloor { get; } = new(
         Resources.ChangeFloorUp32, Resources.ChangeFloorDn32) { Enabled = true };
