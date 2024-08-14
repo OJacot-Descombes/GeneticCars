@@ -7,7 +7,7 @@ The linked project is implemented as a web application in JavaScript. As a C# de
 
 The program demonstrates a genetic algorithm in a playful way as evolving cars. It is a desktop application based on [Windows Forms .NET](https://learn.microsoft.com/en-us/dotnet/desktop/winforms/overview/?view=netdesktop-8.0), the [SkiaSharp](https://github.com/mono/SkiaSharp) 2D graphics API and the physics engine [Aether.Physics2D](https://nkast.github.io/Aether.Physics2D/).
 
-![image](..\..\Documentation\Simulation.png)
+![image](./Documentation/Simulation.png)
 
 ## How It Works
 First a bunch of random cars is created (you can choose the population size between 8 and 200 with a slider).
@@ -41,7 +41,7 @@ To display the names in the simulation, you can activate the corresponding check
 ## Family Tree
 Below the simulation a family tree is displayed.
 
-![image](..\..\Documentation\FamilyTree.png)
+![image](./Documentation/FamilyTree.png)
 
 You can move the mouse cursor over a car name to highlight its ancestors and descendants. Clicking a name makes the selection permanent - until you click on another name or click the same name again.
 
@@ -50,10 +50,10 @@ With Ctrl+Mouse-Wheel you can zoom the family tree in or out.
 ## God Commands
 The following commands as well as changed population sizes, mutation rates and sizes become only effective when the new generation is created.
 
-- ![image](..\..\Documentation\ChangeFloorUp32.png) Change the floor at every race round.
-- ![image](..\..\Documentation\RadioactiveUp32.png) Mutates elite cars (first 25% of the population) having run similar distances, keeping only the best one of a group unmutated.
-- ![image](..\..\Documentation\Kryptonite32Up.png) Replaces cars having similar genes with new, random creations, keeping only the best one of a group as is. This command affects only the second 25% of the population.
-- ![image](..\..\Documentation\DeathUp32.png) This command is very radical and keeps only the best car of each family name (i.e., the name without the number). Empty positions are filled with new, random cars.
+- ![image](./Documentation/ChangeFloorUp32.png) Change the floor at every race round.
+- ![image](./Documentation/RadioactiveUp32.png) Mutates elite cars (first 25% of the population) having run similar distances, keeping only the best one of a group unmutated.
+- ![image](./Documentation/Kryptonite32Up.png) Replaces cars having similar genes with new, random creations, keeping only the best one of a group as is. This command affects only the second 25% of the population.
+- ![image](./Documentation/DeathUp32.png) This command is very radical and keeps only the best car of each family name (i.e., the name without the number). Empty positions are filled with new, random cars.
 
 ## What Else?
  GeneticCars is a free and open-source software licensed under the AGPL.
