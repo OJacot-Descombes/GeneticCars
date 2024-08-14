@@ -78,6 +78,15 @@ public partial class FamilyTree
         return false;
     }
 
+    public bool DeselectNode()
+    {
+        if (_selected is { sticky: false }) {
+            _selected = null;
+            return true;
+        }
+        return false;
+    }
+
     private bool IsRelatedToSelection(int g, int i, int? ancestorNum)
     {
         if (_selected == null) {

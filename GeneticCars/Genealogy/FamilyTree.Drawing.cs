@@ -22,6 +22,11 @@ public partial class FamilyTree
         IsStroke = false,
         IsAntialias = true,
     };
+    private static readonly SKPaint _mutationTextPaint = new() {
+        Color = Individual.MutatedBaseColor,
+        IsStroke = false,
+        IsAntialias = true,
+    };
 
     private static readonly SKPaint _selectionMarkerPaint = new() {
         Color = SKColors.Blue,
@@ -290,7 +295,7 @@ public partial class FamilyTree
             canvas.DrawText("D", letterX, y - 15, _generationFont, _deathLetterPaint);
         }
         if (generation.MutationText is { } text) {
-            canvas.DrawText(text ?? "", x - ConnectionsColumnWidth, y - 15, _nodeFont, Individual.NeutralInfoTextPaint);
+            canvas.DrawText(text ?? "", x - ConnectionsColumnWidth, y - 15, _nodeFont, _mutationTextPaint);
         }
     }
 

@@ -8,6 +8,11 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <NeutralLanguage>en</NeutralLanguage>
         <Configurations>Debug;Release</Configurations>
+        <ApplicationIcon>GeneticCars.ico</ApplicationIcon>
+        <AssemblyVersion>2024.08.02.1815</AssemblyVersion>
+        <FileVersion>2024.08.02.1815</FileVersion>
+        <Copyright>© Copyright 2024 by CySoft - Olivier Jacot-Descombes</Copyright>
+        <Company>CySoft - Olivier Jacot-Descombes</Company>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,6 +22,10 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <NoWarn>1701;1702;NU1701;SYSLIB1054</NoWarn>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="GeneticCars.ico" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Aether.Physics2D" Version="2.1.0" />

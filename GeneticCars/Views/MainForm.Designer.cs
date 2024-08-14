@@ -28,9 +28,14 @@ partial class MainForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
+        var resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
         simulationSKGLControl = new SkiaSharp.Views.Desktop.SKGLControl();
         mainSplitContainer = new SplitContainer();
         topPanel = new Panel();
+        legendEliteLabel = new Label();
+        legendMutationLabel = new Label();
+        legendCrossLabel = new Label();
+        legendNewLabel = new Label();
         mutationSizeComboBox = new ComboBox();
         parametersBindingSource = new BindingSource(components);
         percentValuesBindingSource1 = new BindingSource(components);
@@ -104,6 +109,10 @@ partial class MainForm
         // 
         // topPanel
         // 
+        topPanel.Controls.Add(legendEliteLabel);
+        topPanel.Controls.Add(legendMutationLabel);
+        topPanel.Controls.Add(legendCrossLabel);
+        topPanel.Controls.Add(legendNewLabel);
         topPanel.Controls.Add(mutationSizeComboBox);
         topPanel.Controls.Add(mutationRateComboBox);
         topPanel.Controls.Add(label5);
@@ -131,6 +140,46 @@ partial class MainForm
         topPanel.Name = "topPanel";
         topPanel.Size = new Size(1211, 101);
         topPanel.TabIndex = 1;
+        // 
+        // legendEliteLabel
+        // 
+        legendEliteLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        legendEliteLabel.AutoSize = true;
+        legendEliteLabel.Location = new Point(1100, 30);
+        legendEliteLabel.Name = "legendEliteLabel";
+        legendEliteLabel.Size = new Size(92, 15);
+        legendEliteLabel.TabIndex = 25;
+        legendEliteLabel.Text = "▬ Elite, survivor";
+        // 
+        // legendMutationLabel
+        // 
+        legendMutationLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        legendMutationLabel.AutoSize = true;
+        legendMutationLabel.Location = new Point(1100, 72);
+        legendMutationLabel.Name = "legendMutationLabel";
+        legendMutationLabel.Size = new Size(71, 15);
+        legendMutationLabel.TabIndex = 24;
+        legendMutationLabel.Text = "▬ Mutation";
+        // 
+        // legendCrossLabel
+        // 
+        legendCrossLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        legendCrossLabel.AutoSize = true;
+        legendCrossLabel.Location = new Point(1100, 51);
+        legendCrossLabel.Name = "legendCrossLabel";
+        legendCrossLabel.Size = new Size(86, 15);
+        legendCrossLabel.TabIndex = 23;
+        legendCrossLabel.Text = "▬ Cross-breed";
+        // 
+        // legendNewLabel
+        // 
+        legendNewLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        legendNewLabel.AutoSize = true;
+        legendNewLabel.Location = new Point(1100, 9);
+        legendNewLabel.Name = "legendNewLabel";
+        legendNewLabel.Size = new Size(99, 15);
+        legendNewLabel.TabIndex = 22;
+        legendNewLabel.Text = "▬ New (random)";
         // 
         // mutationSizeComboBox
         // 
@@ -215,7 +264,7 @@ partial class MainForm
         // label1
         // 
         label1.AutoSize = true;
-        label1.Location = new Point(656, 9);
+        label1.Location = new Point(648, 9);
         label1.Name = "label1";
         label1.Size = new Size(48, 15);
         label1.TabIndex = 15;
@@ -278,24 +327,24 @@ partial class MainForm
         // 
         displayHealthBarCheckBox.AutoSize = true;
         displayHealthBarCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayHealthBar", true, DataSourceUpdateMode.OnPropertyChanged));
-        displayHealthBarCheckBox.Location = new Point(656, 52);
+        displayHealthBarCheckBox.Location = new Point(648, 52);
         displayHealthBarCheckBox.Name = "displayHealthBarCheckBox";
         displayHealthBarCheckBox.Padding = new Padding(4, 0, 0, 0);
-        displayHealthBarCheckBox.Size = new Size(87, 19);
+        displayHealthBarCheckBox.Size = new Size(65, 19);
         displayHealthBarCheckBox.TabIndex = 10;
-        displayHealthBarCheckBox.Text = "Health-bar";
+        displayHealthBarCheckBox.Text = "Health";
         displayHealthBarCheckBox.UseVisualStyleBackColor = true;
         // 
         // displayNamesCheckBox
         // 
         displayNamesCheckBox.AutoSize = true;
         displayNamesCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayNames", true, DataSourceUpdateMode.OnPropertyChanged));
-        displayNamesCheckBox.Location = new Point(656, 27);
+        displayNamesCheckBox.Location = new Point(648, 27);
         displayNamesCheckBox.Name = "displayNamesCheckBox";
         displayNamesCheckBox.Padding = new Padding(4, 0, 0, 0);
-        displayNamesCheckBox.Size = new Size(67, 19);
+        displayNamesCheckBox.Size = new Size(62, 19);
         displayNamesCheckBox.TabIndex = 9;
-        displayNamesCheckBox.Text = "Names";
+        displayNamesCheckBox.Text = "Name";
         displayNamesCheckBox.UseVisualStyleBackColor = true;
         // 
         // populationSIzeNumberLabel
@@ -391,7 +440,7 @@ partial class MainForm
         // 
         displayFpsCheckBox.AutoSize = true;
         displayFpsCheckBox.DataBindings.Add(new Binding("Checked", parametersBindingSource, "DisplayFps", true, DataSourceUpdateMode.OnPropertyChanged));
-        displayFpsCheckBox.Location = new Point(656, 77);
+        displayFpsCheckBox.Location = new Point(648, 77);
         displayFpsCheckBox.Name = "displayFpsCheckBox";
         displayFpsCheckBox.Padding = new Padding(4, 0, 0, 0);
         displayFpsCheckBox.Size = new Size(49, 19);
@@ -444,6 +493,8 @@ partial class MainForm
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(1211, 822);
         Controls.Add(mainSplitContainer);
+        Icon = (Icon)resources.GetObject("$this.Icon");
+        MinimumSize = new Size(850, 355);
         Name = "MainForm";
         Text = "Evolving Cars";
         Load += MainForm_Load;
@@ -494,4 +545,8 @@ partial class MainForm
     private ComboBox mutationSizeComboBox;
     private BindingSource percentValuesBindingSource;
     private BindingSource percentValuesBindingSource1;
+    private Label legendEliteLabel;
+    private Label legendMutationLabel;
+    private Label legendCrossLabel;
+    private Label legendNewLabel;
 }

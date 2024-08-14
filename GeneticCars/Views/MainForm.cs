@@ -1,3 +1,4 @@
+using GeneticCars.Evolution;
 using SkiaSharp.Views.Desktop;
 
 namespace GeneticCars;
@@ -13,11 +14,24 @@ public partial class MainForm : Form
     public MainForm()
     {
         InitializeComponent();
+        legendNewLabel.ForeColor = Individual.NewBaseColor.ToDrawingColor();
+        legendEliteLabel.ForeColor = Individual.EliteBaseColor.ToDrawingColor();
+        legendCrossLabel.ForeColor = Individual.CrossedBaseColor.ToDrawingColor();
+        legendMutationLabel.ForeColor = Individual.MutatedBaseColor.ToDrawingColor();
+
         _game.FamilyTreeChanged += Game_FamilyTreeChanged;
         parametersBindingSource.DataSource = _game.Parameters;
         MouseWheel += MainForm_MouseWheel;
         familyTreeVPanel.skGLControl.MouseMove += SkGLControl_MouseMove;
         familyTreeVPanel.skGLControl.MouseClick += SkGLControl_MouseClick;
+        familyTreeVPanel.skGLControl.MouseLeave += SkGLControl_MouseLeave;
+    }
+
+    private void SkGLControl_MouseLeave(object? sender, EventArgs e)
+    {
+        if (_game.FamilyTree.DeselectNode()) {
+            familyTreeVPanel.skGLControl.Invalidate();
+        }
     }
 
     private void SkGLControl_MouseClick(object? sender, MouseEventArgs e)
