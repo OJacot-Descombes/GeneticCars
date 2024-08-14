@@ -52,7 +52,7 @@ The following commands as well as changed population sizes, mutation rates and s
 
 - ![image](./Documentation/ChangeFloorUp32.png) Change the floor at every race round.
 - ![image](./Documentation/RadioactiveUp32.png) Mutates elite cars (first 25% of the population) having run similar distances, keeping only the best one of a group unmutated.
-- ![image](./Documentation/Kryptonite32Up.png) Replaces cars having similar genes with new, random creations, keeping only the best one of a group as is. This command affects only the second 25% of the population.
+- ![image](./Documentation/Kryptonite32Up.png) Replaces cars having similar genes with new, random creations, keeping only the best one of a group as is. This command affects 50% of the population stating after the elite.
 - ![image](./Documentation/DeathUp32.png) This command is very radical and keeps only the best car of each family name (i.e., the name without the number). Empty positions are filled with new, random cars.
 
 ## What Else?
