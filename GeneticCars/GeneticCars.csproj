@@ -9,8 +9,8 @@
         <NeutralLanguage>en</NeutralLanguage>
         <Configurations>Debug;Release</Configurations>
         <ApplicationIcon>GeneticCars.ico</ApplicationIcon>
-        <AssemblyVersion>2024.08.02.1815</AssemblyVersion>
-        <FileVersion>2024.08.02.1815</FileVersion>
+        <AssemblyVersion>2024.08.14.1620</AssemblyVersion>
+        <FileVersion>2024.08.14.1620</FileVersion>
         <Copyright>© Copyright 2024 by CySoft - Olivier Jacot-Descombes</Copyright>
         <Company>CySoft - Olivier Jacot-Descombes</Company>
     </PropertyGroup>
