@@ -1,50 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0-windows</TargetFramework>
-        <Nullable>enable</Nullable>
-        <UseWindowsForms>true</UseWindowsForms>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <NeutralLanguage>en</NeutralLanguage>
-        <Configurations>Debug;Release</Configurations>
-        <ApplicationIcon>GeneticCars.ico</ApplicationIcon>
-        <AssemblyVersion>2024.08.14.1620</AssemblyVersion>
-        <FileVersion>2024.08.14.1620</FileVersion>
-        <Copyright>© Copyright 2024 by CySoft - Olivier Jacot-Descombes</Copyright>
-        <Company>CySoft - Olivier Jacot-Descombes</Company>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <NoWarn>1701;1702;NU1701;SYSLIB1054</NoWarn>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <NoWarn>1701;1702;NU1701;SYSLIB1054</NoWarn>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <Content Include="GeneticCars.ico" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Aether.Physics2D" Version="2.1.0" />
-        <PackageReference Include="SkiaSharp.Views.WindowsForms" Version="3.0.0-preview.4.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="Properties\Resources.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Resources.resx</DependentUpon>
-        </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Update="Properties\Resources.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-    </ItemGroup>
-
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Configurations>Debug;Release</Configurations>
+    <ApplicationIcon>GeneticCars.ico</ApplicationIcon>
+    <AssemblyVersion>2024.08.14.1620</AssemblyVersion>
+    <FileVersion>2024.08.14.1620</FileVersion>
+    <Copyright>© Copyright 2024 by CySoft - Olivier Jacot-Descombes</Copyright>
+    <Company>CySoft - Olivier Jacot-Descombes</Company>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;NU1701;SYSLIB1054</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;NU1701;SYSLIB1054</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="GeneticCars.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Aether.Physics2D" Version="2.1.0" />
+    <PackageReference Include="SkiaSharp.Views.WindowsForms" Version="3.0.0-preview.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

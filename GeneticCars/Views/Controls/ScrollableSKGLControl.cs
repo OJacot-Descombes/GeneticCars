@@ -30,6 +30,7 @@ public partial class ScrollableSKGLControl : UserControl
     #region Public Properties
 
     private Size virtualAreaSize;
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Size VirtualAreaSize
     {
         get { return virtualAreaSize; }
@@ -40,6 +41,7 @@ public partial class ScrollableSKGLControl : UserControl
     }
 
     private Point scrollOffset;
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Point ScrollOffset
     {
         get { return scrollOffset; }
@@ -54,6 +56,7 @@ public partial class ScrollableSKGLControl : UserControl
     }
 
     private Size smallChange = new(10, 10);
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public Size SmallChange
     {
         get { return smallChange; }
@@ -61,6 +64,7 @@ public partial class ScrollableSKGLControl : UserControl
     }
 
     private Size largeChange = new(100, 100);
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public Size LargeChange
     {
         get { return largeChange; }
